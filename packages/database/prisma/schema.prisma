@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+enum Gender {
+  M
+  F
+}
+
+enum GermanLevel {
+  A1
+  A2
+  B1
+  B2
+  C1
+}
+
+model Application {
+  id          String   @id @default(uuid())
+  submittedAt DateTime @default(now())
+
+  fotoS3Key String
+
+  firstName    String
+  lastName     String
+  gender       Gender
+  birthDate    DateTime @db.Date
+  birthPlace   String
+  birthCountry String
+
+  street      String
+  postalCode  String
+  city        String
+  country     String
+  nationality String
+
+  email     String?
+  phone     String?
+  instagram String?
+  taxId     String?
+
+  university        String?
+  studySubject      String?
+  semesterBreakFrom DateTime? @db.Date
+  semesterBreakTo   DateTime? @db.Date
+
+  germanLevel        GermanLevel?
+  otherLanguages     String?
+  driverLicense      Boolean      @default(false)
+  canRideBike        Boolean      @default(false)
+  shiftWork          Boolean      @default(false)
+  healthRestrictions String?
+  allergies          String?
+  clothingSize       String?
+  shoeSize           String[]
+
+  hasBeenInGermanyBefore Boolean   @default(false)
+  previousStayPlace      String?
+  previousStayPeriodFrom DateTime? @db.Date
+  previousStayPeriodTo   DateTime? @db.Date
+
+  emergencyContactName String
+  emergencyPhone       String
+  workSector           String[]
+
+  @@index([submittedAt])
+  @@index([lastName, firstName])
+}
