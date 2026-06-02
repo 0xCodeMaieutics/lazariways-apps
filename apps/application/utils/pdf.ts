@@ -1,5 +1,8 @@
 import { PDFDocument, PDFFont, PDFPage, rgb, StandardFonts } from 'pdf-lib'
-import { ApplicationFormData, workSectorOptions } from '@/schema/application'
+import {
+    ApplicationFormData,
+    workSectorOptions,
+} from './application-schema'
 import fontkit from '@pdf-lib/fontkit'
 
 export const generateApplicationPdf = async (
@@ -579,8 +582,8 @@ export const generateRemoteApplicationPdf = async (
     applicationFormData: ApplicationFormData
 ) => {
     const [pdfTemplateBytes, arialFontBytes] = await Promise.all([
-        fetch(REMOTE_TEMPLATE_URL).then((res) => res.bytes()),
-        fetch(REMOTE_FONT_URL).then((res) => res.bytes()),
+        fetch(REMOTE_TEMPLATE_URL).then((res) => res.arrayBuffer()),
+        fetch(REMOTE_FONT_URL).then((res) => res.arrayBuffer()),
     ])
 
     const pdfDoc = await PDFDocument.load(pdfTemplateBytes)

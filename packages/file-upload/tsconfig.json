@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/shared/*": ["./node_modules/@workspace/shared/src/*"],
+      "@workspace/file-upload/*": ["./src/*"]
+    }
+  }
+}
