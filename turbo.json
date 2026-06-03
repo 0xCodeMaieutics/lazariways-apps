@@ -7,7 +7,8 @@
   "tasks": {
     "build": {
       "dependsOn": [
-        "^build"
+        "^build",
+        "^generate"
       ],
       "env": [
         "DATABASE_URL",
@@ -27,17 +28,17 @@
       "outputs": [
         "dist/**",
         ".next/**",
-        "!.next/cache/**"
+        "!.next/cache/**",
       ]
     },
     "generate": {
-      "env": [
-        "DATABASE_URL"
-      ],
-      "cache": false,
       "dependsOn": [
         "^generate"
       ],
+      "cache": false,
+      "env": [
+        "DATABASE_URL"
+      ]
     },
     "lint": {
       "dependsOn": [
