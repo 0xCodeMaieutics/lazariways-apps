@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 export const env = createEnv({
     server: {
+        DATABASE_URL: z.url(),
         S3_REGION: z.string(),
         S3_ENDPOINT: z.url(),
         S3_ACCESS_KEY: z.string(),
@@ -11,6 +12,7 @@ export const env = createEnv({
     },
     client: {},
     runtimeEnv: {
+        DATABASE_URL: process.env.DATABASE_URL,
         S3_REGION: process.env.S3_REGION,
         S3_ENDPOINT: process.env.S3_ENDPOINT,
         S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
