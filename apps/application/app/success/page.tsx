@@ -1,24 +1,48 @@
 import type { Metadata } from 'next'
-import { CheckCircle2 } from 'lucide-react'
+import Image from 'next/image'
+import { Button } from '@workspace/ui/components/button'
 
 export const metadata: Metadata = {
     title: 'განაცხადი გაგზავნილია',
     description: 'თქვენი განაცხადი წარმატებით გაიგზავნა.',
 }
 
+const WHATSAPP_NUMBER = '+4917632983291'
+const WHATSAPP_MESSAGE =
+    'გამარჯობა! Lazari Ways-ის ვებსაიტიდან განაცხადი წარმატებით გავაგზავნე. ❤️'
+const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
+
 export default function SuccessPage() {
     return (
         <main className="flex min-h-full flex-1 items-center justify-center p-6">
-            <div className="mx-auto flex w-full max-w-md flex-col items-center text-center">
-                <div className="bg-primary/10 text-primary mb-6 flex size-16 items-center justify-center rounded-full">
-                    <CheckCircle2 className="size-9" aria-hidden />
+            <div className="mx-auto flex w-full flex-col items-center gap-4 text-center">
+                <Image
+                    src="/consultant.webp"
+                    alt="Lazari Ways კონსულტანტი"
+                    width={1080}
+                    height={1080}
+                    priority
+                    className="ring-primary/10 mt-8 size-40 rounded-full object-cover ring-4"
+                />
+                <div className="flex flex-col items-center gap-2">
+                    <h1 className="text-2xl font-semibold tracking-tight">
+                        განაცხადი წარმატებით გაიგზავნა
+                    </h1>
+
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                        თქვენი განაცხადი მივიღეთ. განხილვის შემდეგ
+                        დაგიკავშირდებით.
+                    </p>
                 </div>
-                <h1 className="text-2xl font-semibold tracking-tight">
-                    განაცხადი წარმატებით გაიგზავნა
-                </h1>
-                <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-                    თქვენი განაცხადი მივიღეთ. განხილვის შემდეგ დაგიკავშირდებით.
-                </p>
+                <Button asChild size={'lg'}>
+                    <a
+                        href={WHATSAPP_HREF}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        შემატყობინეთ <b>Whatsapp-ზე</b>
+                    </a>
+                </Button>
             </div>
         </main>
     )
