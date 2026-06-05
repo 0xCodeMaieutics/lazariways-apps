@@ -1,0 +1,5 @@
+export const APPLICATIONS_PER_PAGE = 50
+export const VERIFICATION_CODE_EXPIRY_MINUTES = 10
+export const VERIFICATION_CODE_COOLDOWN_MINUTES = 1
+export const ADMIN_SESSION_COOKIE = "admin_session"
+export const ADMIN_SESSION_MAX_AGE_SECONDS = 10 * 365 * 24 * 60 * 60

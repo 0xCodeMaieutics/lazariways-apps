@@ -74,3 +74,21 @@ model Application {
   @@index([submittedAt])
   @@index([lastName, firstName])
 }
+
+model TelegramVerification {
+  id            String    @id @default(uuid())
+  code          String
+  expiresAt     DateTime
+  usedAt        DateTime?
+  invalidatedAt DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([code])
+  @@index([createdAt])
+}
+
+model AdminSession {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  createdAt DateTime @default(now())
+}
