@@ -9,12 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@workspace/database": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "@workspace/application": "workspace:*",
+    "@workspace/file-upload": "workspace:*",
     "next": "16.2.7",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hook-form": "^7.77.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -24,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
+    "nanoid": "3.3.12",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
