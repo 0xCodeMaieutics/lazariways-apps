@@ -23,6 +23,7 @@ import { FileUpload } from '@workspace/ui/components/file-upload'
 import {
     applicationFormSchema,
     type ApplicationFormData,
+    workSectorLabels,
     workSectorOptions,
     shoeSizeOptions,
 } from '@/utils/application-schema'
@@ -1850,7 +1851,11 @@ export function ApplicationForm() {
                                                             htmlFor={id}
                                                             className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                                         >
-                                                            {option}
+                                                            {
+                                                                workSectorLabels[
+                                                                    option
+                                                                ]
+                                                            }
                                                         </label>
                                                     </div>
                                                 )

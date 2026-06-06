@@ -10,6 +10,17 @@ export const workSectorOptions = [
     'Industrielle Produktion',
 ] as const
 
+export const workSectorLabels: Record<
+    (typeof workSectorOptions)[number],
+    string
+> = {
+    'Hotel/Gaststätte': 'სასტუმრო / რესტორანი',
+    Systemgastronomie: 'სწრაფი კვების ქსელი',
+    Landwirtschaft: 'სოფლის მეურნეობა',
+    'Gebäude-/Industriereinigung': 'დასუფთავება (შენობები / ინდუსტრია)',
+    'Industrielle Produktion': 'ინდუსტრიული წარმოება',
+}
+
 export const shoeSizeOptions = [
     '36',
     '37',
