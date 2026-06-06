@@ -100,17 +100,28 @@ model AdminSession {
 }
 
 model Profile {
-  id         String   @id @default(uuid())
-  firstName  String
-  lastName   String
-  birthDate  DateTime @db.Date
-  email      String
-  fotoS3Key  String
+  id            String            @id @default(uuid())
+  firstName     String
+  lastName      String
+  birthDate     DateTime          @db.Date
+  email         String
+  fotoS3Key     String
   phone         String?
   workSector    String[]
   desiredSalary DesiredSalary
-  createdAt     DateTime @default(now())
+  createdAt     DateTime          @default(now())
+  languages     ProfileLanguage[]
 
   @@index([createdAt])
   @@index([lastName, firstName])
+}
+
+model ProfileLanguage {
+  id        String      @id @default(uuid())
+  profileId String
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  language  String
+  level     GermanLevel
+
+  @@index([profileId])
 }

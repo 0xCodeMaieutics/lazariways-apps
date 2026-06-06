@@ -36,6 +36,19 @@ export const desiredSalaryLabels: Record<
   EURO_15_PLUS: "15+ euro",
 }
 
+export const languageLevelOptions = ["A1", "A2", "B1", "B2", "C1"] as const
+
+const profileLanguageSchema = z.object({
+  language: z.string().min(1, "ენა სავალდებულოა"),
+  level: z.enum(languageLevelOptions, {
+    message: "დონე სავალდებულოა",
+  }),
+})
+
+export const defaultProfileLanguages = [
+  { language: "", level: "A1" },
+] satisfies z.infer<typeof profileLanguageSchema>[]
+
 export const profileFormSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
   lastName: z.string().min(1, "გვარი სავალდებულოა"),
@@ -68,6 +81,9 @@ export const profileFormSchema = z.object({
   desiredSalary: z.enum(desiredSalaryOptions, {
     message: "სასურველი ანაზღაურება სავალდებულოა",
   }),
+  languages: z
+    .array(profileLanguageSchema)
+    .min(1, "მინიმუმ ერთი ენა სავალდებულოა"),
 })
 
 export type ProfileFormData = z.infer<typeof profileFormSchema>

@@ -98,6 +98,19 @@ function parseIsoDate(value: string): Date {
   return date
 }
 
+function formLanguages(formData: FormData): unknown {
+  const raw = formString(formData, "languages")
+  if (raw.trim() === "") {
+    return []
+  }
+
+  try {
+    return JSON.parse(raw)
+  } catch {
+    return []
+  }
+}
+
 function profileToPrismaCreateData(data: ProfileFormData, fotoS3Key: string) {
   return {
     fotoS3Key,
@@ -108,6 +121,12 @@ function profileToPrismaCreateData(data: ProfileFormData, fotoS3Key: string) {
     phone: optionalString(data.phone),
     workSector: data.workSector,
     desiredSalary: data.desiredSalary,
+    languages: {
+      create: data.languages.map((entry) => ({
+        language: entry.language.trim(),
+        level: entry.level,
+      })),
+    },
   }
 }
 
@@ -120,6 +139,7 @@ function profileFormDataFromFormData(formData: FormData) {
     phone: formString(formData, "phone"),
     workSector: formStringArray(formData, "workSector"),
     desiredSalary: formString(formData, "desiredSalary"),
+    languages: formLanguages(formData),
     foto: formData.get("foto"),
   }
 }

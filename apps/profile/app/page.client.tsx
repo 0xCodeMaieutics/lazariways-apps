@@ -1,10 +1,12 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useFieldArray, useForm } from "react-hook-form"
+import type { FieldPath } from "react-hook-form"
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { XCircle } from "lucide-react"
+import { Plus, Trash2, XCircle } from "lucide-react"
+import { cn } from "@workspace/ui/lib/utils"
 
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
@@ -32,9 +34,11 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import {
+  defaultProfileLanguages,
   defaultWorkSectors,
   desiredSalaryLabels,
   desiredSalaryOptions,
+  languageLevelOptions,
   profileFormSchema,
   workSectorLabels,
   workSectorOptions,
@@ -58,6 +62,10 @@ function profileFormDataToFormData(data: ProfileFormData): FormData {
       if (value instanceof File) {
         fd.set(key, value)
       }
+      continue
+    }
+    if (key === "languages") {
+      fd.set(key, JSON.stringify(value))
       continue
     }
     if (Array.isArray(value)) {
@@ -95,8 +103,14 @@ export function ProfileForm() {
       phone: "",
       workSector: defaultWorkSectors,
       desiredSalary: "EURO_10_12",
+      languages: defaultProfileLanguages,
       foto: undefined,
     },
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "languages",
   })
 
   const scrollToFirstError = useCallback(() => {
@@ -130,7 +144,7 @@ export function ProfileForm() {
     value,
   }: {
     value: string
-    fieldName: "firstName" | "lastName"
+    fieldName: FieldPath<ProfileFormData>
   }) => {
     if (containsNonLatinLetters(value)) {
       form.setError(fieldName, {
@@ -327,6 +341,120 @@ export function ProfileForm() {
                   </Field>
                 )}
               />
+            </FieldGroup>
+          </div>
+
+          <div className="border-t pt-8">
+            <h2 className="mb-4 text-lg font-semibold">ენები</h2>
+            <FieldGroup>
+              <div className="space-y-4">
+                {fields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-[1fr_auto_auto]"
+                  >
+                    <Controller
+                      name={`languages.${index}.language`}
+                      control={form.control}
+                      render={({ field: languageField, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel
+                            htmlFor={`language-${index}`}
+                            className="text-sm font-medium"
+                          >
+                            ენა *
+                          </FieldLabel>
+                          <Input
+                            {...languageField}
+                            id={`language-${index}`}
+                            placeholder="მაგ. German"
+                            aria-invalid={fieldState.invalid}
+                            onChange={(event) => {
+                              const value = event.target.value
+                              languageField.onChange(value)
+                              onValidateRomanCharacters({
+                                value,
+                                fieldName: `languages.${index}.language`,
+                              })
+                            }}
+                          />
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      name={`languages.${index}.level`}
+                      control={form.control}
+                      render={({ field: levelField, fieldState }) => (
+                        <Field
+                          data-invalid={fieldState.invalid}
+                          className="md:min-w-32"
+                        >
+                          <FieldLabel
+                            htmlFor={`level-${index}`}
+                            className="text-sm font-medium"
+                          >
+                            დონე *
+                          </FieldLabel>
+                          <select
+                            id={`level-${index}`}
+                            value={levelField.value ?? ""}
+                            onChange={(event) =>
+                              levelField.onChange(event.target.value)
+                            }
+                            aria-invalid={fieldState.invalid}
+                            className={cn(
+                              "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
+                            )}
+                          >
+                            <option value="" disabled>
+                              აირჩიეთ დონე
+                            </option>
+                            {languageLevelOptions.map((level) => (
+                              <option key={level} value={level}>
+                                {level}
+                              </option>
+                            ))}
+                          </select>
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      )}
+                    />
+                    <div className="flex items-end">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        disabled={fields.length === 1}
+                        onClick={() => remove(index)}
+                        aria-label="ენის წაშლა"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {form.formState.errors.languages?.message && (
+                <FieldError
+                  errors={[
+                    { message: form.formState.errors.languages.message },
+                  ]}
+                />
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-4"
+                onClick={() => append({ language: "", level: "A1" })}
+              >
+                <Plus className="size-4" />
+                ენის დამატება
+              </Button>
             </FieldGroup>
           </div>
 
