@@ -12,7 +12,6 @@ This is a monorepo containing Lazari Ways applications.
 # Package manager
 
 This project uses Turborepo and pnpm.
-Use pnpm workspaces to manage dependencies.
 
 # References
 
