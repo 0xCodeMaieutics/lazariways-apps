@@ -5,7 +5,7 @@ import {
 } from "@workspace/application/prisma"
 import { generateRemoteApplicationPdf } from "@workspace/application/pdf"
 import prisma from "@workspace/database/client"
-import { getAdminSession } from "@/lib/auth"
+import { requireAdminSessionForApi } from "@/lib/auth"
 import { downloadFotoAsFile } from "@/lib/foto"
 import { normalizeAdminEditInput } from "@/lib/normalize-edit-input"
 import { sendPdfToTelegram } from "@/lib/telegram"
@@ -18,9 +18,9 @@ export const PUT = async (
   request: Request,
   context: { params: Promise<{ id: string }> }
 ) => {
-  const session = await getAdminSession()
-  if (session === null) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  const authResult = await requireAdminSessionForApi()
+  if (authResult instanceof Response) {
+    return authResult
   }
 
   const { id } = await context.params

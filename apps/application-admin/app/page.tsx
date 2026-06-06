@@ -1,10 +1,9 @@
 import Link from "next/link"
-import { redirect } from "next/navigation"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
 import { ApplicationCard } from "@/components/application-card"
 import { env } from "@/env"
-import { getAdminSession } from "@/lib/auth"
+import { requireAdminSessionForPage } from "@/lib/auth"
 import { APPLICATIONS_PER_PAGE } from "@/lib/constants"
 import { Button } from "@workspace/ui/components/button"
 
@@ -21,10 +20,7 @@ function formatSubmittedAt(date: Date): string {
 }
 
 export default async function Home({ searchParams }: HomePageProps) {
-  const session = await getAdminSession()
-  if (session === null) {
-    redirect("/login?callbackUrl=/")
-  }
+  await requireAdminSessionForPage("/")
 
   const { page: pageParam } = await searchParams
   const page = Math.max(1, Number(pageParam ?? "1") || 1)

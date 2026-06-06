@@ -1,8 +1,8 @@
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { prismaToAdminEditData } from "@workspace/application/prisma"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
-import { getAdminSession } from "@/lib/auth"
+import { requireAdminSessionForPage } from "@/lib/auth"
 import { env } from "@/env"
 import { ApplicationEditForm } from "./page.client"
 
@@ -11,13 +11,8 @@ interface EditPageProps {
 }
 
 export default async function EditApplicationPage({ params }: EditPageProps) {
-  const session = await getAdminSession()
-  if (session === null) {
-    const { id } = await params
-    redirect(`/login?callbackUrl=/applications/${id}/edit`)
-  }
-
   const { id } = await params
+  await requireAdminSessionForPage(`/applications/${id}/edit`)
   const application = await prisma.application.findUnique({ where: { id } })
 
   if (application === null) {
