@@ -1,8 +1,5 @@
 import { PDFDocument, PDFFont, PDFPage, rgb, StandardFonts } from 'pdf-lib'
-import {
-    ApplicationFormData,
-    workSectorOptions,
-} from './application-schema'
+import { ApplicationFormData, workSectorOptions } from './application-schema'
 import fontkit from '@pdf-lib/fontkit'
 
 export const generateApplicationPdf = async (

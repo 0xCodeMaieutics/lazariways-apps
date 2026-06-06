@@ -9,6 +9,11 @@ import { XCircle } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@workspace/ui/components/radio-group"
+import { Label } from "@workspace/ui/components/label"
+import {
   Field,
   FieldError,
   FieldGroup,
@@ -28,6 +33,8 @@ import {
 } from "@workspace/ui/components/dialog"
 import {
   defaultWorkSectors,
+  desiredSalaryLabels,
+  desiredSalaryOptions,
   profileFormSchema,
   workSectorLabels,
   workSectorOptions,
@@ -87,6 +94,7 @@ export function ProfileForm() {
       email: "",
       phone: "",
       workSector: defaultWorkSectors,
+      desiredSalary: "EURO_10_12",
       foto: undefined,
     },
   })
@@ -363,6 +371,45 @@ export function ProfileForm() {
                         )
                       })}
                     </div>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </div>
+
+          <div className="border-t pt-8">
+            <h2 className="mb-4 text-lg font-semibold">ანაზღაურება</h2>
+            <FieldGroup>
+              <Controller
+                name="desiredSalary"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel className="text-sm font-medium">
+                      სასურველი ანაზღაურება *
+                    </FieldLabel>
+                    <RadioGroup
+                      value={field.value ?? ""}
+                      onValueChange={field.onChange}
+                      className="mt-2 flex flex-col gap-3"
+                      aria-invalid={fieldState.invalid}
+                    >
+                      {desiredSalaryOptions.map((option) => {
+                        const id = `desired-salary-${option.toLowerCase()}`
+
+                        return (
+                          <div key={option} className="flex items-center gap-2">
+                            <RadioGroupItem value={option} id={id} />
+                            <Label htmlFor={id}>
+                              {desiredSalaryLabels[option]}
+                            </Label>
+                          </div>
+                        )
+                      })}
+                    </RadioGroup>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

@@ -23,6 +23,12 @@ enum GermanLevel {
   C1
 }
 
+enum DesiredSalary {
+  EURO_10_12
+  EURO_12_14
+  EURO_15_PLUS
+}
+
 model Application {
   id          String   @id @default(uuid())
   submittedAt DateTime @default(now())
@@ -100,9 +106,10 @@ model Profile {
   birthDate  DateTime @db.Date
   email      String
   fotoS3Key  String
-  phone      String?
-  workSector String[]
-  createdAt  DateTime @default(now())
+  phone         String?
+  workSector    String[]
+  desiredSalary DesiredSalary
+  createdAt     DateTime @default(now())
 
   @@index([createdAt])
   @@index([lastName, firstName])

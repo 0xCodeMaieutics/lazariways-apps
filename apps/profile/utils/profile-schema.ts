@@ -21,6 +21,21 @@ export const workSectorLabels: Record<
 
 export const defaultWorkSectors = [...workSectorOptions]
 
+export const desiredSalaryOptions = [
+  "EURO_10_12",
+  "EURO_12_14",
+  "EURO_15_PLUS",
+] as const
+
+export const desiredSalaryLabels: Record<
+  (typeof desiredSalaryOptions)[number],
+  string
+> = {
+  EURO_10_12: "10-12 euro",
+  EURO_12_14: "12-14 euro",
+  EURO_15_PLUS: "15+ euro",
+}
+
 export const profileFormSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
   lastName: z.string().min(1, "გვარი სავალდებულოა"),
@@ -50,6 +65,9 @@ export const profileFormSchema = z.object({
   workSector: z
     .array(z.enum(workSectorOptions))
     .min(1, "სასურველი სამუშაო სფერო სავალდებულოა"),
+  desiredSalary: z.enum(desiredSalaryOptions, {
+    message: "სასურველი ანაზღაურება სავალდებულოა",
+  }),
 })
 
 export type ProfileFormData = z.infer<typeof profileFormSchema>

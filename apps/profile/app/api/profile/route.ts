@@ -107,6 +107,7 @@ function profileToPrismaCreateData(data: ProfileFormData, fotoS3Key: string) {
     email: data.email.trim(),
     phone: optionalString(data.phone),
     workSector: data.workSector,
+    desiredSalary: data.desiredSalary,
   }
 }
 
@@ -118,6 +119,7 @@ function profileFormDataFromFormData(formData: FormData) {
     email: formString(formData, "email"),
     phone: formString(formData, "phone"),
     workSector: formStringArray(formData, "workSector"),
+    desiredSalary: formString(formData, "desiredSalary"),
     foto: formData.get("foto"),
   }
 }
