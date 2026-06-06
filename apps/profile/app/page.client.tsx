@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { XCircle } from "lucide-react"
 
 import { Button } from "@workspace/ui/components/button"
+import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
   Field,
   FieldError,
@@ -25,7 +26,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
-import { profileFormSchema, type ProfileFormData } from "@/utils/profile-schema"
+import {
+  defaultWorkSectors,
+  profileFormSchema,
+  workSectorLabels,
+  workSectorOptions,
+  type ProfileFormData,
+} from "@/utils/profile-schema"
 
 function containsNonLatinLetters(value: string) {
   for (const char of value) {
@@ -43,6 +50,16 @@ function profileFormDataToFormData(data: ProfileFormData): FormData {
     if (key === "foto") {
       if (value instanceof File) {
         fd.set(key, value)
+      }
+      continue
+    }
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        fd.set(key, "")
+      } else {
+        for (const item of value) {
+          fd.append(key, String(item))
+        }
       }
       continue
     }
@@ -69,6 +86,7 @@ export function ProfileForm() {
       birthDate: "",
       email: "",
       phone: "",
+      workSector: defaultWorkSectors,
       foto: undefined,
     },
   })
@@ -295,6 +313,56 @@ export function ProfileForm() {
                       placeholder="მაგ. +995 555 123456"
                       className="transition-colors"
                     />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </div>
+
+          <div className="border-t pt-8">
+            <h2 className="mb-4 text-lg font-semibold">სამუშაო სფერო</h2>
+            <FieldGroup>
+              <Controller
+                name="workSector"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel>სასურველი სამუშაო სფერო *</FieldLabel>
+                    <div className="flex flex-col gap-3">
+                      {workSectorOptions.map((option) => {
+                        const id = `work-sector-${option.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`
+                        const selected = field.value.includes(option)
+
+                        return (
+                          <div key={option} className="flex items-center gap-2">
+                            <Checkbox
+                              id={id}
+                              checked={selected}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  field.onChange([...field.value, option])
+                                } else {
+                                  field.onChange(
+                                    field.value.filter(
+                                      (value) => value !== option
+                                    )
+                                  )
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor={id}
+                              className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              {workSectorLabels[option]}
+                            </label>
+                          </div>
+                        )
+                      })}
+                    </div>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

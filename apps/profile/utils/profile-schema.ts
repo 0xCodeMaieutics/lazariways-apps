@@ -1,5 +1,26 @@
 import { z } from "zod"
 
+export const workSectorOptions = [
+  "Hotel/Gaststätte",
+  "Systemgastronomie",
+  "Landwirtschaft",
+  "Gebäude-/Industriereinigung",
+  "Industrielle Produktion",
+] as const
+
+export const workSectorLabels: Record<
+  (typeof workSectorOptions)[number],
+  string
+> = {
+  "Hotel/Gaststätte": "სასტუმრო / რესტორანი",
+  Systemgastronomie: "სწრაფი კვების ქსელი",
+  Landwirtschaft: "სოფლის მეურნეობა",
+  "Gebäude-/Industriereinigung": "დასუფთავება (შენობები / ინდუსტრია)",
+  "Industrielle Produktion": "ინდუსტრიული წარმოება",
+}
+
+export const defaultWorkSectors = [...workSectorOptions]
+
 export const profileFormSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
   lastName: z.string().min(1, "გვარი სავალდებულოა"),
@@ -26,6 +47,9 @@ export const profileFormSchema = z.object({
         message: "მხოლოდ PNG და JPEG ფაილებია დაშვებული",
       }
     ),
+  workSector: z
+    .array(z.enum(workSectorOptions))
+    .min(1, "სასურველი სამუშაო სფერო სავალდებულოა"),
 })
 
 export type ProfileFormData = z.infer<typeof profileFormSchema>

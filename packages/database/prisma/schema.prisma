@@ -94,14 +94,15 @@ model AdminSession {
 }
 
 model Profile {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  birthDate DateTime @db.Date
-  email     String
-  fotoS3Key String
-  phone     String?
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  firstName  String
+  lastName   String
+  birthDate  DateTime @db.Date
+  email      String
+  fotoS3Key  String
+  phone      String?
+  workSector String[]
+  createdAt  DateTime @default(now())
 
   @@index([createdAt])
   @@index([lastName, firstName])

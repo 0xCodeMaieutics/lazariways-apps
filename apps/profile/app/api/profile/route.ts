@@ -66,6 +66,14 @@ function formString(formData: FormData, key: string): string {
   return typeof v === "string" ? v : ""
 }
 
+function formStringArray(formData: FormData, key: string): string[] {
+  return formData
+    .getAll(key)
+    .filter((v): v is string => typeof v === "string")
+    .map((v) => v.trim())
+    .filter((v) => v !== "")
+}
+
 function sanitizeFilenamePart(value: string): string {
   return value.replace(/[^a-zA-Z0-9._-]+/g, "_").slice(0, 60)
 }
@@ -98,6 +106,7 @@ function profileToPrismaCreateData(data: ProfileFormData, fotoS3Key: string) {
     birthDate: parseIsoDate(data.birthDate),
     email: data.email.trim(),
     phone: optionalString(data.phone),
+    workSector: data.workSector,
   }
 }
 
@@ -108,6 +117,7 @@ function profileFormDataFromFormData(formData: FormData) {
     birthDate: formString(formData, "birthDate"),
     email: formString(formData, "email"),
     phone: formString(formData, "phone"),
+    workSector: formStringArray(formData, "workSector"),
     foto: formData.get("foto"),
   }
 }
