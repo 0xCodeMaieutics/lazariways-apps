@@ -1,0 +1,71 @@
+:root {
+  --color-primary: rgba(34, 61, 149, 1);
+  --primary: var(--color-primary);
+  --primary-foreground: rgba(255, 255, 255, 1);
+  --ring: rgba(34, 61, 149, 0.4);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.scroll-down-indicator {
+  color: var(--primary);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.scroll-down-indicator:hover {
+  opacity: 1;
+}
+
+.scroll-down-hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.scroll-down-hand-motion {
+  display: block;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 9999px;
+  background-color: currentColor;
+  animation: scroll-down-wheel 1.6s ease-in-out infinite;
+}
+
+.scroll-down-mouse {
+  display: block;
+  width: 1.5rem;
+  height: 2.25rem;
+  border: 2px solid currentColor;
+  border-radius: 9999px;
+}
+
+.scroll-down-wheel {
+  display: block;
+  width: 0.25rem;
+  height: 0.25rem;
+  margin: 0.5rem auto 0;
+  border-radius: 9999px;
+  background-color: currentColor;
+  animation: scroll-down-wheel 1.6s ease-in-out infinite;
+}
+
+@keyframes scroll-down-wheel {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  70% {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
