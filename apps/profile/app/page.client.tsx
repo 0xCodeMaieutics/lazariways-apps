@@ -5,6 +5,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form"
 import type { FieldPath } from "react-hook-form"
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Plus, Trash2, XCircle } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -105,6 +106,7 @@ export function ProfileForm() {
       desiredSalary: "EURO_10_12",
       languages: defaultProfileLanguages,
       foto: undefined,
+      acceptPrivacyPolicy: false,
     },
   })
 
@@ -186,6 +188,7 @@ export function ProfileForm() {
   }
 
   const isDirty = form.formState.isDirty
+  const acceptPrivacyPolicy = form.watch("acceptPrivacyPolicy")
 
   return (
     <>
@@ -602,8 +605,51 @@ export function ProfileForm() {
             </FieldGroup>
           </div>
 
+          <div className="border-t pt-8">
+            <Controller
+              name="acceptPrivacyPolicy"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="acceptPrivacyPolicy"
+                      checked={field.value === true}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked === true)
+                      }}
+                      aria-invalid={fieldState.invalid}
+                    />
+                    <label
+                      htmlFor="acceptPrivacyPolicy"
+                      className="text-sm leading-relaxed text-muted-foreground"
+                    >
+                      ვეთანხმები Lazari Ways-ის{" "}
+                      <Link
+                        href="/privacy-policy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground underline underline-offset-4 hover:text-foreground/80"
+                      >
+                        კონფიდენციალურობის პოლიტიკას
+                      </Link>
+                      .
+                    </label>
+                  </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </div>
+
           <div className="flex flex-col-reverse gap-4 sm:flex-row">
-            <Button type="submit" size="lg" disabled={isSubmitting || !isDirty}>
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isSubmitting || !isDirty || !acceptPrivacyPolicy}
+            >
               {isSubmitting ? "იგზავნება..." : "შექმნა"}
             </Button>
           </div>

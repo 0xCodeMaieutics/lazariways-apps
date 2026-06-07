@@ -84,6 +84,9 @@ export const profileFormSchema = z.object({
   languages: z
     .array(profileLanguageSchema)
     .min(1, "მინიმუმ ერთი ენა სავალდებულოა"),
+  acceptPrivacyPolicy: z.boolean().refine((value) => value === true, {
+    message: "კონფიდენციალურობის პოლიტიკის დადასტურება სავალდებულოა",
+  }),
 })
 
 export type ProfileFormData = z.infer<typeof profileFormSchema>

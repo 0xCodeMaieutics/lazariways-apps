@@ -130,6 +130,10 @@ function profileToPrismaCreateData(data: ProfileFormData, fotoS3Key: string) {
   }
 }
 
+function formBoolean(formData: FormData, key: string): boolean {
+  return formString(formData, key) === "true"
+}
+
 function profileFormDataFromFormData(formData: FormData) {
   return {
     firstName: formString(formData, "firstName"),
@@ -141,5 +145,6 @@ function profileFormDataFromFormData(formData: FormData) {
     desiredSalary: formString(formData, "desiredSalary"),
     languages: formLanguages(formData),
     foto: formData.get("foto"),
+    acceptPrivacyPolicy: formBoolean(formData, "acceptPrivacyPolicy"),
   }
 }
