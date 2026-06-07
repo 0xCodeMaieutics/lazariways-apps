@@ -2,8 +2,16 @@ import "dotenv/config"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { uploadFilePathToStorage } from "@workspace/file-upload/s3-client"
-import { Gender, GermanLevel, type Prisma } from "../generated/client"
+import {
+  Gender,
+  GermanLevel,
+  DesiredSalary,
+  type Prisma,
+  Profile,
+  Application,
+} from "../generated/client"
 import { prisma } from "./client"
+import { ApplicationCreateInput } from "./browser"
 
 const SEED_FOTO_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -12,6 +20,13 @@ const SEED_FOTO_PATH = join(
 
 const SEED_FOTO_S3_KEY = "applications/seed/foto/foto.jpeg"
 const SEED_APPLICATION_COUNT = 100
+const SEED_PROFILE_COUNT = 100
+
+const DESIRED_SALARIES = [
+  DesiredSalary.EURO_10_12,
+  DesiredSalary.EURO_12_14,
+  DesiredSalary.EURO_15_PLUS,
+] as const
 
 function dateOnly(isoDate: string): Date {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoDate)
@@ -35,12 +50,42 @@ function seedApplicationId(index: number): string {
   return `00000000-0000-4000-8000-${(index + 1).toString().padStart(12, "0")}`
 }
 
+function seedProfileId(index: number): string {
+  return `00000000-0000-4000-9000-${(index + 1).toString().padStart(12, "0")}`
+}
+
+function seedEmail(firstName: string, lastName: string): string {
+  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`
+}
+
 type SeedApplicationTemplate = Omit<
   Prisma.ApplicationCreateInput,
   "id" | "fotoS3Key" | "submittedAt"
 >
+function seedLanguagesFromApplication(template: SeedApplicationTemplate) {
+  const languages: { language: string; level: GermanLevel }[] = []
 
-const SEED_APPLICATION_TEMPLATES: SeedApplicationTemplate[] = [
+  languages.push({
+    language: "German",
+    level: template.germanLevel ?? GermanLevel.A1,
+  })
+
+  if (
+    template.otherLanguages !== undefined &&
+    template.otherLanguages !== null
+  ) {
+    for (const language of template.otherLanguages
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter((entry) => entry !== "")) {
+      languages.push({ language, level: GermanLevel.A2 })
+    }
+  }
+
+  return languages
+}
+
+const SEED_APPLICATION_TEMPLATES = [
   {
     firstName: "Giorgi",
     lastName: "Beridze",
@@ -183,7 +228,7 @@ const SEED_APPLICATION_TEMPLATES: SeedApplicationTemplate[] = [
     emergencyPhone: "+995 555 543210",
     workSector: ["Systemgastronomie", "Industrielle Produktion"],
   },
-]
+] satisfies SeedApplicationTemplate[]
 
 const SEED_APPLICATIONS: Prisma.ApplicationCreateInput[] = Array.from(
   { length: SEED_APPLICATION_COUNT },
@@ -200,11 +245,45 @@ const SEED_APPLICATIONS: Prisma.ApplicationCreateInput[] = Array.from(
   }
 )
 
+type SeedProfile = Omit<
+  Prisma.ProfileCreateInput,
+  "languages" | "fotoS3Key" | "createdAt"
+> & {
+  id: string
+  createdAt: Date
+  fotoS3Key: string
+  languageEntries: { language: string; level: GermanLevel }[]
+}
+
+const SEED_PROFILES: SeedProfile[] = Array.from(
+  { length: SEED_PROFILE_COUNT },
+  (_, index) => {
+    const template =
+      SEED_APPLICATION_TEMPLATES[index % SEED_APPLICATION_TEMPLATES.length]!
+
+    return {
+      id: seedProfileId(index),
+      createdAt: daysAgo((index % 30) + 1),
+      fotoS3Key: SEED_FOTO_S3_KEY,
+      firstName: template.firstName,
+      lastName: template.lastName,
+      birthDate: template.birthDate,
+      email: template.email ?? seedEmail(template.firstName, template.lastName),
+      phone: template.phone ?? null,
+      workSector: template.workSector,
+      desiredSalary:
+        DESIRED_SALARIES[index % DESIRED_SALARIES.length] ??
+        DesiredSalary.EURO_10_12,
+      languageEntries: seedLanguagesFromApplication(template),
+    }
+  }
+)
+
 ;(async () => {
   try {
     const bucket = process.env.S3_BUCKET_NAME
     if (bucket === undefined || bucket === "") {
-      throw new Error("S3_BUCKET_NAME is required to seed application fotos")
+      throw new Error("S3_BUCKET_NAME is required to seed fotos")
     }
 
     await uploadFilePathToStorage({
@@ -222,7 +301,27 @@ const SEED_APPLICATIONS: Prisma.ApplicationCreateInput[] = Array.from(
       })
     }
 
+    for (const profile of SEED_PROFILES) {
+      const { id, languageEntries, ...data } = profile
+      await prisma.profile.upsert({
+        where: { id },
+        create: {
+          id,
+          ...data,
+          languages: { create: languageEntries },
+        },
+        update: {
+          ...data,
+          languages: {
+            deleteMany: {},
+            create: languageEntries,
+          },
+        },
+      })
+    }
+
     console.log(`Seeded ${SEED_APPLICATIONS.length} applications with fotos.`)
+    console.log(`Seeded ${SEED_PROFILES.length} profiles with fotos.`)
   } catch (error) {
     console.error(error)
     process.exit(1)
