@@ -9,6 +9,7 @@ This is a monorepo containing Lazari Ways applications.
 - Employee: See worker's definition.
 - Admin: A consultant that works in workers administration at Lazari Ways.
 - Profile: A worker's created profile who is interested in be seeing by Employers.
+- Arbeitskreafte: Refers to workers.
 
 # Package manager
 
