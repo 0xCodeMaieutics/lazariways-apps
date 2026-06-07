@@ -107,6 +107,7 @@ model Profile {
   email         String
   fotoS3Key     String
   phone         String?
+  isStudent     Boolean           @default(false)
   workSector    String[]
   desiredSalary DesiredSalary
   createdAt     DateTime          @default(now())

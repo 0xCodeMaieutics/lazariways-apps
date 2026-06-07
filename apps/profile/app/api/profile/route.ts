@@ -119,6 +119,7 @@ function profileToPrismaCreateData(data: ProfileFormData, fotoS3Key: string) {
     birthDate: parseIsoDate(data.birthDate),
     email: data.email.trim(),
     phone: optionalString(data.phone),
+    isStudent: data.isStudent,
     workSector: data.workSector,
     desiredSalary: data.desiredSalary,
     languages: {
@@ -134,6 +135,14 @@ function formBoolean(formData: FormData, key: string): boolean {
   return formString(formData, key) === "true"
 }
 
+function formRequiredBool(formData: FormData, key: string): boolean | undefined {
+  const v = formData.get(key)
+  if (v === null || v === "") return undefined
+  if (v === "true") return true
+  if (v === "false") return false
+  return undefined
+}
+
 function profileFormDataFromFormData(formData: FormData) {
   return {
     firstName: formString(formData, "firstName"),
@@ -141,6 +150,7 @@ function profileFormDataFromFormData(formData: FormData) {
     birthDate: formString(formData, "birthDate"),
     email: formString(formData, "email"),
     phone: formString(formData, "phone"),
+    isStudent: formRequiredBool(formData, "isStudent"),
     workSector: formStringArray(formData, "workSector"),
     desiredSalary: formString(formData, "desiredSalary"),
     languages: formLanguages(formData),

@@ -65,6 +65,9 @@ export const profileFormSchema = z.object({
       "არასწორი ტელეფონის ნომრის ფორმატი"
     )
     .optional(),
+  isStudent: z.boolean({
+    message: "სტუდენტობა სავალდებულოა",
+  }),
   foto: z
     .instanceof(File, {
       message: "გთხოვთ ატვირთოტ თქვენი ფოტო",

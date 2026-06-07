@@ -270,6 +270,7 @@ const SEED_PROFILES: SeedProfile[] = Array.from(
       birthDate: template.birthDate,
       email: template.email ?? seedEmail(template.firstName, template.lastName),
       phone: template.phone ?? null,
+      isStudent: index % 2 === 0,
       workSector: template.workSector,
       desiredSalary:
         DESIRED_SALARIES[index % DESIRED_SALARIES.length] ??

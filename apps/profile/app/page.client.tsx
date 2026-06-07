@@ -1,7 +1,7 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useFieldArray, useForm } from "react-hook-form"
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form"
 import type { FieldPath } from "react-hook-form"
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
@@ -45,6 +45,29 @@ import {
   workSectorOptions,
   type ProfileFormData,
 } from "@/utils/profile-schema"
+
+function FormRadioOption({
+  id,
+  value,
+  label,
+}: {
+  id: string
+  value: string
+  label: string
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <RadioGroupItem value={value} id={id} />
+      <Label htmlFor={id}>{label}</Label>
+    </div>
+  )
+}
+
+function booleanRadioGroupValue(value: boolean | undefined) {
+  if (value === true) return "true"
+  if (value === false) return "false"
+  return ""
+}
 
 function containsNonLatinLetters(value: string) {
   for (const char of value) {
@@ -106,6 +129,7 @@ export function ProfileForm() {
       desiredSalary: "EURO_10_12",
       languages: defaultProfileLanguages,
       foto: undefined,
+      isStudent: false,
       acceptPrivacyPolicy: false,
     },
   })
@@ -188,7 +212,10 @@ export function ProfileForm() {
   }
 
   const isDirty = form.formState.isDirty
-  const acceptPrivacyPolicy = form.watch("acceptPrivacyPolicy")
+  const acceptPrivacyPolicy = useWatch({
+    control: form.control,
+    name: "acceptPrivacyPolicy",
+  })
 
   return (
     <>
@@ -338,6 +365,41 @@ export function ProfileForm() {
                       placeholder="მაგ. +995 555 123456"
                       className="transition-colors"
                     />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="isStudent"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel
+                      htmlFor="isStudent"
+                      className="text-sm font-medium"
+                    >
+                      ხართ სტუდენტი? *
+                    </FieldLabel>
+                    <RadioGroup
+                      id="isStudent"
+                      value={booleanRadioGroupValue(field.value)}
+                      onValueChange={(v) => field.onChange(v === "true")}
+                      className="mt-2 flex flex-row gap-4"
+                      aria-invalid={fieldState.invalid}
+                    >
+                      <FormRadioOption
+                        id="is-student-yes"
+                        value="true"
+                        label="დიახ"
+                      />
+                      <FormRadioOption
+                        id="is-student-no"
+                        value="false"
+                        label="არა"
+                      />
+                    </RadioGroup>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
