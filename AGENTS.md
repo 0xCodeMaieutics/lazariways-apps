@@ -17,5 +17,6 @@ This project uses Turborepo and pnpm.
 # References
 
 - For TypeScript conventions, see docs/TYPESCRIPT.md
+- For Prisma worksflows, see docs/PRISMA.md
 
 _NOTE: See each package's and app's AGENTS.md for specific guidelines if you don't find enough information in the root AGENTS.md file._
