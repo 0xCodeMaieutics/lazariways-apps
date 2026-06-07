@@ -109,6 +109,9 @@ export const applicationFormSchema = z.object({
     workSector: z
         .array(z.enum(workSectorOptions))
         .min(1, 'სასურველი სამუშაო სფერო სავალდებულოა'),
+    acceptPrivacyPolicy: z.boolean().refine((value) => value === true, {
+        message: 'კონფიდენციალურობის პოლიტიკის დადასტურება სავალდებულოა',
+    }),
 })
 
 export type ApplicationFormData = z.infer<typeof applicationFormSchema>

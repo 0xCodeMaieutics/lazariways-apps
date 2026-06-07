@@ -177,6 +177,7 @@ export function ApplicationForm() {
             emergencyContactName: '',
             emergencyPhone: '',
             workSector: [],
+            acceptPrivacyPolicy: false,
         },
     })
 
@@ -318,6 +319,10 @@ export function ApplicationForm() {
     })
 
     const isDirty = form.formState.isDirty
+    const acceptPrivacyPolicy = useWatch({
+        control: form.control,
+        name: 'acceptPrivacyPolicy',
+    })
 
     const onValidateRomanCharacters = ({
         fieldName,
@@ -1872,26 +1877,55 @@ export function ApplicationForm() {
                         </FieldGroup>
                     </div>
                 </div>
-                <div className="mt-8 flex flex-col gap-4">
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                        ფორმის გაგზავნით თქვენ ეთანხმებით{' '}
-                        <Link
-                            href="/terms-and-condition"
-                            className="text-foreground hover:text-foreground/80 underline underline-offset-4"
-                        >
-                            წესებსა და პირობებს
-                        </Link>
-                        .
-                    </p>
-                    <div className="flex flex-col-reverse gap-4 sm:flex-row">
-                        <Button
-                            type="submit"
-                            size={'lg'}
-                            disabled={isSubmitting || !isDirty}
-                        >
-                            {isSubmitting ? 'იგზავნება...' : 'გაგზავნა'}
-                        </Button>
-                    </div>
+                <div className="mt-8 border-t pt-8">
+                    <Controller
+                        name="acceptPrivacyPolicy"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <div className="flex items-start gap-3">
+                                    <Checkbox
+                                        id="acceptPrivacyPolicy"
+                                        checked={field.value === true}
+                                        onCheckedChange={(checked) => {
+                                            field.onChange(checked === true)
+                                        }}
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    <label
+                                        htmlFor="acceptPrivacyPolicy"
+                                        className="text-muted-foreground text-sm leading-relaxed"
+                                    >
+                                        ვეთანხმები Lazari Ways-ის{' '}
+                                        <Link
+                                            href="/privacy-policy"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-foreground hover:text-foreground/80 underline underline-offset-4"
+                                        >
+                                            კონფიდენციალურობის პოლიტიკას
+                                        </Link>
+                                        .
+                                    </label>
+                                </div>
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
+                        )}
+                    />
+                </div>
+
+                <div className="mt-8 flex flex-col-reverse gap-4 sm:flex-row">
+                    <Button
+                        type="submit"
+                        size={'lg'}
+                        disabled={
+                            isSubmitting || !isDirty || !acceptPrivacyPolicy
+                        }
+                    >
+                        {isSubmitting ? 'იგზავნება...' : 'გაგზავნა'}
+                    </Button>
                 </div>
             </form>
 

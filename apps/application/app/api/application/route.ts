@@ -111,6 +111,10 @@ function formOptionalBool(
     return undefined
 }
 
+function formBoolean(formData: FormData, key: string): boolean {
+    return formString(formData, key) === 'true'
+}
+
 function sanitizeFilenamePart(value: string): string {
     return value.replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 60)
 }
@@ -268,5 +272,6 @@ function applicationFormDataFromFormData(formData: FormData) {
         emergencyContactName: formString(formData, 'emergencyContactName'),
         emergencyPhone: formString(formData, 'emergencyPhone'),
         workSector: formStringArray(formData, 'workSector'),
+        acceptPrivacyPolicy: formBoolean(formData, 'acceptPrivacyPolicy'),
     }
 }
