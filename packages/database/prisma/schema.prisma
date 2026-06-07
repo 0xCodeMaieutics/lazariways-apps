@@ -103,6 +103,7 @@ model Profile {
   id            String            @id @default(uuid())
   firstName     String
   lastName      String
+  gender        Gender            @default(M)
   birthDate     DateTime          @db.Date
   email         String
   fotoS3Key     String

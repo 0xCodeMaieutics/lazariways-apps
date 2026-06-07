@@ -39,6 +39,8 @@ import {
   defaultWorkSectors,
   desiredSalaryLabels,
   desiredSalaryOptions,
+  genderLabels,
+  genderOptions,
   languageLevelOptions,
   profileFormSchema,
   workSectorLabels,
@@ -122,6 +124,7 @@ export function ProfileForm() {
     defaultValues: {
       firstName: "",
       lastName: "",
+      gender: "M",
       birthDate: "",
       email: "",
       phone: "",
@@ -305,6 +308,43 @@ export function ProfileForm() {
                   )}
                 />
               </div>
+              <Controller
+                name="gender"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel
+                      htmlFor="gender"
+                      className="text-sm font-medium"
+                    >
+                      სქესი *
+                    </FieldLabel>
+                    <RadioGroup
+                      id="gender"
+                      value={field.value ?? ""}
+                      onValueChange={field.onChange}
+                      className="mt-2 flex flex-row gap-6"
+                      aria-invalid={fieldState.invalid}
+                    >
+                      {genderOptions.map((option) => {
+                        const id = `gender-${option.toLowerCase()}`
+
+                        return (
+                          <FormRadioOption
+                            key={option}
+                            id={id}
+                            value={option}
+                            label={genderLabels[option]}
+                          />
+                        )
+                      })}
+                    </RadioGroup>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
               <Controller
                 name="birthDate"
                 control={form.control}

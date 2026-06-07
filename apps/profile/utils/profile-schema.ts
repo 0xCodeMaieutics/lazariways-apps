@@ -1,4 +1,12 @@
+import { Gender } from "@workspace/database/browser"
 import { z } from "zod"
+
+export const genderOptions = [Gender.M, Gender.F] as const
+
+export const genderLabels: Record<(typeof genderOptions)[number], string> = {
+  [Gender.M]: "მამრობითი",
+  [Gender.F]: "მდედრობითი",
+}
 
 export const workSectorOptions = [
   "Hotel/Gaststätte",
@@ -52,6 +60,9 @@ export const defaultProfileLanguages = [
 export const profileFormSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
   lastName: z.string().min(1, "გვარი სავალდებულოა"),
+  gender: z.enum(genderOptions, {
+    message: "სქესი სავალდებულოა",
+  }),
   birthDate: z.string().min(1, "დაბადების თარიღი სავალდებულოა"),
   email: z.email("ელფოსტა სავალდებულოა"),
   phone: z

@@ -267,6 +267,7 @@ const SEED_PROFILES: SeedProfile[] = Array.from(
       fotoS3Key: SEED_FOTO_S3_KEY,
       firstName: template.firstName,
       lastName: template.lastName,
+      gender: template.gender,
       birthDate: template.birthDate,
       email: template.email ?? seedEmail(template.firstName, template.lastName),
       phone: template.phone ?? null,

@@ -116,6 +116,7 @@ function profileToPrismaCreateData(data: ProfileFormData, fotoS3Key: string) {
     fotoS3Key,
     firstName: data.firstName.trim(),
     lastName: data.lastName.trim(),
+    gender: data.gender,
     birthDate: parseIsoDate(data.birthDate),
     email: data.email.trim(),
     phone: optionalString(data.phone),
@@ -147,6 +148,7 @@ function profileFormDataFromFormData(formData: FormData) {
   return {
     firstName: formString(formData, "firstName"),
     lastName: formString(formData, "lastName"),
+    gender: formString(formData, "gender"),
     birthDate: formString(formData, "birthDate"),
     email: formString(formData, "email"),
     phone: formString(formData, "phone"),
