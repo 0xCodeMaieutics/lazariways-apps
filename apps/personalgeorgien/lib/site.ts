@@ -54,6 +54,12 @@ export const HERO_TITLE = {
   ],
 } as const
 
+export const HERO = {
+  badge: "Für Arbeitgeber in Deutschland",
+  subline:
+    "Wir vermitteln qualifizierte Fachkräfte aus Georgien mit persönlicher Betreuung für Ihr Unternehmen.",
+} as const
+
 export const SITE = {
   name: "personalgeorgien",
   url: "https://personalgeorgien.de",

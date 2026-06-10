@@ -14,7 +14,6 @@ export function FooterCta() {
         <ContactButtons
           className="mt-8 justify-center"
           variant="on-primary"
-          iconOnlyOnMobile
         />
       </div>
     </section>
