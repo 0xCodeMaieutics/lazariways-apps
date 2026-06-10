@@ -19,22 +19,6 @@ html {
   opacity: 1;
 }
 
-.scroll-down-hand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.scroll-down-hand-motion {
-  display: block;
-  width: 0.25rem;
-  height: 0.25rem;
-  border-radius: 9999px;
-  background-color: currentColor;
-  animation: scroll-down-wheel 1.6s ease-in-out infinite;
-}
-
 .scroll-down-mouse {
   display: block;
   width: 1.5rem;
