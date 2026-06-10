@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+import { GALLERY } from "../../lib/site"
+import { NavLink } from "./nav-link"
 import { WhatsappButton } from "./whatsapp-button"
 
 export function Navbar() {
@@ -15,10 +17,13 @@ export function Navbar() {
           <span className="text-black">georgien</span>
         </Link>
 
-        <WhatsappButton
-          iconOnlyOnMobile
-          className="size-10 p-0 sm:px-4 lg:h-12 lg:w-fit"
-        />
+        <div className="flex items-center gap-3 sm:gap-4">
+          <NavLink href="/galerie">{GALLERY.title}</NavLink>
+          <WhatsappButton
+            iconOnlyOnMobile
+            className="size-10 p-0 sm:px-4 lg:h-12 lg:w-fit"
+          />
+        </div>
       </div>
     </header>
   )

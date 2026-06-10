@@ -46,18 +46,19 @@ export const STEPS = [
 export const HERO_TITLE = {
   prefix: "Ihr Zugang zu",
   suffix: "Fachkräften aus Georgien",
-  adjectives: [
-    "motivierten",
-    "engagierten",
-    "qualifizierten",
-    "zuverlässigen",
-  ],
+  adjectives: ["motivierten", "engagierten", "qualifizierten", "zuverlässigen"],
 } as const
 
 export const HERO = {
   badge: "Für Arbeitgeber in Deutschland",
   subline:
     "Wir vermitteln qualifizierte Fachkräfte aus Georgien mit persönlicher Betreuung für Ihr Unternehmen.",
+} as const
+
+export const GALLERY = {
+  title: "Galerie",
+  description:
+    "Ein Einblick in motivierte Fachkräfte aus Georgien, die in deutschen Unternehmen erfolgreich gearbeitet haben.",
 } as const
 
 export const SITE = {
