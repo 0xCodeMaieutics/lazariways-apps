@@ -12,7 +12,7 @@ export function Hero() {
         <p className="mt-4 max-w-xl text-lg text-muted-foreground sm:text-xl">
           {SITE.slogan}
         </p>
-        <ContactButtons className="mt-6 lg:mt-8" />
+        <ContactButtons className="mt-6 lg:mt-8" iconOnlyOnMobile />
       </div>
 
       <div className="w-full lg:h-full lg:w-[40%] lg:min-h-0">

@@ -15,7 +15,10 @@ export function Navbar() {
           <span className="text-black">georgien</span>
         </Link>
 
-        <WhatsappButton />
+        <WhatsappButton
+          iconOnlyOnMobile
+          className="size-10 p-0 sm:px-4 lg:h-12 lg:w-fit"
+        />
       </div>
     </header>
   )
