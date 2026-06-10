@@ -11,7 +11,7 @@ export function FooterCta() {
         <p className="mt-4 text-lg text-primary-foreground/80 sm:text-xl">
           {SITE.slogan}
         </p>
-        <ContactButtons className="mt-8 justify-center" variant="on-primary" />
+        <ContactButtons className="mt-8 justify-center" />
       </div>
     </section>
   )

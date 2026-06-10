@@ -43,10 +43,21 @@ export const STEPS = [
   },
 ] as const
 
+export const HERO_TITLE = {
+  prefix: "Ihr Zugang zu",
+  suffix: "Fachkräften aus Georgien",
+  adjectives: [
+    "motivierten",
+    "engagierten",
+    "qualifizierten",
+    "zuverlässigen",
+  ],
+} as const
+
 export const SITE = {
   name: "personalgeorgien",
   url: "https://personalgeorgien.de",
-  title: "Ihr Zugang zu motivierten Fachkräften aus Georgien",
+  title: `Ihr Zugang zu ${HERO_TITLE.adjectives[0]} Fachkräften aus Georgien`,
   slogan: "Die richtigen Menschen. Die richtigen Chancen.",
   description:
     "Personalgeorgien vermittelt motivierte Fachkräfte aus Georgien an deutsche Arbeitgeber. Persönliche Betreuung und rechtssichere Vermittlung — jetzt per WhatsApp kontaktieren.",
