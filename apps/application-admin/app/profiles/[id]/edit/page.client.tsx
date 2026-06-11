@@ -8,7 +8,7 @@ import {
   type Control,
 } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import { useState, useTransition, type ReactNode } from "react"
+import { startTransition, useState, useTransition, type ReactNode } from "react"
 import { Plus, Trash2 } from "lucide-react"
 import {
   adminProfileEditSchema,
@@ -20,6 +20,14 @@ import {
 } from "@workspace/profile/schema"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
 import {
   Field,
   FieldError,
@@ -40,7 +48,13 @@ interface ProfileEditFormProps {
   defaultValues: AdminProfileEditData
 }
 
-function FormSection({ title, children }: { title: string; children: ReactNode }) {
+function FormSection({
+  title,
+  children,
+}: {
+  title: string
+  children: ReactNode
+}) {
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-medium">{title}</h2>
@@ -98,6 +112,8 @@ export function ProfileEditForm({
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isSaving, startSaveTransition] = useTransition()
+  const [isDeleting, startDeleteTransition] = useTransition()
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const form = useForm<AdminProfileEditData>({
     resolver: standardSchemaResolver(adminProfileEditSchema),
@@ -129,6 +145,39 @@ export function ProfileEditForm({
         router.refresh()
       } catch {
         setError("Could not save profile. Please try again.")
+      }
+    })
+  }
+
+  const deleteProfile = () => {
+    startDeleteTransition(async () => {
+      startTransition(() => {
+        setError(null)
+      })
+
+      try {
+        const response = await fetch(`/api/profiles/${profileId}`, {
+          method: "DELETE",
+        })
+
+        if (!response.ok) {
+          startTransition(() => {
+            setError("Could not delete profile. Please try again.")
+          })
+          return
+        }
+
+        startTransition(() => {
+          setIsDeleteDialogOpen(false)
+        })
+        router.push("/profiles")
+        router.refresh()
+      } catch {
+        startTransition(() => {
+          startTransition(() => {
+            setIsDeleteDialogOpen(false)
+          })
+        })
       }
     })
   }
@@ -235,7 +284,9 @@ export function ProfileEditForm({
                     <select
                       id={`level-${index}`}
                       value={levelField.value ?? ""}
-                      onChange={(event) => levelField.onChange(event.target.value)}
+                      onChange={(event) =>
+                        levelField.onChange(event.target.value)
+                      }
                       aria-invalid={fieldState.invalid}
                       className={cn(
                         "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
@@ -337,21 +388,66 @@ export function ProfileEditForm({
         </Field>
       </FormSection>
 
+      <section className="space-y-4 border-t pt-8">
+        <h2 className="text-lg font-medium">Delete profile</h2>
+        <p className="text-sm text-muted-foreground">
+          Permanently remove this profile and its photo. This cannot be undone.
+        </p>
+        <Button
+          type="button"
+          variant="destructive"
+          onClick={() => setIsDeleteDialogOpen(true)}
+          disabled={isSaving || isDeleting}
+        >
+          Delete profile
+        </Button>
+      </section>
+
       {error !== null ? (
-        <p className="text-destructive text-sm">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       ) : null}
 
-      <div className="bg-background border-border fixed inset-x-0 bottom-0 border-t p-4">
+      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4">
         <div className="mx-auto w-full max-w-lg">
           <Button
             type="submit"
             className="w-full"
-            disabled={!formState.isDirty || isSaving}
+            disabled={!formState.isDirty || isSaving || isDeleting}
           >
             {isSaving ? "Saving…" : "Save & send photo to Telegram"}
           </Button>
         </div>
       </div>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete profile?</DialogTitle>
+            <DialogDescription>
+              This will permanently delete the profile, its languages, and the
+              stored photo.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={deleteProfile}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting…" : "Delete profile"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   )
 }

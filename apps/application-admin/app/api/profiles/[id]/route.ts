@@ -4,8 +4,46 @@ import {
   profileToPrismaData,
 } from "@workspace/profile/prisma"
 import prisma from "@workspace/database/client"
+import { deleteFileFromStorage } from "@workspace/file-upload/s3-client"
 import { requireAdminSessionForApi } from "@/lib/auth"
+import { env } from "@/env"
 import { normalizeProfileAdminEditInput } from "@/lib/normalize-profile-edit-input"
+
+export const DELETE = async (
+  _request: Request,
+  context: { params: Promise<{ id: string }> }
+) => {
+  const authResult = await requireAdminSessionForApi()
+  if (authResult instanceof Response) {
+    return authResult
+  }
+
+  const { id } = await context.params
+  const existing = await prisma.profile.findUnique({ where: { id } })
+
+  if (existing === null) {
+    return Response.json({ error: "Not found" }, { status: 404 })
+  }
+
+  try {
+    await deleteFileFromStorage({
+      bucket: env.S3_BUCKET_NAME,
+      fileKey: existing.fotoS3Key,
+    })
+  } catch (error) {
+    console.error("FOTO_DELETE_FAILED", error)
+    return Response.json({ error: "Internal server error" }, { status: 500 })
+  }
+
+  try {
+    await prisma.profile.delete({ where: { id } })
+  } catch (error) {
+    console.error("PROFILE_DB_DELETE_FAILED", error)
+    return Response.json({ error: "Internal server error" }, { status: 500 })
+  }
+
+  return Response.json({ success: true })
+}
 
 export const PUT = async (
   request: Request,
