@@ -1,0 +1,18 @@
+{
+  "name": "@workspace/profile",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./schema": "./src/profile-schema.ts",
+    "./prisma": "./src/profile-prisma.ts"
+  },
+  "dependencies": {
+    "@workspace/database": "workspace:*",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@workspace/typescript-config": "workspace:*",
+    "typescript": "^5"
+  }
+}

@@ -7,11 +7,8 @@ import {
   GermanLevel,
   DesiredSalary,
   type Prisma,
-  Profile,
-  Application,
 } from "../generated/client"
 import { prisma } from "./client"
-import { ApplicationCreateInput } from "./browser"
 
 const SEED_FOTO_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
