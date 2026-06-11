@@ -108,6 +108,7 @@ model Profile {
   email         String
   fotoS3Key     String
   phone         String?
+  instagram     String?
   isStudent     Boolean           @default(false)
   workSector    String[]
   desiredSalary DesiredSalary

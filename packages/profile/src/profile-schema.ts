@@ -53,6 +53,13 @@ export const adminProfileEditSchema = z.object({
       "Invalid phone number format"
     )
     .optional(),
+  instagram: z
+    .string()
+    .refine(
+      (val) => val.trim() === "" || /^[\w\.]+$/.test(val.trim()),
+      "Invalid Instagram username"
+    )
+    .optional(),
   isStudent: z.boolean({
     message: "Student status is required",
   }),

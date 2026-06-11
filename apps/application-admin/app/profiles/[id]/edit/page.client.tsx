@@ -5,6 +5,7 @@ import {
   Controller,
   useFieldArray,
   useForm,
+  useWatch,
   type Control,
 } from "react-hook-form"
 import { useRouter } from "next/navigation"
@@ -42,6 +43,7 @@ import {
 } from "@workspace/ui/components/radio-group"
 import { SafariInputDate } from "@workspace/ui/components/safari-date-component"
 import { cn } from "@workspace/ui/lib/utils"
+import { InstagramLink } from "@/components/instagram-link"
 
 interface ProfileEditFormProps {
   profileId: string
@@ -183,6 +185,7 @@ export function ProfileEditForm({
   }
 
   const { control, register, formState } = form
+  const instagram = useWatch({ control, name: "instagram" })
 
   return (
     <form
@@ -250,6 +253,14 @@ export function ProfileEditForm({
           <FieldLabel htmlFor="phone">Phone</FieldLabel>
           <Input id="phone" {...register("phone")} />
           <FieldError errors={[formState.errors.phone]} />
+        </Field>
+        <Field>
+          <div className="flex items-center gap-2">
+            <FieldLabel htmlFor="instagram">Instagram</FieldLabel>
+            <InstagramLink handle={instagram} />
+          </div>
+          <Input id="instagram" {...register("instagram")} />
+          <FieldError errors={[formState.errors.instagram]} />
         </Field>
         <BooleanRadioField
           name="isStudent"
