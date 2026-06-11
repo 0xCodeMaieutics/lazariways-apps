@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { prismaToAdminEditData } from "@workspace/application/prisma"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { BackLink } from "@/components/back-link"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { env } from "@/env"
 import { ApplicationEditForm } from "./page.client"
@@ -31,6 +32,7 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-6">
       <header className="mb-6 space-y-4">
+        <BackLink href="/applications" label="Applications" />
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
             {application.firstName} {application.lastName}
