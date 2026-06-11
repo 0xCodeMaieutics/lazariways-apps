@@ -13,6 +13,14 @@ import {
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
+import {
   Field,
   FieldError,
   FieldGroup,
@@ -125,6 +133,8 @@ export function ApplicationEditForm({
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isSaving, startSaveTransition] = useTransition()
+  const [isDeleting, startDeleteTransition] = useTransition()
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const form = useForm<AdminApplicationEditData>({
     resolver: standardSchemaResolver(adminApplicationEditSchema),
@@ -151,6 +161,29 @@ export function ApplicationEditForm({
         router.refresh()
       } catch {
         setError("Could not save application. Please try again.")
+      }
+    })
+  }
+
+  const deleteApplication = () => {
+    startDeleteTransition(async () => {
+      setError(null)
+
+      try {
+        const response = await fetch(`/api/applications/${applicationId}`, {
+          method: "DELETE",
+        })
+
+        if (!response.ok) {
+          setError("Could not delete application. Please try again.")
+          return
+        }
+
+        setIsDeleteDialogOpen(false)
+        router.push("/")
+        router.refresh()
+      } catch {
+        setError("Could not delete application. Please try again.")
       }
     })
   }
@@ -439,6 +472,21 @@ export function ApplicationEditForm({
         </Field>
       </FormSection>
 
+      <section className="space-y-4 border-t pt-8">
+        <h2 className="text-lg font-medium">Delete application</h2>
+        <p className="text-muted-foreground text-sm">
+          Permanently remove this application and its photo. This cannot be undone.
+        </p>
+        <Button
+          type="button"
+          variant="destructive"
+          onClick={() => setIsDeleteDialogOpen(true)}
+          disabled={isSaving || isDeleting}
+        >
+          Delete application
+        </Button>
+      </section>
+
       {error !== null ? (
         <p className="text-destructive text-sm">{error}</p>
       ) : null}
@@ -448,12 +496,41 @@ export function ApplicationEditForm({
           <Button
             type="submit"
             className="w-full"
-            disabled={!formState.isDirty || isSaving}
+            disabled={!formState.isDirty || isSaving || isDeleting}
           >
             {isSaving ? "Saving…" : "Save & send PDF to Telegram"}
           </Button>
         </div>
       </div>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete application?</DialogTitle>
+            <DialogDescription>
+              This will permanently delete the application and the stored photo.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={deleteApplication}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting…" : "Delete application"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   )
 }
