@@ -9,5 +9,9 @@ export function normalizeProfileAdminEditInput(body: unknown): unknown {
     record.phone = undefined
   }
 
+  if (record.instagram === "") {
+    record.instagram = undefined
+  }
+
   return record
 }

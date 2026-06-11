@@ -1,7 +1,7 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm, type Control } from "react-hook-form"
+import { Controller, useForm, useWatch, type Control } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useState, useTransition, type ReactNode } from "react"
 import {
@@ -33,6 +33,7 @@ import {
   RadioGroupItem,
 } from "@workspace/ui/components/radio-group"
 import { SafariInputDate } from "@workspace/ui/components/safari-date-component"
+import { InstagramLink } from "@/components/instagram-link"
 
 interface ApplicationEditFormProps {
   applicationId: string
@@ -189,6 +190,7 @@ export function ApplicationEditForm({
   }
 
   const { control, register, formState } = form
+  const instagram = useWatch({ control, name: "instagram" })
 
   return (
     <form
@@ -284,7 +286,10 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.phone]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="instagram">Instagram</FieldLabel>
+          <div className="flex items-center gap-2">
+            <FieldLabel htmlFor="instagram">Instagram</FieldLabel>
+            <InstagramLink handle={instagram} />
+          </div>
           <Input id="instagram" {...register("instagram")} />
           <FieldError errors={[formState.errors.instagram]} />
         </Field>
