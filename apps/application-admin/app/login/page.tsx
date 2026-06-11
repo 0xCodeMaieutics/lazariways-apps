@@ -16,7 +16,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           below.
         </p>
       </div>
-      <LoginForm callbackUrl={callbackUrl ?? "/"} />
+      <LoginForm callbackUrl={callbackUrl ?? "/applications"} />
     </main>
   )
 }

@@ -157,7 +157,7 @@ export function ApplicationEditForm({
           return
         }
 
-        router.push("/")
+        router.push("/applications")
         router.refresh()
       } catch {
         setError("Could not save application. Please try again.")
@@ -180,7 +180,7 @@ export function ApplicationEditForm({
         }
 
         setIsDeleteDialogOpen(false)
-        router.push("/")
+        router.push("/applications")
         router.refresh()
       } catch {
         setError("Could not delete application. Please try again.")
