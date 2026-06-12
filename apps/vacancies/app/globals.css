@@ -1,0 +1,6 @@
+:root {
+  --color-primary: rgba(34, 61, 149, 1);
+  --primary: var(--color-primary);
+  --primary-foreground: rgba(255, 255, 255, 1);
+  --ring: rgba(34, 61, 149, 0.4);
+}

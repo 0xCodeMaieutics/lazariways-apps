@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 import { Manrope } from "next/font/google"
 import "@workspace/ui/globals.css"
+import "./globals.css"
+
+import { Navbar } from "./components/navbar"
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -34,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="ka" className="h-full antialiased">
       <body className={`${manrope.className} flex min-h-full flex-col`}>
+        <Navbar />
         {children}
       </body>
     </html>
