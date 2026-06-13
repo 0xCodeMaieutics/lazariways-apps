@@ -166,8 +166,8 @@ export default function EuroparkRestaurantBarPage() {
   const { frontmatter, intro, sections } = getJobContent()
 
   return (
-    <main className="flex flex-1 justify-center px-4 py-10 sm:px-6 sm:py-14">
-      <article className="w-full max-w-3xl">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-10 sm:py-14">
+      <article>
         <header className="mb-10 space-y-5 border-b border-neutral-200 pb-8 dark:border-neutral-800">
           <Image
             src="/europark-logo.png"
