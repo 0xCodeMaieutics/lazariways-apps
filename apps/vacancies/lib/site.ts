@@ -1,6 +1,6 @@
 const PHONE_NUMBER = "4917681376567"
 const WHATSAPP_MESSAGE =
-  "Hallo, ich interessiere mich für Fachkräfte aus Georgien."
+  "გამარჯობა, მე მაინტერესებს სამსახურის შოვნა personalgeorgien-ის დახმარებით."
 
 export const SITE = {
   whatsappUrl: (message: string = WHATSAPP_MESSAGE) =>
