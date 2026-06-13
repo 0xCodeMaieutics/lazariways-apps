@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import type { Metadata } from "next"
+import Image from "next/image"
 import type { LucideIcon } from "lucide-react"
 import {
   Building2,
@@ -146,7 +147,7 @@ function parseJobContent(markdown: string): ParsedJobContent {
 function getJobContent(): ParsedJobContent {
   const filePath = join(
     process.cwd(),
-    "app/europark-restaurant-bar/job-content.md"
+    "app/europark-restaurant-bar/_/job-content.md"
   )
   const markdown = readFileSync(filePath, "utf8")
 
@@ -168,9 +169,14 @@ export default function EuroparkRestaurantBarPage() {
     <main className="flex flex-1 justify-center px-4 py-10 sm:px-6 sm:py-14">
       <article className="w-full max-w-3xl">
         <header className="mb-10 space-y-5 border-b border-neutral-200 pb-8 dark:border-neutral-800">
-          <p className="text-sm font-medium tracking-wide text-neutral-500 uppercase">
-            {frontmatter.employer}
-          </p>
+          <Image
+            src="/europark-logo.png"
+            alt="Europa-Park"
+            width={572}
+            height={210}
+            priority
+            className="h-12 w-auto sm:h-14"
+          />
           <h1 className="text-3xl leading-tight font-semibold tracking-tight sm:text-4xl">
             {frontmatter.title}
           </h1>
