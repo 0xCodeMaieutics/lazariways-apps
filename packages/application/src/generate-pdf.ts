@@ -2,11 +2,12 @@ import { readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import type { ApplicationFormData } from "./application-schema.js"
-import { generateApplicationPdf } from "./pdf.js"
+import { generateApplicationPdf, generatePersonalGeorgienPdf } from "./pdf.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, "../../..")
 const publicAssetsDir = path.join(repoRoot, "apps/application/public")
+const applicationSrcFolder = path.join(repoRoot, "packages/application/src")
 
 const testApplicationFormData = {
   firstName: "Giorgi",
@@ -51,23 +52,25 @@ async function fileFromPath(
 }
 
 void (async function () {
-  const [foto, logo] = await Promise.all([
+  const [foto, croppedFoto] = await Promise.all([
     fileFromPath(
       path.join(publicAssetsDir, "android-chrome-192x192.png"),
       "foto.png",
       "image/png"
     ),
     fileFromPath(
-      path.join(publicAssetsDir, "android-chrome-192x192.png"),
-      "logo.png",
-      "image/png"
+      path.join(applicationSrcFolder, "1780997500017-IMG_2319-cropped.jpg"),
+      "foto.jpg",
+      "image/jpg"
     ),
   ])
 
-  const pdfBytes = await generateApplicationPdf({
+  const pdfBytes = await generatePersonalGeorgienPdf({
     ...testApplicationFormData,
-    foto,
-    logo,
+    foto: croppedFoto,
+    applicationId: "db932543-4361-401d-bab6-bc9cf7cc6566",
+    bewerberAppUrl: "https://bewerber.personalgeorgien.de",
+    profession: "Chef",
   })
 
   const outputPath = path.join(__dirname, "test-application.pdf")
