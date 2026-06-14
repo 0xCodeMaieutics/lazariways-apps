@@ -1018,6 +1018,10 @@ const professionRandom = {
 
 export type PersonalGeorgienProfession = keyof typeof professionRandom
 
+export const personalGeorgienProfessionOptions = Object.keys(
+  professionRandom
+) as PersonalGeorgienProfession[]
+
 const createSeededRandom = (seed: string) => {
   let state = 0
   for (const char of seed) {

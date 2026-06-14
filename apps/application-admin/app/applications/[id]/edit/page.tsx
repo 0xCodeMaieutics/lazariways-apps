@@ -4,6 +4,7 @@ import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
 import { BackLink } from "@/components/back-link"
 import { CopyApplicationLinkButton } from "@/components/copy-application-link-button"
+import { GeneratePersonalgeorgienProfileButton } from "@/components/generate-personalgeorgien-profile-button"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { env } from "@/env"
 import { ApplicationEditForm } from "./page.client"
@@ -43,6 +44,7 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
           <p className="text-muted-foreground text-sm">Edit application</p>
         </div>
         <CopyApplicationLinkButton applicationLink={applicationLink} />
+        <GeneratePersonalgeorgienProfileButton applicationId={id} />
         <div className="bg-muted mx-auto h-40 w-32 overflow-hidden rounded-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
