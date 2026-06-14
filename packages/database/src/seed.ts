@@ -18,6 +18,7 @@ const SEED_FOTO_PATH = join(
 const SEED_FOTO_S3_KEY = "applications/seed/foto/foto.jpeg"
 const SEED_APPLICATION_COUNT = 100
 const SEED_PROFILE_COUNT = 100
+const SEED_INQUIRY_COUNT = 25
 
 const DESIRED_SALARIES = [
   DesiredSalary.EURO_10_12,
@@ -49,6 +50,10 @@ function seedApplicationId(index: number): string {
 
 function seedProfileId(index: number): string {
   return `00000000-0000-4000-9000-${(index + 1).toString().padStart(12, "0")}`
+}
+
+function seedInquiryId(index: number): string {
+  return `00000000-0000-4000-a000-${(index + 1).toString().padStart(12, "0")}`
 }
 
 function seedEmail(firstName: string, lastName: string): string {
@@ -252,6 +257,82 @@ type SeedProfile = Omit<
   languageEntries: { language: string; level: GermanLevel }[]
 }
 
+type SeedInquiryTemplate = {
+  companyName: string
+  contactPersonName: string
+  email: string
+  phone: string | null
+  message: string | null
+}
+
+const SEED_INQUIRY_TEMPLATES = [
+  {
+    companyName: "Hotel Bavaria GmbH",
+    contactPersonName: "Thomas Müller",
+    email: "thomas.mueller@hotel-bavaria.de",
+    phone: "+49 89 1234567",
+    message:
+      "Wir suchen Verstärkung für unsere Sommersaison in der Küche und im Service.",
+  },
+  {
+    companyName: "Frische Feld AG",
+    contactPersonName: "Sabine Weber",
+    email: "personal@frische-feld.de",
+    phone: "+49 30 9876543",
+    message: "Interesse an Kandidaten für die Erntezeit ab Juni.",
+  },
+  {
+    companyName: "CleanPro Industriereinigung",
+    contactPersonName: "Markus Fischer",
+    email: "fischer@cleanpro.de",
+    phone: null,
+    message: null,
+  },
+  {
+    companyName: "Gasthaus Zur Linde",
+    contactPersonName: "Anna Schneider",
+    email: "anna.schneider@gasthaus-linde.de",
+    phone: "+49 351 445566",
+    message: "Kurze Nachfrage zur Verfügbarkeit ab August.",
+  },
+  {
+    companyName: "Nordsee Fischverarbeitung",
+    contactPersonName: "Jens Hartmann",
+    email: "jens.hartmann@nordsee-fisch.de",
+    phone: "+49 471 112233",
+    message: null,
+  },
+  {
+    companyName: "Systemgastro Berlin Mitte",
+    contactPersonName: "Laura Becker",
+    email: "laura.becker@systemgastro.de",
+    phone: null,
+    message:
+      "Wir planen eine neue Filiale und benötigen mehrere Mitarbeitende.",
+  },
+] satisfies SeedInquiryTemplate[]
+
+type SeedInquiry = SeedInquiryTemplate & {
+  id: string
+  submittedAt: Date
+  applicationId: string
+}
+
+const SEED_INQUIRIES: SeedInquiry[] = Array.from(
+  { length: SEED_INQUIRY_COUNT },
+  (_, index) => {
+    const template =
+      SEED_INQUIRY_TEMPLATES[index % SEED_INQUIRY_TEMPLATES.length]!
+
+    return {
+      ...template,
+      id: seedInquiryId(index),
+      submittedAt: daysAgo((index % 14) + 1),
+      applicationId: seedApplicationId(index % SEED_APPLICATION_COUNT),
+    }
+  }
+)
+
 const SEED_PROFILES: SeedProfile[] = Array.from(
   { length: SEED_PROFILE_COUNT },
   (_, index) => {
@@ -319,8 +400,25 @@ const SEED_PROFILES: SeedProfile[] = Array.from(
       })
     }
 
+    for (const inquiry of SEED_INQUIRIES) {
+      const { id, applicationId, ...data } = inquiry
+      await prisma.applicationInquiry.upsert({
+        where: { id },
+        create: {
+          id,
+          applicationId,
+          ...data,
+        },
+        update: {
+          applicationId,
+          ...data,
+        },
+      })
+    }
+
     console.log(`Seeded ${SEED_APPLICATIONS.length} applications with fotos.`)
     console.log(`Seeded ${SEED_PROFILES.length} profiles with fotos.`)
+    console.log(`Seeded ${SEED_INQUIRIES.length} application inquiries.`)
   } catch (error) {
     console.error(error)
     process.exit(1)
