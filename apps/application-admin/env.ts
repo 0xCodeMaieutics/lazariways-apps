@@ -11,6 +11,7 @@ export const env = createEnv({
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),
     S3_BUCKET_NAME: z.string(),
+    BEWERBER_APP_URL: z.url(),
   },
   client: {},
   runtimeEnv: {
@@ -22,6 +23,7 @@ export const env = createEnv({
     S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
     S3_SECRET_KEY: process.env.S3_SECRET_KEY,
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+    BEWERBER_APP_URL: process.env.BEWERBER_APP_URL,
   },
   emptyStringAsUndefined: true,
   skipValidation: Boolean(process.env.SKIP_ENV_VALIDATION),

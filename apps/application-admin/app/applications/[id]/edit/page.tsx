@@ -3,6 +3,7 @@ import { prismaToAdminEditData } from "@workspace/application/prisma"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
 import { BackLink } from "@/components/back-link"
+import { CopyApplicationLinkButton } from "@/components/copy-application-link-button"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { env } from "@/env"
 import { ApplicationEditForm } from "./page.client"
@@ -29,6 +30,8 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
     }),
   ])
 
+  const applicationLink = `${env.BEWERBER_APP_URL.replace(/\/$/, "")}/${id}`
+
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-6">
       <header className="mb-6 space-y-4">
@@ -39,6 +42,7 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
           </h1>
           <p className="text-muted-foreground text-sm">Edit application</p>
         </div>
+        <CopyApplicationLinkButton applicationLink={applicationLink} />
         <div className="bg-muted mx-auto h-40 w-32 overflow-hidden rounded-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
