@@ -77,8 +77,26 @@ model Application {
   emergencyPhone       String
   workSector           String[]
 
+  inquiries ApplicationInquiry[]
+
   @@index([submittedAt])
   @@index([lastName, firstName])
+}
+
+model ApplicationInquiry {
+  id                String   @id
+  submittedAt       DateTime @default(now())
+  companyName       String
+  contactPersonName String
+  email             String
+  phone             String?
+  message           String?
+
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@index([submittedAt])
 }
 
 model TelegramVerification {

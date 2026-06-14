@@ -11,6 +11,7 @@ This is a monorepo containing Lazari Ways applications.
 - Profile: A worker's created profile who is interested in be seeing by Employers.
 - Arbeitskreafte: Refers to workers.
 - Employer: Refers to employers that do hire workers from Lazari Ways.
+- Bewerber: Applicant that filled up the application form.
 
 # Package manager
 
