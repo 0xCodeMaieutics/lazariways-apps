@@ -585,7 +585,7 @@ const formatSignatureDate = (date: Date = new Date()) =>
 
 const formatPersonalGeorgienDate = (isoDate: string | undefined) => {
   const t = typeof isoDate === "string" ? isoDate.trim() : ""
-  if (t.length === 0) return ""
+  if (t.length === 0) return "-"
 
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(t)
   if (!match) return t
