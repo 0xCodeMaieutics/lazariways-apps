@@ -104,7 +104,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
         <p className="text-center text-sm text-green-700">{info}</p>
       ) : null}
       {error !== null ? (
-        <p className="text-destructive text-center text-sm">{error}</p>
+        <p className="text-center text-sm text-destructive">{error}</p>
       ) : null}
     </div>
   )

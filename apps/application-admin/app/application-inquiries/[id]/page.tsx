@@ -28,7 +28,7 @@ function DetailField({
 }) {
   return (
     <div className="space-y-1">
-      <p className="text-muted-foreground text-sm">{label}</p>
+      <p className="text-sm text-muted-foreground">{label}</p>
       <div className="text-sm">{children}</div>
     </div>
   )
@@ -69,21 +69,18 @@ export default async function ApplicationInquiryDetailPage({
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-6">
       <header className="mb-6 space-y-4">
-        <BackLink
-          href="/application-inquiries"
-          label="Application Inquiries"
-        />
+        <BackLink href="/application-inquiries" label="Application Inquiries" />
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
             {inquiry.companyName}
           </h1>
-          <p className="text-muted-foreground text-sm">Application inquiry</p>
+          <p className="text-sm text-muted-foreground">Application inquiry</p>
         </div>
       </header>
 
       <section className="space-y-4">
         <h2 className="font-medium">Inquiry</h2>
-        <div className="border-border space-y-4 rounded-xl border p-4">
+        <div className="space-y-4 rounded-xl border border-border p-4">
           <DetailField label="Submitted">
             {formatSubmittedAt(inquiry.submittedAt)}
           </DetailField>
@@ -123,8 +120,8 @@ export default async function ApplicationInquiryDetailPage({
 
       <section className="mt-8 space-y-4">
         <h2 className="font-medium">Applicant</h2>
-        <div className="border-border space-y-4 rounded-xl border p-4">
-          <div className="bg-muted mx-auto h-40 w-32 overflow-hidden rounded-lg">
+        <div className="space-y-4 rounded-xl border border-border p-4">
+          <div className="mx-auto h-40 w-32 overflow-hidden rounded-lg bg-muted">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={fotoUrl}

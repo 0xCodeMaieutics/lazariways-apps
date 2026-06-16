@@ -4,10 +4,9 @@ import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
 import { BackLink } from "@/components/back-link"
 import { CopyApplicationLinkButton } from "@/components/copy-application-link-button"
-import { GeneratePersonalgeorgienProfileButton } from "@/components/generate-personalgeorgien-profile-button"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { env } from "@/env"
-import { ApplicationEditForm } from "./page.client"
+import { EditApplicationContent } from "./edit-application-content"
 
 interface EditPageProps {
   params: Promise<{ id: string }>
@@ -41,21 +40,17 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
           <h1 className="text-2xl font-semibold tracking-tight">
             {application.firstName} {application.lastName}
           </h1>
-          <p className="text-muted-foreground text-sm">Edit application</p>
+          <p className="text-sm text-muted-foreground">Edit application</p>
         </div>
         <CopyApplicationLinkButton applicationLink={applicationLink} />
-        <GeneratePersonalgeorgienProfileButton applicationId={id} />
-        <div className="bg-muted mx-auto h-40 w-32 overflow-hidden rounded-lg">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={fotoUrl}
-            alt={`${application.firstName} ${application.lastName}`}
-            className="h-full w-full object-cover"
-          />
-        </div>
       </header>
 
-      <ApplicationEditForm applicationId={id} defaultValues={defaultValues} />
+      <EditApplicationContent
+        applicationId={id}
+        defaultValues={defaultValues}
+        fotoUrl={fotoUrl}
+        applicantName={`${application.firstName} ${application.lastName}`}
+      />
     </main>
   )
 }

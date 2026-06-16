@@ -682,7 +682,7 @@ const drawTextUnderline = (
   })
 }
 
-export const generateRemoteApplicationPdf = async (
+export const generateBewerberChecklistPdf = async (
   applicationFormData: ApplicationFormData
 ) => {
   const [pdfTemplateBytes, arialFontBytes] = await Promise.all([

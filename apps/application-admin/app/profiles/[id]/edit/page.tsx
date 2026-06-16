@@ -41,9 +41,9 @@ export default async function EditProfilePage({ params }: EditPageProps) {
           <h1 className="text-2xl font-semibold tracking-tight">
             {profile.firstName} {profile.lastName}
           </h1>
-          <p className="text-muted-foreground text-sm">Edit profile</p>
+          <p className="text-sm text-muted-foreground">Edit profile</p>
         </div>
-        <div className="bg-muted mx-auto h-40 w-32 overflow-hidden rounded-lg">
+        <div className="mx-auto h-40 w-32 overflow-hidden rounded-lg bg-muted">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={fotoUrl}

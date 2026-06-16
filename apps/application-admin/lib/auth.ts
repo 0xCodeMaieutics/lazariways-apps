@@ -23,9 +23,7 @@ export async function requireAdminSessionForPage(
   const session = await getAdminSession()
 
   if (session === null) {
-    redirect(
-      `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
-    )
+    redirect(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`)
   }
 
   return session

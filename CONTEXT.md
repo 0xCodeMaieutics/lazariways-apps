@@ -17,5 +17,5 @@ The job-area template an Admin selects when generating a Personalgeorgien Profil
 _Avoid_: Profession, role, job title
 
 **Bewerber Checklist**:
-The consultant-facing application PDF sent to Telegram when an Admin saves an Application.
-_Avoid_: Remote application PDF, application PDF
+The consultant-facing application PDF an Admin generates from a saved Application.
+_Avoid_: Remote application PDF, application PDF, Guili CV

@@ -40,7 +40,13 @@ interface ApplicationEditFormProps {
   defaultValues: AdminApplicationEditData
 }
 
-function FormSection({ title, children }: { title: string; children: ReactNode }) {
+function FormSection({
+  title,
+  children,
+}: {
+  title: string
+  children: ReactNode
+}) {
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-medium">{title}</h2>
@@ -157,9 +163,6 @@ export function ApplicationEditForm({
           setError("Could not save application. Please try again.")
           return
         }
-
-        router.push("/applications")
-        router.refresh()
       } catch {
         setError("Could not save application. Please try again.")
       }
@@ -359,9 +362,15 @@ export function ApplicationEditForm({
           label="Can ride bike"
           control={control}
         />
-        <BooleanRadioField name="shiftWork" label="Shift work" control={control} />
+        <BooleanRadioField
+          name="shiftWork"
+          label="Shift work"
+          control={control}
+        />
         <Field>
-          <FieldLabel htmlFor="healthRestrictions">Health restrictions</FieldLabel>
+          <FieldLabel htmlFor="healthRestrictions">
+            Health restrictions
+          </FieldLabel>
           <Input id="healthRestrictions" {...register("healthRestrictions")} />
         </Field>
         <Field>
@@ -414,7 +423,9 @@ export function ApplicationEditForm({
           control={control}
         />
         <Field>
-          <FieldLabel htmlFor="previousStayPlace">Previous stay place</FieldLabel>
+          <FieldLabel htmlFor="previousStayPlace">
+            Previous stay place
+          </FieldLabel>
           <Input id="previousStayPlace" {...register("previousStayPlace")} />
         </Field>
         <DateField
@@ -432,7 +443,10 @@ export function ApplicationEditForm({
       <FormSection title="Emergency contact">
         <Field>
           <FieldLabel htmlFor="emergencyContactName">Name</FieldLabel>
-          <Input id="emergencyContactName" {...register("emergencyContactName")} />
+          <Input
+            id="emergencyContactName"
+            {...register("emergencyContactName")}
+          />
           <FieldError errors={[formState.errors.emergencyContactName]} />
         </Field>
         <Field>
@@ -479,8 +493,9 @@ export function ApplicationEditForm({
 
       <section className="space-y-4 border-t pt-8">
         <h2 className="text-lg font-medium">Delete application</h2>
-        <p className="text-muted-foreground text-sm">
-          Permanently remove this application and its photo. This cannot be undone.
+        <p className="text-sm text-muted-foreground">
+          Permanently remove this application and its photo. This cannot be
+          undone.
         </p>
         <Button
           type="button"
@@ -493,17 +508,17 @@ export function ApplicationEditForm({
       </section>
 
       {error !== null ? (
-        <p className="text-destructive text-sm">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       ) : null}
 
-      <div className="bg-background border-border fixed inset-x-0 bottom-0 border-t p-4">
+      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4">
         <div className="mx-auto w-full max-w-lg">
           <Button
             type="submit"
             className="w-full"
             disabled={!formState.isDirty || isSaving || isDeleting}
           >
-            {isSaving ? "Saving…" : "Save & send PDF to Telegram"}
+            {isSaving ? "Saving…" : "Save"}
           </Button>
         </div>
       </div>

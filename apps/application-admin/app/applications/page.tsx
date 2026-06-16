@@ -55,14 +55,14 @@ export default async function ApplicationsPage({
     <main className="mx-auto w-full max-w-lg px-4 py-6">
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">Applications</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
+        <p className="mt-1 text-sm text-muted-foreground">
           {totalCount} total · Page {currentPage} of {totalPages}
         </p>
       </header>
 
       <div className="space-y-3">
         {applicationsWithFotos.length === 0 ? (
-          <p className="text-muted-foreground text-center text-sm py-12">
+          <p className="py-12 text-center text-sm text-muted-foreground">
             No applications yet.
           </p>
         ) : (

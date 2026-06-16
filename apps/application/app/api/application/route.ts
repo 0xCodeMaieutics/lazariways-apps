@@ -6,7 +6,7 @@ import {
     applicationFormSchema,
     type ApplicationFormData,
 } from '@/utils/application-schema'
-import { generateRemoteApplicationPdf } from '@/utils/pdf'
+import { generateBewerberChecklistPdf } from '@/utils/pdf'
 import prisma from '@workspace/database/client'
 
 export const POST = async (request: NextRequest) => {
@@ -45,7 +45,7 @@ export const POST = async (request: NextRequest) => {
 
     let pdfBytesResult
     try {
-        pdfBytesResult = await generateRemoteApplicationPdf(parsed.data)
+        pdfBytesResult = await generateBewerberChecklistPdf(parsed.data)
     } catch (error) {
         console.log('GENERATE_APPLICATION_PDF_ERROR', error)
         return Response.json(
