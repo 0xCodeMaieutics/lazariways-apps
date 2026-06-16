@@ -1,6 +1,5 @@
 import {
   clipEvenOdd,
-  ColorTypes,
   drawEllipsePath,
   endPath,
   PDFArray,
@@ -712,8 +711,7 @@ export const generateBewerberChecklistPdf = async (
     x: number = layout.valueX
   ) => {
     const trimmed = text.trim()
-    if (trimmed.length === 0) return
-    page.drawText(trimmed, {
+    page.drawText(trimmed.length === 0 ? "-" : trimmed, {
       x,
       y,
       font: arialFont,
@@ -1237,6 +1235,9 @@ export const generatePersonalGeorgienPdf = async (
     ],
     ", "
   )
+  const formatValue = (val: string | undefined | null) =>
+    val === undefined || val === null ? "-" : val.trim() === "" ? "-" : val
+
   drawValue(birthInfo, layout.fields.geburtsdatumOrtLand.y)
 
   drawValue(
@@ -1263,12 +1264,12 @@ export const generatePersonalGeorgienPdf = async (
   )
 
   drawValue(
-    applicationFormData.germanLevel ?? "",
+    formatValue(applicationFormData.germanLevel),
     layout.fields.deutschniveau.y
   )
 
   drawValue(
-    applicationFormData.otherLanguages ?? "",
+    formatValue(applicationFormData.otherLanguages),
     layout.fields.weitereSprachen.y
   )
 
@@ -1282,10 +1283,10 @@ export const generatePersonalGeorgienPdf = async (
     layout.fields.schichbereitschaft.y
   )
 
-  drawValue(applicationFormData.phone ?? "", layout.fields.telefon.y)
-  drawValue(applicationFormData.email ?? "", layout.fields.email.y)
+  drawValue(formatValue(applicationFormData.phone), layout.fields.telefon.y)
+  drawValue(formatValue(applicationFormData.email), layout.fields.email.y)
 
-  const instagram = applicationFormData.instagram?.trim() ?? ""
+  const instagram = formatValue(applicationFormData.instagram)
   drawValue(
     instagram.length > 0 && !instagram.startsWith("@")
       ? `@${instagram}`
@@ -1348,8 +1349,7 @@ export const generatePersonalGeorgienPdf = async (
 
   experienceY -= pe.titleLineHeight + pe.paragraphGap
 
-  const bulletTextMaxWidth =
-    pe.maxContentWidth - (pe.bulletTextX - pe.contentX)
+  const bulletTextMaxWidth = pe.maxContentWidth - (pe.bulletTextX - pe.contentX)
   for (const activity of activities) {
     firstPage.drawText("•", {
       x: pe.contentX,
