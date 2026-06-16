@@ -3,7 +3,7 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { Controller, useForm, useWatch, type Control } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import { useState, useTransition, type ReactNode } from "react"
+import { startTransition, useState, useTransition, type ReactNode } from "react"
 import {
   adminApplicationEditSchema,
   type AdminApplicationEditData,
@@ -150,7 +150,9 @@ export function ApplicationEditForm({
 
   const save = (data: AdminApplicationEditData) => {
     startSaveTransition(async () => {
-      setError(null)
+      startTransition(() => {
+        setError(null)
+      })
 
       try {
         const response = await fetch(`/api/applications/${applicationId}`, {
@@ -160,18 +162,24 @@ export function ApplicationEditForm({
         })
 
         if (!response.ok) {
-          setError("Could not save application. Please try again.")
+          startTransition(() => {
+            setError("Could not save application. Please try again.")
+          })
           return
         }
       } catch {
-        setError("Could not save application. Please try again.")
+        startTransition(() => {
+          setError("Could not save application. Please try again.")
+        })
       }
     })
   }
 
   const deleteApplication = () => {
     startDeleteTransition(async () => {
-      setError(null)
+      startTransition(() => {
+        setError(null)
+      })
 
       try {
         const response = await fetch(`/api/applications/${applicationId}`, {
@@ -179,15 +187,21 @@ export function ApplicationEditForm({
         })
 
         if (!response.ok) {
-          setError("Could not delete application. Please try again.")
+          startTransition(() => {
+            setError("Could not delete application. Please try again.")
+          })
           return
         }
 
-        setIsDeleteDialogOpen(false)
+        startTransition(() => {
+          setIsDeleteDialogOpen(false)
+        })
         router.push("/applications")
         router.refresh()
       } catch {
-        setError("Could not delete application. Please try again.")
+        startTransition(() => {
+          setError("Could not delete application. Please try again.")
+        })
       }
     })
   }

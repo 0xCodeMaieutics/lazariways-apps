@@ -39,7 +39,15 @@ export const applicationFormSchema = z.object({
     city: z.string().min(1, 'ქალაქი სავალდებულოა'),
     country: z.string().min(1, 'ქვეყანა სავალდებულოა'),
     nationality: z.string().min(1, 'მოქალაქეობა სავალდებულოა'),
-    email: z.email().optional(),
+    email: z
+        .string()
+        .refine(
+            (val) =>
+                val.trim() === '' ||
+                z.email().safeParse(val.trim()).success,
+            'არასწორი ელფოსტის ფორმატი'
+        )
+        .optional(),
     phone: z
         .string()
         .refine(
