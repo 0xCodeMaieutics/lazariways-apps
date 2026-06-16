@@ -1288,7 +1288,7 @@ export const generatePersonalGeorgienPdf = async (
 
   const instagram = formatValue(applicationFormData.instagram)
   drawValue(
-    instagram.length > 0 && !instagram.startsWith("@")
+    instagram.length > 0 && !instagram.startsWith("@") && instagram !== "-"
       ? `@${instagram}`
       : instagram,
     layout.fields.instagram.y
