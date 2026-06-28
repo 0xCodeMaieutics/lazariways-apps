@@ -12,6 +12,7 @@ This is a monorepo containing Lazari Ways applications.
 - Arbeitskreafte: Refers to workers.
 - Employer: Refers to employers that do hire workers from Lazari Ways.
 - Bewerber: Applicant that filled up the application form.
+- Personalgeorgien: Recruitment company that searches for employers or other recruitement firms that are in need for employees or workers from Georgia.
 
 # Package manager
 
