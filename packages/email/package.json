@@ -5,14 +5,20 @@
   "type": "module",
   "scripts": {
     "send": "tsx --env-file=.env index.tsx",
-    "send-test": "tsx --env-file=.env send-test-email.ts"
+    "send-test": "tsx --env-file=.env send-test-email.ts",
+    "render-template": "tsx render-template.ts",
+    "company-scraper": "tsx company-scraper.ts",
+    "extract-company-info": "tsx extract-company-info/index.ts"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
+    "openai": "^6.9.1",
     "resend": "^6.12.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^20.19.9",
+    "colors": "^1.4.0",
     "tsx": "^4.21.0"
   }
 }
