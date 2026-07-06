@@ -474,7 +474,7 @@
     "email": "info@hauscleaner.de",
     "sourceUrl": "https://www.hauscleaner.de/standorte/koeln",
     "note": null,
-    "status": "IDLE",
+    "status": "SENT_EMAIL",
     "createdAt": "2026-06-29T09:48:05.639Z"
   }
 ]
