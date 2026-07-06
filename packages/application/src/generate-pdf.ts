@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import type { ApplicationFormData } from "./application-schema.js"
-import { generateApplicationPdf, generatePersonalGeorgienPdf } from "./pdf.js"
+import { generatePersonalGeorgienPdf } from "./pdf.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, "../../..")
