@@ -54,6 +54,8 @@ model Application {
   taxId     String?
 
   university        String?
+  universityId      String?
+  linkedUniversity  University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
   studySubject      String?
   semesterBreakFrom DateTime? @db.Date
   semesterBreakTo   DateTime? @db.Date
@@ -81,6 +83,23 @@ model Application {
 
   @@index([submittedAt])
   @@index([lastName, firstName])
+  @@index([universityId])
+}
+
+model University {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  street       String?
+  streetNumber String?
+  postalCode   String?
+  city         String?
+  country      String?
+  telephone    String?
+  email        String?
+  website      String?
+  createdAt    DateTime @default(now())
+
+  applications Application[]
 }
 
 model ApplicationInquiry {
