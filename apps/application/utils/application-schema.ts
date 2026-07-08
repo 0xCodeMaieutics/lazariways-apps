@@ -21,6 +21,17 @@ export const workSectorLabels: Record<
     'Industrielle Produktion': 'ინდუსტრიული წარმოება',
 }
 
+function hasText(value: string | undefined) {
+    return (value?.trim() ?? '') !== ''
+}
+
+function hasUniversitySelection(data: {
+    universityId?: string
+    university?: string
+}) {
+    return hasText(data.universityId) || hasText(data.university)
+}
+
 export const shoeSizeOptions = [
     '36',
     '37',
@@ -92,11 +103,23 @@ export const applicationFormSchema = z
                     message: 'მხოლოდ PNG და JPEG ფაილებია დაშვებული',
                 }
             ),
+        isStudent: z.boolean({
+            message: 'სტუდენტობა სავალდებულოა',
+        }),
         universityId: z.string().optional(),
         university: z.string().optional(),
         studySubject: z.string().optional(),
+        standardStudyPeriodYears: z
+            .number({
+                message: 'არასწორი რიცხვი',
+            })
+            .positive('შეიყვანეთ დადებითი რიცხვი')
+            .optional(),
+        enrolledSince: z.string().optional(),
+        expectedStudyEnd: z.string().optional(),
         semesterBreakFrom: z.string().optional(),
         semesterBreakTo: z.string().optional(),
+        studiesContinueAfterSemesterBreak: z.boolean().optional(),
         germanLevel: germanLevels.optional(),
         otherLanguages: z.string().optional(),
         driverLicense: z.boolean().optional(),
@@ -127,14 +150,96 @@ export const applicationFormSchema = z
     })
     .refine(
         (data) => {
-            const hasId = (data.universityId?.trim() ?? '') !== ''
-            const hasName = (data.university?.trim() ?? '') !== ''
+            const hasId = hasText(data.universityId)
+            const hasName = hasText(data.university)
             return !(hasId && hasName)
         },
         {
             message:
                 'უნივერსიტეტის არჩევა და ხელით შეყვანა ერთდროულად არ შეიძლება',
             path: ['university'],
+        }
+    )
+    .refine((data) => !data.isStudent || hasUniversitySelection(data), {
+        message: 'უნივერსიტეტი სავალდებულოა',
+        path: ['university'],
+    })
+    .refine(
+        (data) => !data.isStudent || hasText(data.studySubject),
+        {
+            message: 'სასწავლო სპეციალობა სავალდებულოა',
+            path: ['studySubject'],
+        }
+    )
+    .refine(
+        (data) =>
+            !data.isStudent || data.standardStudyPeriodYears !== undefined,
+        {
+            message: 'რეგულირებული სწავლის პერიოდი სავალდებულოა',
+            path: ['standardStudyPeriodYears'],
+        }
+    )
+    .refine(
+        (data) => !data.isStudent || hasText(data.enrolledSince),
+        {
+            message: 'სწავლის დაწყების თარიღი სავალდებულოა',
+            path: ['enrolledSince'],
+        }
+    )
+    .refine(
+        (data) => !data.isStudent || hasText(data.expectedStudyEnd),
+        {
+            message: 'სწავლის დასრულების მოსალოდნელი თარიღი სავალდებულოა',
+            path: ['expectedStudyEnd'],
+        }
+    )
+    .refine(
+        (data) => {
+            if (!data.isStudent) return true
+            const from = data.enrolledSince?.trim() ?? ''
+            const to = data.expectedStudyEnd?.trim() ?? ''
+            if (!from || !to) return true
+            return from <= to
+        },
+        {
+            message:
+                'სწავლის დასრულების თარიღი უნდა იყოს სწავლის დაწყების თარიღის შემდეგ ან ტოლი',
+            path: ['expectedStudyEnd'],
+        }
+    )
+    .refine(
+        (data) => !data.isStudent || hasText(data.semesterBreakFrom),
+        {
+            message: 'არდადეგების დასაწყისი სავალდებულოა',
+            path: ['semesterBreakFrom'],
+        }
+    )
+    .refine((data) => !data.isStudent || hasText(data.semesterBreakTo), {
+        message: 'არდადეგების დასასრული სავალდებულოა',
+        path: ['semesterBreakTo'],
+    })
+    .refine(
+        (data) => {
+            if (!data.isStudent) return true
+            const from = data.semesterBreakFrom?.trim() ?? ''
+            const to = data.semesterBreakTo?.trim() ?? ''
+            if (!from || !to) return true
+            return from <= to
+        },
+        {
+            message:
+                'არდადეგების დასაწყისი უნდა იყოს არდადეგების დასასრულზე ადრე ან ტოლი',
+            path: ['semesterBreakTo'],
+        }
+    )
+    .refine(
+        (data) =>
+            !data.isStudent ||
+            data.studiesContinueAfterSemesterBreak !== undefined,
+        {
+            message:
+                'სწავლა არდადეგების შემდეგ გაგრძელდება თუ არა — სავალდებულოა',
+            path: ['studiesContinueAfterSemesterBreak'],
         }
     )
 

@@ -170,11 +170,16 @@ export function ApplicationForm({
             taxId: '',
             foto: undefined,
 
+            isStudent: false,
             semesterBreakFrom: '',
             semesterBreakTo: '',
             universityId: undefined,
             university: '',
             studySubject: '',
+            standardStudyPeriodYears: undefined,
+            enrolledSince: '',
+            expectedStudyEnd: '',
+            studiesContinueAfterSemesterBreak: undefined,
             germanLevel: 'A1',
             otherLanguages: '',
 
@@ -217,6 +222,7 @@ export function ApplicationForm({
         form.setValue('instagram', 'username', { shouldDirty: true })
         form.setValue('taxId', '123456789', { shouldDirty: true })
 
+        form.setValue('isStudent', true, { shouldDirty: true })
         form.setValue('semesterBreakFrom', '2024-07-01', { shouldDirty: true })
         form.setValue('semesterBreakTo', '2024-09-30', { shouldDirty: true })
         if (universities[0]) {
@@ -235,6 +241,12 @@ export function ApplicationForm({
             setShowCustomUniversity(true)
         }
         form.setValue('studySubject', 'Betriebswirtschaftslehre', {
+            shouldDirty: true,
+        })
+        form.setValue('standardStudyPeriodYears', 4, { shouldDirty: true })
+        form.setValue('enrolledSince', '2022-10-01', { shouldDirty: true })
+        form.setValue('expectedStudyEnd', '2026-09-30', { shouldDirty: true })
+        form.setValue('studiesContinueAfterSemesterBreak', true, {
             shouldDirty: true,
         })
         form.setValue('germanLevel', 'B2', { shouldDirty: true })
@@ -346,6 +358,39 @@ export function ApplicationForm({
         control: form.control,
         name: 'hasBeenInGermanyBefore',
     })
+
+    const isStudent = useWatch({
+        control: form.control,
+        name: 'isStudent',
+    })
+
+    const clearStudentFields = useCallback(() => {
+        form.setValue('universityId', undefined, { shouldDirty: true })
+        form.setValue('university', '', { shouldDirty: true })
+        form.setValue('studySubject', '', { shouldDirty: true })
+        form.setValue('standardStudyPeriodYears', undefined, {
+            shouldDirty: true,
+        })
+        form.setValue('enrolledSince', '', { shouldDirty: true })
+        form.setValue('expectedStudyEnd', '', { shouldDirty: true })
+        form.setValue('semesterBreakFrom', '', { shouldDirty: true })
+        form.setValue('semesterBreakTo', '', { shouldDirty: true })
+        form.setValue('studiesContinueAfterSemesterBreak', undefined, {
+            shouldDirty: true,
+        })
+        setShowCustomUniversity(false)
+        form.clearErrors([
+            'universityId',
+            'university',
+            'studySubject',
+            'standardStudyPeriodYears',
+            'enrolledSince',
+            'expectedStudyEnd',
+            'semesterBreakFrom',
+            'semesterBreakTo',
+            'studiesContinueAfterSemesterBreak',
+        ])
+    }, [form])
 
     const isDirty = form.formState.isDirty
     const acceptPrivacyPolicy = useWatch({
@@ -1156,59 +1201,61 @@ export function ApplicationForm({
                         </FieldGroup>
                     </div>
                     <div>
-                        <h2 className="mb-4 text-lg font-semibold">
-                            სწავლა და კვალიფიკაცია
-                        </h2>
-                        <FieldGroup>
-                            <Controller
-                                name="semesterBreakFrom"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="semesterBreakFrom">
-                                            არდადეგების დასაწყისი
-                                            (არასავალდებულო)
-                                        </FieldLabel>
-                                        <SafariInputDate
-                                            field={field}
-                                            id="semesterBreakFrom"
-                                            aria-invalid={fieldState.invalid}
-                                        />
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
+                        <Controller
+                            name="isStudent"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel
+                                        htmlFor="isStudent"
+                                        className="text-sm font-medium"
+                                    >
+                                        ხართ სტუდენტი?
+                                    </FieldLabel>
+                                    <RadioGroup
+                                        id="isStudent"
+                                        value={booleanRadioGroupValue(
+                                            field.value
                                         )}
-                                    </Field>
-                                )}
-                            />
-                            <Controller
-                                name="semesterBreakTo"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="semesterBreakTo">
-                                            არდადეგები დასასრული
-                                            (არასავალდებულო)
-                                        </FieldLabel>
-                                        <SafariInputDate
-                                            field={field}
-                                            id="semesterBreakTo"
-                                            aria-invalid={fieldState.invalid}
+                                        onValueChange={(value) => {
+                                            const next = value === 'true'
+                                            field.onChange(next)
+                                            if (!next) {
+                                                clearStudentFields()
+                                            }
+                                        }}
+                                        className="mt-2 flex flex-row gap-4"
+                                        aria-invalid={fieldState.invalid}
+                                    >
+                                        <FormRadioOption
+                                            id="is-student-yes"
+                                            value="true"
+                                            label="დიახ"
                                         />
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <FormRadioOption
+                                            id="is-student-no"
+                                            value="false"
+                                            label="არა"
+                                        />
+                                    </RadioGroup>
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        {isStudent && (
+                            <>
+                                <h2 className="mb-4 mt-6 text-lg font-semibold">
+                                    სწავლა
+                                </h2>
+                                <FieldGroup>
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <Field>
                                     <FieldLabel htmlFor="university">
-                                        უნივერსიტეტი (არასავალდებულო)
+                                        უნივერსიტეტი
                                     </FieldLabel>
                                     <NativeSelect
                                         id="university"
@@ -1303,7 +1350,6 @@ export function ApplicationForm({
                                         >
                                             <FieldLabel htmlFor="studySubject">
                                                 სასწავლო სპეციალობა
-                                                (არასავალდებულო)
                                             </FieldLabel>
                                             <Input
                                                 {...field}
@@ -1333,6 +1379,188 @@ export function ApplicationForm({
                                     )}
                                 />
                             </div>
+                            <Controller
+                                name="standardStudyPeriodYears"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="standardStudyPeriodYears">
+                                            რეგულირებული სწავლის პერიოდი
+                                            (წლებში)
+                                        </FieldLabel>
+                                        <Input
+                                            id="standardStudyPeriodYears"
+                                            type="number"
+                                            step="0.5"
+                                            min="0"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="მაგ. 4"
+                                            value={field.value ?? ''}
+                                            onChange={(event) => {
+                                                const raw = event.target.value
+                                                if (raw === '') {
+                                                    field.onChange(undefined)
+                                                    return
+                                                }
+                                                const parsed = Number(
+                                                    raw.replace(',', '.')
+                                                )
+                                                field.onChange(
+                                                    Number.isFinite(parsed)
+                                                        ? parsed
+                                                        : undefined
+                                                )
+                                            }}
+                                            onBlur={field.onBlur}
+                                            name={field.name}
+                                            ref={field.ref}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="enrolledSince"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="enrolledSince">
+                                            სწავლის დაწყების თარიღი
+                                        </FieldLabel>
+                                        <SafariInputDate
+                                            field={field}
+                                            id="enrolledSince"
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="expectedStudyEnd"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="expectedStudyEnd">
+                                            სწავლის დასრულების მოსალოდნელი
+                                            თარიღი
+                                        </FieldLabel>
+                                        <SafariInputDate
+                                            field={field}
+                                            id="expectedStudyEnd"
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="semesterBreakFrom"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="semesterBreakFrom">
+                                            არდადეგების დასაწყისი
+                                        </FieldLabel>
+                                        <SafariInputDate
+                                            field={field}
+                                            id="semesterBreakFrom"
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="semesterBreakTo"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="semesterBreakTo">
+                                            არდადეგები დასასრული
+                                        </FieldLabel>
+                                        <SafariInputDate
+                                            field={field}
+                                            id="semesterBreakTo"
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="studiesContinueAfterSemesterBreak"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel
+                                            htmlFor="studiesContinueAfterSemesterBreak"
+                                            className="text-sm font-medium"
+                                        >
+                                            სწავლა გაგრძელდება არდადეგების
+                                            შემდეგ?
+                                        </FieldLabel>
+                                        <RadioGroup
+                                            id="studiesContinueAfterSemesterBreak"
+                                            value={booleanRadioGroupValue(
+                                                field.value
+                                            )}
+                                            onValueChange={(value) => {
+                                                field.onChange(value === 'true')
+                                            }}
+                                            className="mt-2 flex flex-row gap-4"
+                                            aria-invalid={fieldState.invalid}
+                                        >
+                                            <FormRadioOption
+                                                id="studies-continue-yes"
+                                                value="true"
+                                                label="დიახ"
+                                            />
+                                            <FormRadioOption
+                                                id="studies-continue-no"
+                                                value="false"
+                                                label="არა"
+                                            />
+                                        </RadioGroup>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                                </FieldGroup>
+                            </>
+                        )}
+                    </div>
+
+                    <div>
+                        <h2 className="mb-4 text-lg font-semibold">
+                            კვალიფიკაცია
+                        </h2>
+                        <FieldGroup>
                             <Controller
                                 name="germanLevel"
                                 control={form.control}
@@ -1512,6 +1740,7 @@ export function ApplicationForm({
                             />
                         </FieldGroup>
                     </div>
+
                     <div>
                         <h2
                             className="mb-4 text-lg font-semibold"

@@ -203,6 +203,14 @@ function optionalIsoDate(value: string | undefined): Date | null {
     return trimmed === '' ? null : parseIsoDate(trimmed)
 }
 
+function optionalBool(value: boolean | undefined): boolean | null {
+    return value === undefined ? null : value
+}
+
+function optionalFloat(value: number | undefined): number | null {
+    return value === undefined ? null : value
+}
+
 function applicationToPrismaCreateData(
     data: ApplicationFormData,
     fotoS3Key: string
@@ -227,8 +235,14 @@ function applicationToPrismaCreateData(
         universityId: optionalString(data.universityId),
         university: optionalString(data.university),
         studySubject: optionalString(data.studySubject),
+        standardStudyPeriodYears: optionalFloat(data.standardStudyPeriodYears),
+        enrolledSince: optionalIsoDate(data.enrolledSince),
+        expectedStudyEnd: optionalIsoDate(data.expectedStudyEnd),
         semesterBreakFrom: optionalIsoDate(data.semesterBreakFrom),
         semesterBreakTo: optionalIsoDate(data.semesterBreakTo),
+        studiesContinueAfterSemesterBreak: optionalBool(
+            data.studiesContinueAfterSemesterBreak
+        ),
         germanLevel: data.germanLevel ?? null,
         otherLanguages: optionalString(data.otherLanguages),
         driverLicense: data.driverLicense ?? false,
@@ -246,6 +260,16 @@ function applicationToPrismaCreateData(
         emergencyPhone: data.emergencyPhone.trim(),
         workSector: data.workSector,
     }
+}
+
+function formOptionalFloat(
+    formData: FormData,
+    key: string
+): number | undefined {
+    const raw = formString(formData, key).trim()
+    if (raw === '') return undefined
+    const value = Number(raw.replace(',', '.'))
+    return Number.isFinite(value) ? value : undefined
 }
 
 function applicationFormDataFromFormData(formData: FormData) {
@@ -269,12 +293,23 @@ function applicationFormDataFromFormData(formData: FormData) {
         instagram: formString(formData, 'instagram'),
         taxId: formString(formData, 'taxId'),
         foto: formData.get('foto'),
+        isStudent: formBoolean(formData, 'isStudent'),
         universityId:
             universityIdRaw.trim() === '' ? undefined : universityIdRaw,
         university: formString(formData, 'university'),
         studySubject: formString(formData, 'studySubject'),
+        standardStudyPeriodYears: formOptionalFloat(
+            formData,
+            'standardStudyPeriodYears'
+        ),
+        enrolledSince: formString(formData, 'enrolledSince'),
+        expectedStudyEnd: formString(formData, 'expectedStudyEnd'),
         semesterBreakFrom: formString(formData, 'semesterBreakFrom'),
         semesterBreakTo: formString(formData, 'semesterBreakTo'),
+        studiesContinueAfterSemesterBreak: formOptionalBool(
+            formData,
+            'studiesContinueAfterSemesterBreak'
+        ),
         germanLevel: germanLevelRaw.trim() === '' ? undefined : germanLevelRaw,
         otherLanguages: formString(formData, 'otherLanguages'),
         driverLicense: formOptionalBool(formData, 'driverLicense'),

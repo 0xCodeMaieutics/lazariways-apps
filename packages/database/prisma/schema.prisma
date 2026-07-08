@@ -56,9 +56,13 @@ model Application {
   university        String?
   universityId      String?
   linkedUniversity  University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
-  studySubject      String?
-  semesterBreakFrom DateTime? @db.Date
-  semesterBreakTo   DateTime? @db.Date
+  studySubject                        String?
+  standardStudyPeriodYears            Float?
+  enrolledSince                       DateTime? @db.Date
+  expectedStudyEnd                    DateTime? @db.Date
+  semesterBreakFrom                   DateTime? @db.Date
+  semesterBreakTo                     DateTime? @db.Date
+  studiesContinueAfterSemesterBreak   Boolean?
 
   germanLevel        GermanLevel?
   otherLanguages     String?
