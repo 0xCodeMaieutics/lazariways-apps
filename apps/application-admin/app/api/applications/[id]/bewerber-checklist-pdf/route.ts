@@ -22,7 +22,10 @@ export const POST = async (
 
   const { id } = await context.params
 
-  const existing = await prisma.application.findUnique({ where: { id } })
+  const existing = await prisma.application.findUnique({
+    where: { id },
+    include: { linkedUniversity: true },
+  })
   if (existing === null) {
     return Response.json({ error: "Not found" }, { status: 404 })
   }
@@ -35,14 +38,21 @@ export const POST = async (
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 
+  const applicationFormData = adminEditDataToApplicationFormData(
+    prismaToAdminEditData(existing),
+    fotoFile
+  )
+  const pdfFormData =
+    existing.linkedUniversity !== null
+      ? {
+          ...applicationFormData,
+          university: existing.linkedUniversity.name,
+        }
+      : applicationFormData
+
   let pdfBytes: Uint8Array
   try {
-    pdfBytes = await generateBewerberChecklistPdf(
-      adminEditDataToApplicationFormData(
-        prismaToAdminEditData(existing),
-        fotoFile
-      )
-    )
+    pdfBytes = await generateBewerberChecklistPdf(pdfFormData)
   } catch (error) {
     console.error("GENERATE_BEWERBER_CHECKLIST_PDF_ERROR", error)
     return Response.json({ error: "Internal server error" }, { status: 500 })
