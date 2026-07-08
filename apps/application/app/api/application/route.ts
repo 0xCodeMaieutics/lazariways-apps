@@ -19,6 +19,24 @@ export const POST = async (request: NextRequest) => {
         return Response.json({ error: 'Bad request' }, { status: 400 })
     }
 
+    let pdfFormData: ApplicationFormData = parsed.data
+
+    if (parsed.data.universityId) {
+        const linkedUniversity = await prisma.university.findUnique({
+            where: { id: parsed.data.universityId },
+            select: { name: true },
+        })
+
+        if (!linkedUniversity) {
+            return Response.json({ error: 'Bad request' }, { status: 400 })
+        }
+
+        pdfFormData = {
+            ...parsed.data,
+            university: linkedUniversity.name,
+        }
+    }
+
     const firstName = sanitizeFilenamePart(parsed.data.firstName)
     const lastName = sanitizeFilenamePart(parsed.data.lastName)
 
@@ -45,7 +63,7 @@ export const POST = async (request: NextRequest) => {
 
     let pdfBytesResult
     try {
-        pdfBytesResult = await generateBewerberChecklistPdf(parsed.data)
+        pdfBytesResult = await generateBewerberChecklistPdf(pdfFormData)
     } catch (error) {
         console.log('GENERATE_APPLICATION_PDF_ERROR', error)
         return Response.json(
@@ -206,6 +224,7 @@ function applicationToPrismaCreateData(
         phone: optionalString(data.phone),
         instagram: optionalString(data.instagram),
         taxId: optionalString(data.taxId),
+        universityId: optionalString(data.universityId),
         university: optionalString(data.university),
         studySubject: optionalString(data.studySubject),
         semesterBreakFrom: optionalIsoDate(data.semesterBreakFrom),
@@ -232,6 +251,7 @@ function applicationToPrismaCreateData(
 function applicationFormDataFromFormData(formData: FormData) {
     const emailRaw = formString(formData, 'email')
     const germanLevelRaw = formString(formData, 'germanLevel')
+    const universityIdRaw = formString(formData, 'universityId')
     return {
         firstName: formString(formData, 'firstName'),
         lastName: formString(formData, 'lastName'),
@@ -249,6 +269,8 @@ function applicationFormDataFromFormData(formData: FormData) {
         instagram: formString(formData, 'instagram'),
         taxId: formString(formData, 'taxId'),
         foto: formData.get('foto'),
+        universityId:
+            universityIdRaw.trim() === '' ? undefined : universityIdRaw,
         university: formString(formData, 'university'),
         studySubject: formString(formData, 'studySubject'),
         semesterBreakFrom: formString(formData, 'semesterBreakFrom'),

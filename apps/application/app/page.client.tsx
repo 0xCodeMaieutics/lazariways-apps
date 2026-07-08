@@ -19,6 +19,10 @@ import {
     FieldLabel,
 } from '@workspace/ui/components/field'
 import { Input } from '@workspace/ui/components/input'
+import {
+    NativeSelect,
+    NativeSelectOption,
+} from '@workspace/ui/components/native-select'
 import { FileUpload } from '@workspace/ui/components/file-upload'
 import {
     applicationFormSchema,
@@ -40,6 +44,13 @@ import {
     DialogTitle,
 } from '@workspace/ui/components/dialog'
 import { XCircle } from 'lucide-react'
+
+const UNIVERSITY_NOT_IN_LIST = '__not_in_list__'
+
+type UniversityOption = {
+    id: string
+    name: string
+}
 
 function containsNonLatinLetters(value: string) {
     for (const char of value) {
@@ -106,12 +117,17 @@ function applicationFormDataToFormData(data: ApplicationFormData): FormData {
     return fd
 }
 
-export function ApplicationForm() {
+export function ApplicationForm({
+    universities,
+}: {
+    universities: UniversityOption[]
+}) {
     const router = useRouter()
     const [isSubmitting, startTransition] = useTransition()
 
     const [isSubmissionErrorOpen, setIsSubmissionErrorOpen] = useState(false)
     const [base64String, setBase64String] = useState<string | null>(null)
+    const [showCustomUniversity, setShowCustomUniversity] = useState(false)
 
     const submitApplication = async (input: ApplicationFormData) => {
         startTransition(async () => {
@@ -156,6 +172,7 @@ export function ApplicationForm() {
 
             semesterBreakFrom: '',
             semesterBreakTo: '',
+            universityId: undefined,
             university: '',
             studySubject: '',
             germanLevel: 'A1',
@@ -202,9 +219,21 @@ export function ApplicationForm() {
 
         form.setValue('semesterBreakFrom', '2024-07-01', { shouldDirty: true })
         form.setValue('semesterBreakTo', '2024-09-30', { shouldDirty: true })
-        form.setValue('university', 'Ludwig-Maximilians-Universität München', {
-            shouldDirty: true,
-        })
+        if (universities[0]) {
+            form.setValue('universityId', universities[0].id, {
+                shouldDirty: true,
+            })
+            form.setValue('university', '', { shouldDirty: true })
+            setShowCustomUniversity(false)
+        } else {
+            form.setValue('universityId', undefined, { shouldDirty: true })
+            form.setValue(
+                'university',
+                'Ludwig-Maximilians-Universität München',
+                { shouldDirty: true }
+            )
+            setShowCustomUniversity(true)
+        }
         form.setValue('studySubject', 'Betriebswirtschaftslehre', {
             shouldDirty: true,
         })
@@ -323,6 +352,34 @@ export function ApplicationForm() {
         control: form.control,
         name: 'acceptPrivacyPolicy',
     })
+
+    const universityId = useWatch({
+        control: form.control,
+        name: 'universityId',
+    })
+
+    const universitySelectValue = showCustomUniversity
+        ? UNIVERSITY_NOT_IN_LIST
+        : (universityId ?? '')
+
+    const onUniversitySelectChange = (value: string) => {
+        if (value === UNIVERSITY_NOT_IN_LIST) {
+            setShowCustomUniversity(true)
+            form.setValue('universityId', undefined, { shouldDirty: true })
+            return
+        }
+
+        setShowCustomUniversity(false)
+
+        if (value === '') {
+            form.setValue('universityId', undefined, { shouldDirty: true })
+            form.setValue('university', '', { shouldDirty: true })
+            return
+        }
+
+        form.setValue('universityId', value, { shouldDirty: true })
+        form.setValue('university', '', { shouldDirty: true })
+    }
 
     const onValidateRomanCharacters = ({
         fieldName,
@@ -1149,42 +1206,94 @@ export function ApplicationForm() {
                             />
 
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                <Controller
-                                    name="university"
-                                    control={form.control}
-                                    render={({ field, fieldState }) => (
-                                        <Field
-                                            data-invalid={fieldState.invalid}
+                                <Field>
+                                    <FieldLabel htmlFor="university">
+                                        უნივერსიტეტი (არასავალდებულო)
+                                    </FieldLabel>
+                                    <NativeSelect
+                                        id="university"
+                                        className="w-full"
+                                        value={universitySelectValue}
+                                        onChange={(event) =>
+                                            onUniversitySelectChange(
+                                                event.target.value
+                                            )
+                                        }
+                                        aria-invalid={
+                                            !!form.formState.errors.university
+                                        }
+                                    >
+                                        <NativeSelectOption value="" disabled>
+                                            აირჩიეთ უნივერსიტეტი
+                                        </NativeSelectOption>
+                                        {universities.map((university) => (
+                                            <NativeSelectOption
+                                                key={university.id}
+                                                value={university.id}
+                                            >
+                                                {university.name}
+                                            </NativeSelectOption>
+                                        ))}
+                                        <NativeSelectOption
+                                            value={UNIVERSITY_NOT_IN_LIST}
                                         >
-                                            <FieldLabel htmlFor="university">
-                                                უნივერსიტეტი (არასავალდებულო)
-                                            </FieldLabel>
-                                            <Input
-                                                {...field}
-                                                id="university"
-                                                aria-invalid={
-                                                    fieldState.invalid
-                                                }
-                                                placeholder="უნივერსიტეტის სახელი"
-                                                onChange={(v) => {
-                                                    const value = v.target.value
-                                                    field.onChange(
-                                                        v.target.value
-                                                    )
-                                                    onValidateRomanCharacters({
-                                                        value,
-                                                        fieldName: 'university',
-                                                    })
-                                                }}
-                                            />
-                                            {fieldState.invalid && (
-                                                <FieldError
-                                                    errors={[fieldState.error]}
-                                                />
+                                            ჩემი უნივერსიტეტი სიაში არ არის
+                                        </NativeSelectOption>
+                                    </NativeSelect>
+                                    {showCustomUniversity && (
+                                        <Controller
+                                            name="university"
+                                            control={form.control}
+                                            render={({ field, fieldState }) => (
+                                                <Field
+                                                    className="mt-2"
+                                                    data-invalid={
+                                                        fieldState.invalid
+                                                    }
+                                                >
+                                                    <Input
+                                                        {...field}
+                                                        id="university-custom"
+                                                        aria-invalid={
+                                                            fieldState.invalid
+                                                        }
+                                                        placeholder="უნივერსიტეტის სახელი"
+                                                        onChange={(v) => {
+                                                            const value =
+                                                                v.target.value
+                                                            field.onChange(
+                                                                v.target.value
+                                                            )
+                                                            onValidateRomanCharacters(
+                                                                {
+                                                                    value,
+                                                                    fieldName:
+                                                                        'university',
+                                                                }
+                                                            )
+                                                        }}
+                                                    />
+                                                    {fieldState.invalid && (
+                                                        <FieldError
+                                                            errors={[
+                                                                fieldState.error,
+                                                            ]}
+                                                        />
+                                                    )}
+                                                </Field>
                                             )}
-                                        </Field>
+                                        />
                                     )}
-                                />
+                                    {!showCustomUniversity &&
+                                        form.formState.errors.university && (
+                                            <FieldError
+                                                errors={[
+                                                    form.formState.errors
+                                                        .university,
+                                                ]}
+                                            />
+                                        )}
+                                </Field>
                                 <Controller
                                     name="studySubject"
                                     control={form.control}
