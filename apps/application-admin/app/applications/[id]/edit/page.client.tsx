@@ -530,9 +530,10 @@ export function ApplicationEditForm({
           <Button
             type="submit"
             className="w-full"
+            size={"lg"}
             disabled={!formState.isDirty || isSaving || isDeleting}
           >
-            {isSaving ? "Saving…" : "Save"}
+            {isSaving ? "მუშავდება…" : "დამახსოვრება"}
           </Button>
         </div>
       </div>
