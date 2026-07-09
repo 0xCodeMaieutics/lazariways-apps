@@ -62,7 +62,26 @@ export async function uploadFileToStorage({
     bucket,
     fileKey,
     lockUntil,
+    declaredType: file.type,
+    filename: file.name,
   })
+}
+
+function resolveUploadContentType({
+  declaredType,
+  filename,
+  fileKey,
+}: {
+  declaredType?: string | null
+  filename?: string
+  fileKey: string
+}): string {
+  const resolvedFilename = filename ?? fileKey.split("/").pop() ?? fileKey
+
+  return (
+    resolveImageMimeType(declaredType, resolvedFilename) ??
+    "application/octet-stream"
+  )
 }
 
 export async function uploadToStorage({
@@ -70,11 +89,15 @@ export async function uploadToStorage({
   bucket,
   fileKey,
   lockUntil = null,
+  declaredType,
+  filename,
 }: {
   file: Uint8Array
   bucket: string
   fileKey: string
   lockUntil?: Date | null
+  declaredType?: string | null
+  filename?: string
 }) {
   const startChecksumTime = performance.now()
   const sha1Checksum = calculateSha1Checksum(file)
@@ -86,12 +109,19 @@ export async function uploadToStorage({
 
   const uploadStartTime = performance.now()
 
+  const resolvedContentType = resolveUploadContentType({
+    declaredType,
+    filename,
+    fileKey,
+  })
+
   const upload = new Upload({
     client: getS3Client(),
     params: {
       Bucket: bucket,
       Key: fileKey,
       Body: file,
+      ContentType: resolvedContentType,
       ChecksumAlgorithm: "SHA1",
       ChecksumSHA1: sha1Checksum,
       ...(lockUntil === null
@@ -297,4 +327,44 @@ export async function putObjects({
       }).done()
     )
   )
+}
+
+export type DetectedImageFormat = "png" | "jpeg"
+
+export type ResolvedImageMimeType = "image/png" | "image/jpeg"
+
+function normalizeImageMimeType(
+  mimeType: string
+): ResolvedImageMimeType | null {
+  const normalized = mimeType.trim().toLowerCase()
+  if (normalized === "image/png") return "image/png"
+  if (normalized === "image/jpeg" || normalized === "image/jpg") {
+    return "image/jpeg"
+  }
+  return null
+}
+
+function imageMimeTypeFromFilename(
+  filename: string
+): ResolvedImageMimeType | null {
+  const ext = filename.split(".").pop()?.toLowerCase()
+  if (ext === "png") return "image/png"
+  if (ext === "jpg" || ext === "jpeg") return "image/jpeg"
+  return null
+}
+
+export function resolveImageMimeType(
+  declaredType?: string | null,
+  filename?: string
+): ResolvedImageMimeType | null {
+  if (declaredType !== undefined && declaredType !== null) {
+    const fromDeclared = normalizeImageMimeType(declaredType)
+    if (fromDeclared !== null) return fromDeclared
+  }
+
+  if (filename !== undefined) {
+    return imageMimeTypeFromFilename(filename)
+  }
+
+  return null
 }
