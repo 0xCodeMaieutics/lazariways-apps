@@ -2,6 +2,7 @@ import Link from "next/link"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
 import { ApplicationCard } from "@/components/application-card"
+import { RefreshButton } from "@/components/refresh-button"
 import { env } from "@/env"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { APPLICATIONS_PER_PAGE } from "@/lib/constants"
@@ -54,10 +55,17 @@ export default async function ApplicationsPage({
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-6">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Applications</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {totalCount} total · Page {currentPage} of {totalPages}
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              აპლიკაციები
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              სულ {totalCount} · გვერდი {currentPage} / {totalPages}
+            </p>
+          </div>
+          <RefreshButton label="განახლება" />
+        </div>
       </header>
 
       <div className="space-y-3">
