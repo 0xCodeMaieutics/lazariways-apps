@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Link as LinkIcon } from "lucide-react"
 import { instagramProfileUrl } from "@/lib/instagram"
 
@@ -16,14 +15,14 @@ export function InstagramLink({ handle }: InstagramLinkProps) {
   const username = handle?.trim().replace(/^@/, "") ?? ""
 
   return (
-    <Link
+    <a
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-muted-foreground hover:text-foreground inline-flex shrink-0 transition-colors"
+      className="inline-flex shrink-0 text-muted-foreground transition-colors hover:text-foreground"
       aria-label={`Open Instagram profile @${username}`}
     >
       <LinkIcon className="size-4" />
-    </Link>
+    </a>
   )
 }

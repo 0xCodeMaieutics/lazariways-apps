@@ -74,6 +74,7 @@ export default async function ApplicationsPage({
               lastName={application.lastName}
               submittedAtLabel={formatSubmittedAt(application.submittedAt)}
               fotoUrl={fotoUrl}
+              instagram={application.instagram}
             />
           ))
         )}
