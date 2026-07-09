@@ -78,8 +78,8 @@ export function GenerateBewerberChecklistButton({
         onClick={generateChecklist}
       >
         {isGenerating
-          ? "Generating…"
-          : "Generate Bewerber Checklist PDF"}
+          ? "მუშავდება…"
+          : "გიულის Bewerber Checklist PDF გენერირება"}
       </Button>
 
       <Dialog open={isErrorDialogOpen} onOpenChange={setIsErrorDialogOpen}>
