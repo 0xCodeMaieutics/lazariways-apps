@@ -6,3 +6,4 @@ templates/*/generated/
 /extract-company-info/input.html
 /bewerbungen
 !.env.extract.example
+templates/kooperation-reinigungskraft/bewerbungen
