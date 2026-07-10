@@ -92,9 +92,7 @@ export function GenerateCertificateOfEnrollmentButton({
         disabled={isGenerating}
         onClick={generateCertificate}
       >
-        {isGenerating
-          ? "Generating…"
-          : "Generate Certificate of Enrolment PDF"}
+        {isGenerating ? "მუშავდება" : "იმატრიკულაციის გენერირება"}
       </Button>
 
       <Dialog open={isErrorDialogOpen} onOpenChange={setIsErrorDialogOpen}>
