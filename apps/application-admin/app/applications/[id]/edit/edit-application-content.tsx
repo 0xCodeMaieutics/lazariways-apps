@@ -4,11 +4,17 @@ import type { AdminApplicationEditData } from "@workspace/application/schema"
 import { ApplicationPdfButtons } from "@/components/application-pdf-buttons"
 import { ApplicationEditForm } from "./page.client"
 
+export type UniversityOption = {
+  id: string
+  name: string
+}
+
 interface EditApplicationContentProps {
   applicationId: string
   defaultValues: AdminApplicationEditData
   fotoUrl: string
   applicantName: string
+  universities: UniversityOption[]
 }
 
 export function EditApplicationContent({
@@ -16,6 +22,7 @@ export function EditApplicationContent({
   defaultValues,
   fotoUrl,
   applicantName,
+  universities,
 }: EditApplicationContentProps) {
   return (
     <div className="space-y-6">
@@ -31,6 +38,7 @@ export function EditApplicationContent({
       <ApplicationEditForm
         applicationId={applicationId}
         defaultValues={defaultValues}
+        universities={universities}
       />
     </div>
   )

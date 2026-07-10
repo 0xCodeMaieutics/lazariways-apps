@@ -56,6 +56,10 @@ function seedInquiryId(index: number): string {
   return `00000000-0000-4000-a000-${(index + 1).toString().padStart(12, "0")}`
 }
 
+function seedUniversityId(index: number): string {
+  return `00000000-0000-4000-b000-${(index + 1).toString().padStart(12, "0")}`
+}
+
 function seedEmail(firstName: string, lastName: string): string {
   return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`
 }
@@ -232,6 +236,57 @@ const SEED_APPLICATION_TEMPLATES = [
   },
 ] satisfies SeedApplicationTemplate[]
 
+const SEED_UNIVERSITIES = [
+  {
+    id: seedUniversityId(0),
+    name: "Ivane Javakhishvili Tbilisi State University",
+    street: "1 Chavchavadze Avenue",
+    streetNumber: "1",
+    postalCode: "0179",
+    city: "Tbilisi",
+    country: "Georgia",
+    telephone: "+995 32 299 11 11",
+    email: "info@tsu.ge",
+    website: "https://www.tsu.ge",
+  },
+  {
+    id: seedUniversityId(1),
+    name: "Georgian Technical University",
+    street: "77 Kostava Street",
+    streetNumber: "77",
+    postalCode: "0175",
+    city: "Tbilisi",
+    country: "Georgia",
+    telephone: "+995 32 299 67 67",
+    email: "info@gtu.ge",
+    website: "https://www.gtu.ge",
+  },
+  {
+    id: seedUniversityId(2),
+    name: "Ilia State University",
+    street: "3/5 Cholokashvili Avenue",
+    streetNumber: "3/5",
+    postalCode: "0162",
+    city: "Tbilisi",
+    country: "Georgia",
+    telephone: "+995 32 222 00 00",
+    email: "info@iliauni.edu.ge",
+    website: "https://iliauni.edu.ge",
+  },
+  {
+    id: seedUniversityId(3),
+    name: "Ludwig-Maximilians-Universität München",
+    street: "Geschwister-Scholl-Platz",
+    streetNumber: "1",
+    postalCode: "80539",
+    city: "Munich",
+    country: "Germany",
+    telephone: "+49 89 2180 0",
+    email: "info@lmu.de",
+    website: "https://www.lmu.de",
+  },
+] as const
+
 const SEED_APPLICATIONS: Prisma.ApplicationCreateInput[] = Array.from(
   { length: SEED_APPLICATION_COUNT },
   (_, index) => {
@@ -372,6 +427,15 @@ const SEED_PROFILES: SeedProfile[] = Array.from(
       fileKey: SEED_FOTO_S3_KEY,
     })
 
+    for (const university of SEED_UNIVERSITIES) {
+      const { id, ...data } = university
+      await prisma.university.upsert({
+        where: { id },
+        update: data,
+        create: university,
+      })
+    }
+
     for (const application of SEED_APPLICATIONS) {
       const { id, ...data } = application
       await prisma.application.upsert({
@@ -416,6 +480,7 @@ const SEED_PROFILES: SeedProfile[] = Array.from(
       })
     }
 
+    console.log(`Seeded ${SEED_UNIVERSITIES.length} universities.`)
     console.log(`Seeded ${SEED_APPLICATIONS.length} applications with fotos.`)
     console.log(`Seeded ${SEED_PROFILES.length} profiles with fotos.`)
     console.log(`Seeded ${SEED_INQUIRIES.length} application inquiries.`)

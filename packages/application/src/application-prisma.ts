@@ -10,6 +10,10 @@ function optionalString(value: string | undefined): string | null {
     return trimmed === "" ? null : trimmed
 }
 
+function hasText(value: string | undefined): boolean {
+    return (value?.trim() ?? "") !== ""
+}
+
 function parseIsoDate(value: string): Date {
     const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim())
     if (!match) {
@@ -62,6 +66,11 @@ function parseWorkSectors(
     )
 }
 
+function optionalId(value: string | undefined): string | null {
+    const trimmed = value?.trim() ?? ""
+    return trimmed === "" ? null : trimmed
+}
+
 export function applicationToPrismaData(
     data: AdminApplicationEditData | ApplicationFormData
 ) {
@@ -81,10 +90,31 @@ export function applicationToPrismaData(
         phone: optionalString(data.phone),
         instagram: optionalString(data.instagram),
         taxId: optionalString(data.taxId),
-        university: optionalString(data.university),
+        universityId:
+            "universityId" in data ? optionalId(data.universityId) : null,
+        university:
+            "universityId" in data && hasText(data.universityId)
+                ? null
+                : optionalString(data.university),
         studySubject: optionalString(data.studySubject),
+        standardStudyPeriodYears:
+            "standardStudyPeriodYears" in data
+                ? (data.standardStudyPeriodYears ?? null)
+                : null,
+        enrolledSince:
+            "enrolledSince" in data
+                ? optionalIsoDate(data.enrolledSince)
+                : null,
+        expectedStudyEnd:
+            "expectedStudyEnd" in data
+                ? optionalIsoDate(data.expectedStudyEnd)
+                : null,
         semesterBreakFrom: optionalIsoDate(data.semesterBreakFrom),
         semesterBreakTo: optionalIsoDate(data.semesterBreakTo),
+        studiesContinueAfterSemesterBreak:
+            "studiesContinueAfterSemesterBreak" in data
+                ? (data.studiesContinueAfterSemesterBreak ?? null)
+                : null,
         germanLevel: data.germanLevel ?? null,
         otherLanguages: optionalString(data.otherLanguages),
         driverLicense: data.driverLicense ?? false,
@@ -123,10 +153,17 @@ export function prismaToAdminEditData(
         phone: application.phone ?? undefined,
         instagram: application.instagram ?? undefined,
         taxId: application.taxId ?? undefined,
+        universityId: application.universityId ?? undefined,
         university: application.university ?? undefined,
         studySubject: application.studySubject ?? undefined,
+        standardStudyPeriodYears:
+            application.standardStudyPeriodYears ?? undefined,
+        enrolledSince: optionalDateForForm(application.enrolledSince),
+        expectedStudyEnd: optionalDateForForm(application.expectedStudyEnd),
         semesterBreakFrom: optionalDateForForm(application.semesterBreakFrom),
         semesterBreakTo: optionalDateForForm(application.semesterBreakTo),
+        studiesContinueAfterSemesterBreak:
+            application.studiesContinueAfterSemesterBreak ?? undefined,
         germanLevel: application.germanLevel ?? undefined,
         otherLanguages: application.otherLanguages ?? undefined,
         driverLicense: application.driverLicense,

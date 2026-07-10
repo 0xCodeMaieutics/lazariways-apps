@@ -33,11 +33,19 @@ import {
   RadioGroupItem,
 } from "@workspace/ui/components/radio-group"
 import { SafariInputDate } from "@workspace/ui/components/safari-date-component"
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@workspace/ui/components/native-select"
 import { InstagramLink } from "@/components/instagram-link"
+import type { UniversityOption } from "./edit-application-content"
+
+const UNIVERSITY_NOT_IN_LIST = "__not_in_list__"
 
 interface ApplicationEditFormProps {
   applicationId: string
   defaultValues: AdminApplicationEditData
+  universities: UniversityOption[]
 }
 
 function FormSection({
@@ -57,6 +65,8 @@ function FormSection({
 
 type DateFieldName =
   | "birthDate"
+  | "enrolledSince"
+  | "expectedStudyEnd"
   | "semesterBreakFrom"
   | "semesterBreakTo"
   | "previousStayPeriodFrom"
@@ -136,12 +146,18 @@ function BooleanRadioField({
 export function ApplicationEditForm({
   applicationId,
   defaultValues,
+  universities,
 }: ApplicationEditFormProps) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isSaving, startSaveTransition] = useTransition()
   const [isDeleting, startDeleteTransition] = useTransition()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [showCustomUniversity, setShowCustomUniversity] = useState(
+    () =>
+      !defaultValues.universityId &&
+      (defaultValues.university?.trim() ?? "") !== ""
+  )
 
   const form = useForm<AdminApplicationEditData>({
     resolver: standardSchemaResolver(adminApplicationEditSchema),
@@ -206,8 +222,32 @@ export function ApplicationEditForm({
     })
   }
 
-  const { control, register, formState } = form
+  const { control, register, formState, setValue } = form
   const instagram = useWatch({ control, name: "instagram" })
+  const universityId = useWatch({ control, name: "universityId" })
+
+  const universitySelectValue = showCustomUniversity
+    ? UNIVERSITY_NOT_IN_LIST
+    : (universityId ?? "")
+
+  const onUniversitySelectChange = (value: string) => {
+    if (value === UNIVERSITY_NOT_IN_LIST) {
+      setShowCustomUniversity(true)
+      setValue("universityId", undefined, { shouldDirty: true })
+      return
+    }
+
+    setShowCustomUniversity(false)
+
+    if (value === "") {
+      setValue("universityId", undefined, { shouldDirty: true })
+      setValue("university", "", { shouldDirty: true })
+      return
+    }
+
+    setValue("universityId", value, { shouldDirty: true })
+    setValue("university", "", { shouldDirty: true })
+  }
 
   return (
     <form
@@ -319,13 +359,85 @@ export function ApplicationEditForm({
 
       <FormSection title="Education">
         <Field>
-          <FieldLabel htmlFor="university">University</FieldLabel>
-          <Input id="university" {...register("university")} />
+          <FieldLabel htmlFor="linkedUniversity">Linked university</FieldLabel>
+          <NativeSelect
+            id="linkedUniversity"
+            className="w-full"
+            value={universitySelectValue}
+            onChange={(event) => onUniversitySelectChange(event.target.value)}
+            aria-invalid={!!formState.errors.universityId}
+          >
+            <NativeSelectOption value="">Select a university</NativeSelectOption>
+            {universities.map((university) => (
+              <NativeSelectOption key={university.id} value={university.id}>
+                {university.name}
+              </NativeSelectOption>
+            ))}
+            <NativeSelectOption value={UNIVERSITY_NOT_IN_LIST}>
+              University not in list
+            </NativeSelectOption>
+          </NativeSelect>
+          <FieldError errors={[formState.errors.universityId]} />
         </Field>
+        {showCustomUniversity ? (
+          <Field>
+            <FieldLabel htmlFor="university">University (custom)</FieldLabel>
+            <Input id="university" {...register("university")} />
+            <FieldError errors={[formState.errors.university]} />
+          </Field>
+        ) : null}
         <Field>
           <FieldLabel htmlFor="studySubject">Study subject</FieldLabel>
           <Input id="studySubject" {...register("studySubject")} />
+          <FieldError errors={[formState.errors.studySubject]} />
         </Field>
+        <Field>
+          <FieldLabel htmlFor="standardStudyPeriodYears">
+            Standard study period (years)
+          </FieldLabel>
+          <Controller
+            name="standardStudyPeriodYears"
+            control={control}
+            render={({ field, fieldState }) => (
+              <>
+                <Input
+                  id="standardStudyPeriodYears"
+                  type="number"
+                  step="0.5"
+                  min="0"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="e.g. 4"
+                  value={field.value ?? ""}
+                  onChange={(event) => {
+                    const raw = event.target.value
+                    if (raw === "") {
+                      field.onChange(undefined)
+                      return
+                    }
+                    const parsed = Number(raw.replace(",", "."))
+                    field.onChange(
+                      Number.isFinite(parsed) ? parsed : undefined
+                    )
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                />
+                <FieldError errors={[fieldState.error]} />
+              </>
+            )}
+          />
+        </Field>
+        <DateField
+          name="enrolledSince"
+          label="Enrolled since"
+          control={control}
+        />
+        <DateField
+          name="expectedStudyEnd"
+          label="Expected study end"
+          control={control}
+        />
         <DateField
           name="semesterBreakFrom"
           label="Semester break from"
@@ -334,6 +446,11 @@ export function ApplicationEditForm({
         <DateField
           name="semesterBreakTo"
           label="Semester break to"
+          control={control}
+        />
+        <BooleanRadioField
+          name="studiesContinueAfterSemesterBreak"
+          label="Studies continue after semester break"
           control={control}
         />
       </FormSection>

@@ -15,7 +15,13 @@ interface EditPageProps {
 export default async function EditApplicationPage({ params }: EditPageProps) {
   const { id } = await params
   await requireAdminSessionForPage(`/applications/${id}/edit`)
-  const application = await prisma.application.findUnique({ where: { id } })
+  const [application, universities] = await Promise.all([
+    prisma.application.findUnique({ where: { id } }),
+    prisma.university.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
+  ])
 
   if (application === null) {
     notFound()
@@ -50,6 +56,7 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
         defaultValues={defaultValues}
         fotoUrl={fotoUrl}
         applicantName={`${application.firstName} ${application.lastName}`}
+        universities={universities}
       />
     </main>
   )

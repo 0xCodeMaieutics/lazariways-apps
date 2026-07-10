@@ -10,6 +10,10 @@ export const workSectorOptions = [
     'Industrielle Produktion',
 ] as const
 
+function hasText(value: string | undefined) {
+    return (value?.trim() ?? '') !== ''
+}
+
 export const shoeSizeOptions = [
     '36',
     '37',
@@ -78,10 +82,20 @@ export const applicationFormSchema = z.object({
                 message: 'მხოლოდ PNG და JPEG ფაილებია დაშვებული',
             }
         ),
+    universityId: z.string().optional(),
     university: z.string().optional(),
     studySubject: z.string().optional(),
+    standardStudyPeriodYears: z
+        .number({
+            message: 'Invalid number',
+        })
+        .positive('Enter a positive number')
+        .optional(),
+    enrolledSince: z.string().optional(),
+    expectedStudyEnd: z.string().optional(),
     semesterBreakFrom: z.string().optional(),
     semesterBreakTo: z.string().optional(),
+    studiesContinueAfterSemesterBreak: z.boolean().optional(),
     germanLevel: germanLevels.optional(),
     otherLanguages: z.string().optional(),
     driverLicense: z.boolean().optional(),
@@ -110,8 +124,46 @@ export const applicationFormSchema = z.object({
 
 export type ApplicationFormData = z.infer<typeof applicationFormSchema>
 
-export const adminApplicationEditSchema = applicationFormSchema.omit({
-    foto: true,
-})
+export const adminApplicationEditSchema = applicationFormSchema
+    .omit({
+        foto: true,
+    })
+    .refine(
+        (data) => {
+            const hasId = hasText(data.universityId)
+            const hasName = hasText(data.university)
+            return !(hasId && hasName)
+        },
+        {
+            message:
+                'Cannot set both a linked university and a custom university name',
+            path: ['university'],
+        }
+    )
+    .refine(
+        (data) => {
+            const from = data.enrolledSince?.trim() ?? ''
+            const to = data.expectedStudyEnd?.trim() ?? ''
+            if (!from || !to) return true
+            return from <= to
+        },
+        {
+            message: 'Expected study end must be on or after enrolled since',
+            path: ['expectedStudyEnd'],
+        }
+    )
+    .refine(
+        (data) => {
+            const from = data.semesterBreakFrom?.trim() ?? ''
+            const to = data.semesterBreakTo?.trim() ?? ''
+            if (!from || !to) return true
+            return from <= to
+        },
+        {
+            message:
+                'Semester break end must be on or after semester break start',
+            path: ['semesterBreakTo'],
+        }
+    )
 
 export type AdminApplicationEditData = z.infer<typeof adminApplicationEditSchema>
