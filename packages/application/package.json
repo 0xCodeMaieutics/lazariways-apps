@@ -5,7 +5,7 @@
   "private": true,
   "exports": {
     "./schema": "./src/application-schema.ts",
-    "./pdf": "./src/pdf.ts",
+    "./pdf": "./src/pdf/index.ts",
     "./prisma": "./src/application-prisma.ts"
   },
   "dependencies": {
