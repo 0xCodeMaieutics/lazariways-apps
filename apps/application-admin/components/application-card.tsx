@@ -1,11 +1,12 @@
 import Link from "next/link"
+import { Badge } from "@workspace/ui/components/badge"
 import { InstagramLink } from "./instagram-link"
 
 interface ApplicationCardProps {
   id: string
   firstName: string
   lastName: string
-  submittedAtLabel: string
+  linkedUniversityName: string | null
   fotoUrl: string
   instagram: string | null
 }
@@ -14,7 +15,7 @@ export function ApplicationCard({
   id,
   firstName,
   lastName,
-  submittedAtLabel,
+  linkedUniversityName,
   fotoUrl,
   instagram,
 }: ApplicationCardProps) {
@@ -36,7 +37,15 @@ export function ApplicationCard({
           <p className="truncate font-medium">
             {firstName} {lastName}
           </p>
-          <p className="text-sm text-muted-foreground">{submittedAtLabel}</p>
+          {linkedUniversityName !== null ? (
+            <Badge
+              variant="secondary"
+              className="mt-1 max-w-full truncate"
+              title={linkedUniversityName}
+            >
+              {linkedUniversityName}
+            </Badge>
+          ) : null}
         </div>
       </Link>
       {instagram !== null && <InstagramLink handle={instagram} />}

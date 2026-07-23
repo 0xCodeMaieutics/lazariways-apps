@@ -1,5 +1,5 @@
-import { Link as LinkIcon } from "lucide-react"
 import { instagramProfileUrl } from "@/lib/instagram"
+import Image from "next/image"
 
 interface InstagramLinkProps {
   handle: string | undefined
@@ -19,10 +19,10 @@ export function InstagramLink({ handle }: InstagramLinkProps) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+      className="relative inline-flex size-5 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
       aria-label={`Open Instagram profile @${username}`}
     >
-      <LinkIcon className="size-4" />
+      <Image src="/instagram.svg" alt="Instagram link" fill aria-hidden />
     </a>
   )
 }

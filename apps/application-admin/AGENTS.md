@@ -2,6 +2,10 @@
 
 Using this project consultants can manage applications.
 
+# Website language
+
+The application-admin UI is in Georgian (Kartvelian).
+
 # References
 
 - See docs/DATABASE.md for database conventions.
