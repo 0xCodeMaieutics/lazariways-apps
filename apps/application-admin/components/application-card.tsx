@@ -40,10 +40,10 @@ export function ApplicationCard({
           {linkedUniversityName !== null ? (
             <Badge
               variant="secondary"
-              className="mt-1 max-w-full truncate"
+              className="mt-1 max-w-[200px] min-w-0 justify-start"
               title={linkedUniversityName}
             >
-              {linkedUniversityName}
+              <span className="min-w-0 truncate">{linkedUniversityName}</span>
             </Badge>
           ) : null}
         </div>

@@ -108,10 +108,6 @@ const SEED_APPLICATION_TEMPLATES = [
     phone: "+995 555 123456",
     instagram: "giorgi.beridze",
     taxId: "12345678901",
-    university: "Universität Tiflis",
-    studySubject: "Betriebswirtschaft",
-    semesterBreakFrom: dateOnly("2026-07-01"),
-    semesterBreakTo: dateOnly("2026-08-31"),
     germanLevel: GermanLevel.B1,
     otherLanguages: "Englisch, Russisch",
     driverLicense: true,
@@ -194,8 +190,6 @@ const SEED_APPLICATION_TEMPLATES = [
     email: "ana.loria@example.com",
     phone: "+995 555 456789",
     instagram: "ana.loria",
-    university: "Freie Universität Tiflis",
-    studySubject: "Germanistik",
     germanLevel: GermanLevel.C1,
     otherLanguages: "Deutsch, Englisch, Russisch",
     driverLicense: true,
@@ -287,7 +281,50 @@ const SEED_UNIVERSITIES = [
   },
 ] as const
 
-const SEED_APPLICATIONS: Prisma.ApplicationCreateInput[] = Array.from(
+type SeedUniversityAssignment = Pick<
+  Prisma.ApplicationUncheckedCreateInput,
+  | "university"
+  | "universityId"
+  | "studySubject"
+  | "semesterBreakFrom"
+  | "semesterBreakTo"
+>
+
+function seedUniversityAssignment(index: number): SeedUniversityAssignment {
+  const bucket = index % 10
+
+  if (bucket < 4) {
+    const universityIndex = bucket % SEED_UNIVERSITIES.length
+
+    return {
+      universityId: seedUniversityId(universityIndex),
+      university: null,
+      studySubject: bucket % 2 === 0 ? "Betriebswirtschaft" : "Germanistik",
+      semesterBreakFrom: dateOnly("2026-07-01"),
+      semesterBreakTo: dateOnly("2026-08-31"),
+    }
+  }
+
+  if (bucket < 6) {
+    return {
+      universityId: null,
+      university: "Batumi Shota Rustaveli State University",
+      studySubject: "Informatik",
+      semesterBreakFrom: null,
+      semesterBreakTo: null,
+    }
+  }
+
+  return {
+    universityId: null,
+    university: null,
+    studySubject: null,
+    semesterBreakFrom: null,
+    semesterBreakTo: null,
+  }
+}
+
+const SEED_APPLICATIONS: Prisma.ApplicationUncheckedCreateInput[] = Array.from(
   { length: SEED_APPLICATION_COUNT },
   (_, index) => {
     const template =
@@ -295,6 +332,7 @@ const SEED_APPLICATIONS: Prisma.ApplicationCreateInput[] = Array.from(
 
     return {
       ...template,
+      ...seedUniversityAssignment(index),
       id: seedApplicationId(index),
       submittedAt: daysAgo((index % 30) + 1),
       fotoS3Key: SEED_FOTO_S3_KEY,
