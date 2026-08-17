@@ -33,7 +33,7 @@
     "@workspace/file-upload": "workspace:*",
     "eslint": "^8.57.0",
     "prisma": "latest",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.1.3",
     "tsup": "^8.0.2",
     "tsx": "4.21.0",
     "typescript": "5.5.4"
