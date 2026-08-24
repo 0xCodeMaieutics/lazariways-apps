@@ -1,0 +1,71 @@
+[
+    {
+        "type": "CHOOSE_FROM_TEXT",
+        "prompt": "რას ნიშნავს ეს სიტყვა?",
+        "text": "Hallo",
+        "options": [
+            "გამარჯობა",
+            "ნახვამდის",
+            "მადლობა"
+        ],
+        "correctOptionIndex": [
+            0
+        ],
+        "correctInputs": []
+    },
+    {
+        "type": "CHOOSE_FROM_TEXT",
+        "prompt": "რას ნიშნავს ეს სიტყვა?",
+        "text": "Guten Tag",
+        "options": [
+            "დილა მშვიდობისა",
+            "კარგი დღე",
+            "ღამე მშვიდობისა"
+        ],
+        "correctOptionIndex": [
+            1
+        ],
+        "correctInputs": []
+    },
+    {
+        "type": "CHOOSE_FROM_TEXT",
+        "prompt": "რას ნიშნავს ეს სიტყვა?",
+        "text": "Ich heiße",
+        "options": [
+            "მე ვცხოვრობ",
+            "მე მქვია",
+            "მე ვმუშაობ"
+        ],
+        "correctOptionIndex": [
+            1
+        ],
+        "correctInputs": []
+    },
+    {
+        "type": "CHOOSE_FROM_TEXT",
+        "prompt": "რას ნიშნავს ეს სიტყვა?",
+        "text": "Auf Wiedersehen",
+        "options": [
+            "გამარჯობა",
+            "ბოდიში",
+            "ნახვამდის"
+        ],
+        "correctOptionIndex": [
+            2
+        ],
+        "correctInputs": []
+    },
+    {
+        "type": "CHOOSE_FROM_TEXT",
+        "prompt": "როგორ მიმართავთ თანამშრომელს ოფიციალურად?",
+        "options": [
+            "du",
+            "Sie",
+            "ihr"
+        ],
+        "correctOptionIndex": [
+            1
+        ],
+        "correctInputs": []
+    }
+]

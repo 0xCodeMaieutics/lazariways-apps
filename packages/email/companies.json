@@ -476,5 +476,21 @@
     "note": null,
     "status": "SENT_EMAIL",
     "createdAt": "2026-06-29T09:48:05.639Z"
+  },
+  {
+    "companyWebsite": null,
+    "googleMapsUrl": null,
+    "name": "Hotel Anna",
+    "contactName": null,
+    "street": "Oberer Kirchweg 2",
+    "postalCode": "79410",
+    "city": "Badenweiler",
+    "country": null,
+    "phone": "07632 / 797-0",
+    "email": "info@hotel-anna.de",
+    "sourceUrl": "https://www.hotel-anna.de/",
+    "note": null,
+    "status": "IDLE",
+    "createdAt": "2026-08-22T11:57:00.288Z"
   }
 ]

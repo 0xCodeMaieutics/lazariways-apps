@@ -1,0 +1,184 @@
+enum LearningAppUserRole {
+  ADMIN
+  USER
+}
+
+model LearningAppUser {
+  id            String              @id
+  name          String
+  email         String              @unique
+  emailVerified Boolean             @default(false)
+  role          LearningAppUserRole @default(USER)
+  image         String?
+
+  createdAt            DateTime                       @default(now())
+  updatedAt            DateTime                       @updatedAt
+  sessions             LearningAppSession[]
+  accounts             LearningAppAccount[]
+  userExamAggregations LearningAppUserExamAggregation[]
+  userExamCompletions  LearningAppUserExam[]
+  userUnlockedExams    LearningAppUserUnlockedExam[]
+}
+
+model LearningAppSession {
+  id        String          @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      LearningAppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+}
+
+model LearningAppAccount {
+  id                    String          @id
+  issuer                String
+  accountId             String
+  providerId            String
+  userId                String
+  user                  LearningAppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  @@unique([issuer, accountId])
+  @@index([userId])
+}
+
+enum LearningAppTopicType {
+  STARTER
+  BAECKEREI
+  FREIZEIT_PARK
+}
+
+model LearningAppTopic {
+  id String @id @default(nanoid())
+
+  createdAt DateTime @default(now())
+
+  name    String
+  type    LearningAppTopicType
+  enabled Boolean
+  order   Int
+
+  exams LearningAppExam[]
+}
+
+model LearningAppExam {
+  id          String               @id @default(nanoid())
+  title       String
+  description String
+  enable      Boolean              @default(false)
+  exercises   LearningAppExercise[]
+
+  order                         Int
+  estimatedTimeInMinutes        Int?
+  minimumCorrectAnswerCount     Int  @default(1) // correctAnswers >= this to pass
+  minimumPassedCount            Int  @default(1) // minimum passed count to consider the practice to be passed
+  waitUntilPassAllowedInSeconds Int  @default(14400) // cooldown in seconds between counted passes (4 hours)
+
+  userExamAggregation LearningAppUserExamAggregation[]
+  userExamCompletions LearningAppUserExam[]
+  userUnlockedExams   LearningAppUserUnlockedExam[]
+
+  topicId String
+  topic   LearningAppTopic @relation(fields: [topicId], references: [id])
+
+  unlockedId   String?
+  unlockedExam LearningAppExam?  @relation("UnlocksExams", fields: [unlockedId], references: [id])
+  unlocksExams LearningAppExam[] @relation("UnlocksExams")
+}
+
+model LearningAppUserUnlockedExam {
+  id String @id @default(nanoid())
+
+  unlockedAt DateTime @default(now())
+
+  userId String
+  user   LearningAppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  examId String
+  exam   LearningAppExam @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, examId])
+  @@index([userId])
+  @@index([examId])
+}
+
+model LearningAppUserExamAggregation {
+  id String @id @default(nanoid())
+
+  attemptedCount Int @default(1) // times user attempted the exam
+  passedCount    Int @default(0) // times user passed (correctAnswers >= minimumCorrectAnswerCount)
+  failedCount    Int @default(0) // times user failed (correctAnswers < minimumCorrectAnswerCount)
+
+  userId String
+  user   LearningAppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  examId String
+  exam   LearningAppExam @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime  @default(now())
+  lastPassedAt DateTime? // set when a pass counts toward minimumPassedCount
+
+  @@unique([userId, examId])
+  @@index([userId])
+  @@index([examId])
+}
+
+model LearningAppUserExam {
+  id String @id @default(nanoid())
+
+  createdAt DateTime @default(now())
+
+  correctCount Int
+  hasPassed    Boolean
+  passCounted  Boolean
+
+  userId String
+  user   LearningAppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  examId String
+  exam   LearningAppExam @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@index([userId, examId])
+}
+
+enum LearningAppExerciseType {
+  CHOOSE_FROM_AUDIO
+  INPUT_FROM_AUDIO
+  CHOOSE_FROM_TEXT
+  INPUT_FROM_TEXT
+  INPUT_SENTENCE_FROM_TEXT
+  CHOOSE_MATCHING_PATTERNS
+}
+
+model LearningAppExercise {
+  id String @id @default(nanoid())
+
+  type LearningAppExerciseType
+
+  prompt String? // anything
+  text   String? // word or sentence
+
+  audioUrl     String?
+  slowAudioUrl String?
+
+  options                      String[]
+  correctOptionIndex           Int[]
+  allowsMultipleCorrectOptions Boolean? @default(false)
+
+  correctInputs String[]
+
+  order  Int
+  examId String?
+  exam   LearningAppExam? @relation(fields: [examId], references: [id], onDelete: Cascade)
+}

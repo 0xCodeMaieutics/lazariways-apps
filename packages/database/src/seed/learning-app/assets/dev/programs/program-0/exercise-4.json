@@ -1,0 +1,42 @@
+[
+    {
+        "type": "INPUT_SENTENCE_FROM_TEXT",
+        "prompt": "შეიყვანეთ წინადადება გერმანულად",
+        "text": "რა გქვიათ?",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Wie heißen Sie?"
+        ]
+    },
+    {
+        "type": "INPUT_SENTENCE_FROM_TEXT",
+        "prompt": "შეიყვანეთ წინადადება გერმანულად",
+        "text": "მე მქვია ანა.",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Ich heiße Anna."
+        ]
+    },
+    {
+        "type": "INPUT_SENTENCE_FROM_TEXT",
+        "prompt": "შეიყვანეთ წინადადება გერმანულად",
+        "text": "საიდან ხართ?",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Woher kommen Sie?"
+        ]
+    },
+    {
+        "type": "INPUT_SENTENCE_FROM_TEXT",
+        "prompt": "შეიყვანეთ წინადადება გერმანულად",
+        "text": "კარგი დღე, მე მქვია მაქს.",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Guten Tag, ich heiße Max."
+        ]
+    }
+]

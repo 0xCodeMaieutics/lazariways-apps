@@ -1,0 +1,145 @@
+[
+    {
+        "number": 1,
+        "title": "გაცნობა და მისალმება",
+        "startedDate": "2026-02-28T00:00:00.000Z",
+        "endDate": "2026-03-06T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 2,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 2,
+        "title": "ერთმანეთის გაცნობა",
+        "startedDate": "2026-03-07T00:00:00.000Z",
+        "endDate": "2026-03-13T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 3,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 3,
+        "title": "ყოველდღიური რუტინა და დრო",
+        "startedDate": "2026-03-14T00:00:00.000Z",
+        "endDate": "2026-03-20T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 4,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 4,
+        "title": "შოპინგის საფუძვლები",
+        "startedDate": "2026-03-21T00:00:00.000Z",
+        "endDate": "2026-03-27T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 5,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 5,
+        "title": "სადილობა გარეთ",
+        "startedDate": "2026-03-28T00:00:00.000Z",
+        "endDate": "2026-04-03T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 6,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 6,
+        "title": "სოციალური ცხოვრება",
+        "startedDate": "2026-04-04T00:00:00.000Z",
+        "endDate": "2026-04-10T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 7,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 7,
+        "title": "კომუნიკაცია და აზრები",
+        "startedDate": "2026-04-11T00:00:00.000Z",
+        "endDate": "2026-04-17T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 8,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 8,
+        "title": "წერილობითი კომუნიკაცია",
+        "startedDate": "2026-04-18T00:00:00.000Z",
+        "endDate": "2026-04-24T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 9,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 9,
+        "title": "დახმარებისა და ინფორმაციის მოთხოვნა",
+        "startedDate": "2026-04-25T00:00:00.000Z",
+        "endDate": "2026-05-01T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 10,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 10,
+        "title": "ყოველდღიური სიტუაციები",
+        "startedDate": "2026-05-02T00:00:00.000Z",
+        "endDate": "2026-05-08T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 11,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 11,
+        "title": "გადაადგილება",
+        "startedDate": "2026-05-09T00:00:00.000Z",
+        "endDate": "2026-05-15T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 12,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 12,
+        "title": "გაწაფული თემები",
+        "startedDate": "2026-05-16T00:00:00.000Z",
+        "endDate": "2026-05-22T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": 13,
+        "learningGoals": [],
+        "keyThemes": []
+    },
+    {
+        "number": 13,
+        "title": "მიმოხილვა და ინტეგრაცია",
+        "startedDate": "2026-05-23T00:00:00.000Z",
+        "endDate": "2026-05-28T00:00:00.000Z",
+        "difficulty": "BEGINNER",
+        "estimatedHours": "",
+        "unlocksWeek": null,
+        "learningGoals": [],
+        "keyThemes": []
+    }
+]

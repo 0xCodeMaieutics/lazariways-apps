@@ -1,0 +1,20 @@
+[
+    {
+        "name": "სტარტერ (Starter)",
+        "enabled": true,
+        "order": 1,
+        "type": "STARTER"
+    },
+    {
+        "name": "მცხობელი",
+        "enabled": true,
+        "order": 2,
+        "type": "BAECKEREI"
+    },
+    {
+        "name": "გასართობი პარკები (Freizeitparks)",
+        "enabled": true,
+        "order": 3,
+        "type": "FREIZEIT_PARK"
+    }
+]

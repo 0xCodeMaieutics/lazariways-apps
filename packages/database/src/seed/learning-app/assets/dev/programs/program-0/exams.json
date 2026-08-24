@@ -1,0 +1,89 @@
+[
+    {
+        "id": "FEgiWQAXyVJnJJtS87DLW",
+        "title": "მისალმება და თავის წარდგენა",
+        "description": "გერმანულად მისალმების და თავის წარდგენის ძირითადი ფრაზები და გამოთქმები.",
+        "difficulty": "BEGINNER",
+        "estimatedTimeInMinutes": 30,
+        "minimumCorrectAnswerCount": 2,
+        "minimumPassedCount": 3,
+        "userPassCount": 0,
+        "userAttemptedCount": 5,
+        "relativeExercisePath": "./exercise-0.json",
+        "unlocksExams": [
+            "Zr4xD0pLGRW7gdCrWuSLf"
+        ]
+    },
+    {
+        "id": "Zr4xD0pLGRW7gdCrWuSLf",
+        "title": "Exercise 2",
+        "description": "გერმანულად დამშვიდობების ფორმები და საუბრის ლაღი დასრულების ფრაზები.",
+        "difficulty": "BEGINNER",
+        "estimatedTimeInMinutes": 25,
+        "minimumCorrectAnswerCount": 3,
+        "minimumPassedCount": 3,
+        "userPassCount": 0,
+        "userAttemptedCount": 5,
+        "relativeExercisePath": "./exercise-1.json",
+        "unlocksExams": [
+            "aWiNEFjM9eL4U3lmBoT4O"
+        ]
+    },
+    {
+        "id": "aWiNEFjM9eL4U3lmBoT4O",
+        "title": "Exercise 3",
+        "description": "გერმანულად დამშვიდობების ფორმები და საუბრის ლაღი დასრულების ფრაზები.",
+        "difficulty": "BEGINNER",
+        "estimatedTimeInMinutes": 25,
+        "minimumCorrectAnswerCount": 3,
+        "minimumPassedCount": 4,
+        "userPassCount": 0,
+        "userAttemptedCount": 5,
+        "relativeExercisePath": "./exercise-2.json",
+        "unlocksExams": [
+            "gyUPb1eOItrt68JG3mJOl"
+        ]
+    },
+    {
+        "id": "gyUPb1eOItrt68JG3mJOl",
+        "title": "Exercise 4",
+        "description": "გერმანულად დამშვიდობების ფორმები და საუბრის ლაღი დასრულების ფრაზები.",
+        "difficulty": "BEGINNER",
+        "estimatedTimeInMinutes": 25,
+        "minimumCorrectAnswerCount": 3,
+        "minimumPassedCount": 4,
+        "userPassCount": 0,
+        "userAttemptedCount": 5,
+        "relativeExercisePath": "./exercise-3.json",
+        "unlocksExams": [
+            "X-GzwSjQaAviisr38KjFP"
+        ]
+    },
+    {
+        "id": "X-GzwSjQaAviisr38KjFP",
+        "title": "Exercise 5",
+        "description": "გერმანულად დამშვიდობების ფორმები და საუბრის ლაღი დასრულების ფრაზები.",
+        "difficulty": "BEGINNER",
+        "estimatedTimeInMinutes": 25,
+        "minimumCorrectAnswerCount": 3,
+        "minimumPassedCount": 4,
+        "userPassCount": 0,
+        "userAttemptedCount": 5,
+        "relativeExercisePath": "./exercise-4.json",
+        "unlocksExams": [
+            "KasGowYnTq5qmTQnpXU07"
+        ]
+    },
+    {
+        "id": "KasGowYnTq5qmTQnpXU07",
+        "title": "Exercise 6",
+        "description": "გერმანულად დამშვიდობების ფორმები და საუბრის ლაღი დასრულების ფრაზები.",
+        "difficulty": "BEGINNER",
+        "estimatedTimeInMinutes": 25,
+        "minimumCorrectAnswerCount": 1,
+        "minimumPassedCount": 4,
+        "userPassCount": 0,
+        "userAttemptedCount": 5,
+        "relativeExercisePath": "./exercise-5.json"
+    }
+]

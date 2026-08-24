@@ -1,0 +1,54 @@
+[
+    {
+        "type": "INPUT_FROM_TEXT",
+        "prompt": "შეიყვანეთ სიტყვა გერმანულად",
+        "text": "გამარჯობა",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Hallo"
+        ]
+    },
+    {
+        "type": "INPUT_FROM_TEXT",
+        "prompt": "შეიყვანეთ სიტყვა გერმანულად",
+        "text": "ნახვამდის",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Tschüss",
+            "Auf Wiedersehen"
+        ]
+    },
+    {
+        "type": "INPUT_FROM_TEXT",
+        "prompt": "შეიყვანეთ სიტყვა გერმანულად",
+        "text": "კარგი დღე",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Guten Tag"
+        ]
+    },
+    {
+        "type": "CHOOSE_MATCHING_PATTERNS",
+        "prompt": "დანიშნე შესატყვისი წყვილები",
+        "options": [
+            "Wie heißen Sie?",
+            "Woher kommen Sie?",
+            "Wie geht es Ihnen?",
+            "რა გქვიათ?",
+            "საიდან ხართ?",
+            "როგორ ბრძანდებით?"
+        ],
+        "correctOptionIndex": [
+            0,
+            3,
+            1,
+            4,
+            2,
+            5
+        ],
+        "correctInputs": []
+    }
+]

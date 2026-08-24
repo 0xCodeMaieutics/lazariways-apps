@@ -7,8 +7,9 @@ import {
   GermanLevel,
   DesiredSalary,
   type Prisma,
-} from "../generated/client"
-import { prisma } from "./client"
+} from "../../prisma/generated/client"
+import { prisma } from "../client"
+import { learningAppSeed } from "./learning-app"
 
 const SEED_FOTO_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -522,6 +523,10 @@ const SEED_PROFILES: SeedProfile[] = Array.from(
     console.log(`Seeded ${SEED_APPLICATIONS.length} applications with fotos.`)
     console.log(`Seeded ${SEED_PROFILES.length} profiles with fotos.`)
     console.log(`Seeded ${SEED_INQUIRIES.length} application inquiries.`)
+    console.log(`Lazari Ways seed done!`)
+    await learningAppSeed()
+
+    console.log(`Learning app seed done!`)
   } catch (error) {
     console.error(error)
     process.exit(1)

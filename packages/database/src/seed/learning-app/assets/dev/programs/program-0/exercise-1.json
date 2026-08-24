@@ -1,0 +1,35 @@
+[
+    {
+        "type": "INPUT_FROM_AUDIO",
+        "prompt": "აიწერე ის, რასაც ისმენ",
+        "audioUrl": "learning-app-platform/audios/hallo-welt-1772436520376.m4a",
+        "slowAudioUrl": "/audio/greetings/hallo_slow.mp3",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Hallo"
+        ]
+    },
+    {
+        "type": "INPUT_FROM_AUDIO",
+        "prompt": "აიწერე ის, რასაც ისმენ",
+        "audioUrl": "learning-app-platform/audios/hallo-welt-1772436520376.m4a",
+        "slowAudioUrl": "/audio/greetings/tschuess_slow.mp3",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Tschüss"
+        ]
+    },
+    {
+        "type": "INPUT_FROM_AUDIO",
+        "prompt": "აიწერე ის, რასაც ისმენ",
+        "audioUrl": "learning-app-platform/audios/hallo-welt-1772436520376.m4a",
+        "slowAudioUrl": "/audio/greetings/auf_wiedersehen_slow.mp3",
+        "options": [],
+        "correctOptionIndex": [],
+        "correctInputs": [
+            "Auf Wiedersehen"
+        ]
+    }
+]

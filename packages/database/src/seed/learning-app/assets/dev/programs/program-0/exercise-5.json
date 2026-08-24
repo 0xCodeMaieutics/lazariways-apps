@@ -1,0 +1,23 @@
+[
+    {
+        "type": "CHOOSE_MATCHING_PATTERNS",
+        "prompt": "დანიშნე შესატყვისი წყვილები",
+        "options": [
+            "Wie heißen Sie?",
+            "Woher kommen Sie?",
+            "Wie geht es Ihnen?",
+            "რა გქვიათ?",
+            "საიდან ხართ?",
+            "როგორ ბრძანდებით?"
+        ],
+        "correctOptionIndex": [
+            0,
+            3,
+            1,
+            4,
+            2,
+            5
+        ],
+        "correctInputs": []
+    }
+]

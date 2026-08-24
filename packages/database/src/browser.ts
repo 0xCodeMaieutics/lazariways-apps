@@ -1,3 +1,3 @@
-export * from "../generated/enums"
-export * from "../generated/browser"
-export * from "../generated/models"
+export * from "../prisma/generated/enums"
+export * from "../prisma/generated/browser"
+export * from "../prisma/generated/models"

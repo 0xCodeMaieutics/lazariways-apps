@@ -1,17 +1,19 @@
 import { PrismaPg } from "@prisma/adapter-pg"
 import { Pool } from "pg"
-import { PrismaClient } from "../generated/client"
+import { PrismaClient } from "../prisma/generated/client"
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
 
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
-    adapter: new PrismaPg(
-      new Pool({
-        connectionString: process.env.DATABASE_URL,
-      })
-    ),
+    adapter: new PrismaPg(pool, {
+      disposeExternalPool: true,
+    }),
     // Optional: Log queries to see if connection works
     // log: ['query', 'info', 'warn', 'error'],
   })
