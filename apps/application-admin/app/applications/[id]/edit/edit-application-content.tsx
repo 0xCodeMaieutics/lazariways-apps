@@ -10,6 +10,7 @@ export type UniversityOption = {
 
 interface EditApplicationContentProps {
   applicationId: string
+  applicationLink: string
   defaultValues: AdminApplicationEditData
   fotoUrl: string
   applicantName: string
@@ -18,6 +19,7 @@ interface EditApplicationContentProps {
 
 export function EditApplicationContent({
   applicationId,
+  applicationLink,
   defaultValues,
   fotoUrl,
   applicantName,
@@ -35,6 +37,7 @@ export function EditApplicationContent({
       </div>
       <ApplicationEditForm
         applicationId={applicationId}
+        applicationLink={applicationLink}
         defaultValues={defaultValues}
         universities={universities}
       />

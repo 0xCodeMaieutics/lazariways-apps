@@ -38,6 +38,7 @@ import {
   NativeSelectOption,
 } from "@workspace/ui/components/native-select"
 import { ApplicationPdfButtons } from "@/components/application-pdf-buttons"
+import { CopyApplicationLinkButton } from "@/components/copy-application-link-button"
 import { InstagramLink } from "@/components/instagram-link"
 import type { UniversityOption } from "./edit-application-content"
 
@@ -45,6 +46,7 @@ const UNIVERSITY_NOT_IN_LIST = "__not_in_list__"
 
 interface ApplicationEditFormProps {
   applicationId: string
+  applicationLink: string
   defaultValues: AdminApplicationEditData
   universities: UniversityOption[]
 }
@@ -146,6 +148,7 @@ function BooleanRadioField({
 
 export function ApplicationEditForm({
   applicationId,
+  applicationLink,
   defaultValues,
   universities,
 }: ApplicationEditFormProps) {
@@ -622,6 +625,11 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.workSector]} />
         </Field>
       </FormSection>
+
+      <section className="space-y-4 border-t pt-8">
+        <h2 className="text-lg font-medium">Other actions</h2>
+        <CopyApplicationLinkButton applicationLink={applicationLink} />
+      </section>
 
       <section className="space-y-4 border-t pt-8">
         <h2 className="text-lg font-medium">Delete application</h2>
