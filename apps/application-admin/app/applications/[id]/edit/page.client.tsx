@@ -255,7 +255,7 @@ export function ApplicationEditForm({
 
   return (
     <form
-      className="space-y-8 pb-72"
+      className="space-y-8 pb-24"
       onSubmit={form.handleSubmit(save)}
       noValidate
     >
@@ -628,7 +628,10 @@ export function ApplicationEditForm({
 
       <section className="space-y-4 border-t pt-8">
         <h2 className="text-lg font-medium">Other actions</h2>
-        <CopyApplicationLinkButton applicationLink={applicationLink} />
+        <div className="space-y-2">
+          <CopyApplicationLinkButton applicationLink={applicationLink} />
+          <ApplicationPdfButtons applicationId={applicationId} />
+        </div>
       </section>
 
       <section className="space-y-4 border-t pt-8">
@@ -652,7 +655,7 @@ export function ApplicationEditForm({
       ) : null}
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4">
-        <div className="mx-auto w-full max-w-lg space-y-3">
+        <div className="mx-auto w-full max-w-lg">
           <Button
             type="submit"
             className="w-full"
@@ -661,7 +664,6 @@ export function ApplicationEditForm({
           >
             {isSaving ? "მუშავდება…" : "დამახსოვრება"}
           </Button>
-          <ApplicationPdfButtons applicationId={applicationId} />
         </div>
       </div>
 

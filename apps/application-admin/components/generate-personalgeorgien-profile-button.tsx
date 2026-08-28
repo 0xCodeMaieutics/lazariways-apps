@@ -32,8 +32,9 @@ function getDownloadFilename(contentDisposition: string | null): string | null {
 export function GeneratePersonalgeorgienProfileButton({
   applicationId,
 }: GeneratePersonalgeorgienProfileButtonProps) {
-  const [profession, setProfession] =
-    useState<PersonalGeorgienProfession>("Restaurant & Bar Staff")
+  const [profession, setProfession] = useState<PersonalGeorgienProfession>(
+    "Restaurant & Bar Staff"
+  )
   const [isGenerating, setIsGenerating] = useState(false)
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -90,9 +91,9 @@ export function GeneratePersonalgeorgienProfileButton({
           }
           aria-label="Personalgeorgien profession"
           className={cn(
-            "border-input bg-background h-9 min-w-0 flex-1 rounded-lg border px-2.5 text-sm transition-colors outline-none",
+            "h-9 min-w-0 flex-1 rounded-lg border border-input bg-background px-2.5 text-sm transition-colors outline-none",
             "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
-            "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+            "min-w-20 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
           )}
         >
           {personalGeorgienProfessionOptions.map((option) => (
@@ -104,13 +105,13 @@ export function GeneratePersonalgeorgienProfileButton({
         <Button
           type="button"
           variant="outline"
-          className="shrink-0"
+          className="min-w-0 shrink justify-start overflow-hidden"
           disabled={isGenerating}
           onClick={generateProfile}
         >
-          {isGenerating
-            ? "მუშავდება…"
-            : "Personalgeorgien პროფილის გენერირება"}
+          <span className="min-w-0 truncate">
+            {isGenerating ? "მუშავდება…" : "Personalgeorgien პროფილის გენერირება"}
+          </span>
         </Button>
       </div>
 
