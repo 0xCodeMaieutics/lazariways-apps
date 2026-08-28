@@ -3,7 +3,15 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { Controller, useForm, useWatch, type Control } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import { startTransition, useState, useTransition, type ReactNode } from "react"
+import {
+  startTransition,
+  useEffect,
+  useEffectEvent,
+  useState,
+  useTransition,
+  type ReactNode,
+} from "react"
+import { ArrowDown, ArrowUp } from "lucide-react"
 import {
   adminApplicationEditSchema,
   type AdminApplicationEditData,
@@ -101,6 +109,47 @@ function DateField<TName extends DateFieldName>({
         </Field>
       )}
     />
+  )
+}
+
+function ScrollNavigationButton() {
+  const [isAtTop, setIsAtTop] = useState(true)
+
+  const updateScrollPosition = useEffectEvent(() => {
+    setIsAtTop(window.scrollY === 0)
+  })
+
+  useEffect(() => {
+    window.addEventListener("scroll", updateScrollPosition, { passive: true })
+    const frame = requestAnimationFrame(updateScrollPosition)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", updateScrollPosition)
+    }
+  }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    })
+  }
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="icon-lg"
+      className="fixed right-4 bottom-28 z-50 rounded-full shadow-md"
+      aria-label={isAtTop ? "Scroll to bottom" : "Scroll to top"}
+      onClick={isAtTop ? scrollToBottom : scrollToTop}
+    >
+      {isAtTop ? <ArrowDown /> : <ArrowUp />}
+    </Button>
   )
 }
 
@@ -371,7 +420,9 @@ export function ApplicationEditForm({
             onChange={(event) => onUniversitySelectChange(event.target.value)}
             aria-invalid={!!formState.errors.universityId}
           >
-            <NativeSelectOption value="">Select a university</NativeSelectOption>
+            <NativeSelectOption value="">
+              Select a university
+            </NativeSelectOption>
             {universities.map((university) => (
               <NativeSelectOption key={university.id} value={university.id}>
                 {university.name}
@@ -419,9 +470,7 @@ export function ApplicationEditForm({
                       return
                     }
                     const parsed = Number(raw.replace(",", "."))
-                    field.onChange(
-                      Number.isFinite(parsed) ? parsed : undefined
-                    )
+                    field.onChange(Number.isFinite(parsed) ? parsed : undefined)
                   }}
                   onBlur={field.onBlur}
                   name={field.name}
@@ -666,6 +715,8 @@ export function ApplicationEditForm({
           </Button>
         </div>
       </div>
+
+      <ScrollNavigationButton />
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
