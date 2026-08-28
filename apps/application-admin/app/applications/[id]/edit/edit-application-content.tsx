@@ -27,7 +27,7 @@ export function EditApplicationContent({
 }: EditApplicationContentProps) {
   return (
     <div className="space-y-6">
-      <div className="mx-auto h-40 w-32 overflow-hidden rounded-lg bg-muted">
+      <div className="mx-auto h-96 w-full overflow-hidden rounded-lg bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={fotoUrl}
