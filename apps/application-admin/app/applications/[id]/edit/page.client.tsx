@@ -37,6 +37,7 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@workspace/ui/components/native-select"
+import { ApplicationPdfButtons } from "@/components/application-pdf-buttons"
 import { InstagramLink } from "@/components/instagram-link"
 import type { UniversityOption } from "./edit-application-content"
 
@@ -251,7 +252,7 @@ export function ApplicationEditForm({
 
   return (
     <form
-      className="space-y-8 pb-24"
+      className="space-y-8 pb-72"
       onSubmit={form.handleSubmit(save)}
       noValidate
     >
@@ -643,7 +644,7 @@ export function ApplicationEditForm({
       ) : null}
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4">
-        <div className="mx-auto w-full max-w-lg">
+        <div className="mx-auto w-full max-w-lg space-y-3">
           <Button
             type="submit"
             className="w-full"
@@ -652,6 +653,7 @@ export function ApplicationEditForm({
           >
             {isSaving ? "მუშავდება…" : "დამახსოვრება"}
           </Button>
+          <ApplicationPdfButtons applicationId={applicationId} />
         </div>
       </div>
 

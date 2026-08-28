@@ -14,8 +14,8 @@ export function ApplicationPdfButtons({
   return (
     <div className="space-y-2">
       <GenerateBewerberChecklistButton applicationId={applicationId} />
-      <GeneratePersonalgeorgienProfileButton applicationId={applicationId} />
       <GenerateCertificateOfEnrollmentButton applicationId={applicationId} />
+      <GeneratePersonalgeorgienProfileButton applicationId={applicationId} />
     </div>
   )
 }
