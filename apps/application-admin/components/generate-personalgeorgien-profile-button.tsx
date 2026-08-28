@@ -109,8 +109,8 @@ export function GeneratePersonalgeorgienProfileButton({
           onClick={generateProfile}
         >
           {isGenerating
-            ? "Generating…"
-            : "Generate Personalgeorgien profile PDF"}
+            ? "მუშავდება…"
+            : "Personalgeorgien პროფილის გენერირება"}
         </Button>
       </div>
 
