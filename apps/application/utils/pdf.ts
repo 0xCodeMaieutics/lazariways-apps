@@ -338,7 +338,7 @@ export const generateBewerberChecklistPdf = async (
 
     drawValue(firstPage, applicationFormData.taxId ?? '', p1.steuerId)
     drawValue(firstPage, applicationFormData.phone ?? '', p1.telefon)
-    drawValue(firstPage, applicationFormData.email ?? '', p1.email)
+    drawValue(firstPage, applicationFormData.email, p1.email)
     drawValue(firstPage, applicationFormData.instagram ?? '', p1.instagram)
 
     drawValue(

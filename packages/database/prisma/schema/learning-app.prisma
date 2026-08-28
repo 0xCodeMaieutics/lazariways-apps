@@ -11,8 +11,8 @@ model LearningAppUser {
   role          LearningAppUserRole @default(USER)
   image         String?
 
-  createdAt            DateTime                       @default(now())
-  updatedAt            DateTime                       @updatedAt
+  createdAt            DateTime                         @default(now())
+  updatedAt            DateTime                         @updatedAt
   sessions             LearningAppSession[]
   accounts             LearningAppAccount[]
   userExamAggregations LearningAppUserExamAggregation[]
@@ -76,10 +76,10 @@ model LearningAppTopic {
 }
 
 model LearningAppExam {
-  id          String               @id @default(nanoid())
+  id          String                @id @default(nanoid())
   title       String
   description String
-  enable      Boolean              @default(false)
+  enable      Boolean               @default(false)
   exercises   LearningAppExercise[]
 
   order                         Int

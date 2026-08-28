@@ -1,159 +1,159 @@
 enum Gender {
-    M
-    F
+  M
+  F
 }
 
 enum GermanLevel {
-    A1
-    A2
-    B1
-    B2
-    C1
+  A1
+  A2
+  B1
+  B2
+  C1
 }
 
 enum DesiredSalary {
-    EURO_10_12
-    EURO_12_14
-    EURO_15_PLUS
+  EURO_10_12
+  EURO_12_14
+  EURO_15_PLUS
 }
 
 model Application {
-    id          String   @id @default(uuid())
-    submittedAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  submittedAt DateTime @default(now())
 
-    fotoS3Key String
+  fotoS3Key String
 
-    firstName    String
-    lastName     String
-    gender       Gender
-    birthDate    DateTime @db.Date
-    birthPlace   String
-    birthCountry String
+  firstName    String
+  lastName     String
+  gender       Gender
+  birthDate    DateTime @db.Date
+  birthPlace   String
+  birthCountry String
 
-    street      String
-    postalCode  String
-    city        String
-    country     String
-    nationality String
+  street      String
+  postalCode  String
+  city        String
+  country     String
+  nationality String
 
-    email     String?
-    phone     String?
-    instagram String?
-    taxId     String?
+  email     String?
+  phone     String?
+  instagram String?
+  taxId     String?
 
-    university                        String?
-    universityId                      String?
-    linkedUniversity                  University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
-    studySubject                      String?
-    standardStudyPeriodYears          Float?
-    enrolledSince                     DateTime?   @db.Date
-    expectedStudyEnd                  DateTime?   @db.Date
-    semesterBreakFrom                 DateTime?   @db.Date
-    semesterBreakTo                   DateTime?   @db.Date
-    studiesContinueAfterSemesterBreak Boolean?
+  university                        String?
+  universityId                      String?
+  linkedUniversity                  University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
+  studySubject                      String?
+  standardStudyPeriodYears          Float?
+  enrolledSince                     DateTime?   @db.Date
+  expectedStudyEnd                  DateTime?   @db.Date
+  semesterBreakFrom                 DateTime?   @db.Date
+  semesterBreakTo                   DateTime?   @db.Date
+  studiesContinueAfterSemesterBreak Boolean?
 
-    germanLevel        GermanLevel?
-    otherLanguages     String?
-    driverLicense      Boolean      @default(false)
-    canRideBike        Boolean      @default(false)
-    shiftWork          Boolean      @default(false)
-    healthRestrictions String?
-    allergies          String?
-    clothingSize       String?
-    shoeSize           String[]
+  germanLevel        GermanLevel?
+  otherLanguages     String?
+  driverLicense      Boolean      @default(false)
+  canRideBike        Boolean      @default(false)
+  shiftWork          Boolean      @default(false)
+  healthRestrictions String?
+  allergies          String?
+  clothingSize       String?
+  shoeSize           String[]
 
-    hasBeenInGermanyBefore Boolean   @default(false)
-    previousStayPlace      String?
-    previousStayPeriodFrom DateTime? @db.Date
-    previousStayPeriodTo   DateTime? @db.Date
+  hasBeenInGermanyBefore Boolean   @default(false)
+  previousStayPlace      String?
+  previousStayPeriodFrom DateTime? @db.Date
+  previousStayPeriodTo   DateTime? @db.Date
 
-    emergencyContactName String
-    emergencyPhone       String
-    workSector           String[]
+  emergencyContactName String
+  emergencyPhone       String
+  workSector           String[]
 
-    inquiries ApplicationInquiry[]
+  inquiries ApplicationInquiry[]
 
-    @@index([submittedAt])
-    @@index([lastName, firstName])
-    @@index([universityId])
+  @@index([submittedAt])
+  @@index([lastName, firstName])
+  @@index([universityId])
 }
 
 model University {
-    id           String   @id @default(uuid())
-    name         String   @unique
-    street       String?
-    streetNumber String?
-    postalCode   String?
-    city         String?
-    country      String?
-    telephone    String?
-    email        String?
-    website      String?
-    createdAt    DateTime @default(now())
+  id           String   @id @default(uuid())
+  name         String   @unique
+  street       String?
+  streetNumber String?
+  postalCode   String?
+  city         String?
+  country      String?
+  telephone    String?
+  email        String?
+  website      String?
+  createdAt    DateTime @default(now())
 
-    applications Application[]
+  applications Application[]
 }
 
 model ApplicationInquiry {
-    id                String   @id
-    submittedAt       DateTime @default(now())
-    companyName       String
-    contactPersonName String
-    email             String
-    phone             String?
-    message           String?
+  id                String   @id
+  submittedAt       DateTime @default(now())
+  companyName       String
+  contactPersonName String
+  email             String
+  phone             String?
+  message           String?
 
-    applicationId String
-    application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-    @@index([applicationId])
-    @@index([submittedAt])
+  @@index([applicationId])
+  @@index([submittedAt])
 }
 
 model TelegramVerification {
-    id            String    @id @default(uuid())
-    code          String
-    expiresAt     DateTime
-    usedAt        DateTime?
-    invalidatedAt DateTime?
-    createdAt     DateTime  @default(now())
+  id            String    @id @default(uuid())
+  code          String
+  expiresAt     DateTime
+  usedAt        DateTime?
+  invalidatedAt DateTime?
+  createdAt     DateTime  @default(now())
 
-    @@index([code])
-    @@index([createdAt])
+  @@index([code])
+  @@index([createdAt])
 }
 
 model AdminSession {
-    id        String   @id @default(uuid())
-    token     String   @unique
-    createdAt DateTime @default(now())
+  id        String   @id @default(uuid())
+  token     String   @unique
+  createdAt DateTime @default(now())
 }
 
 model Profile {
-    id            String            @id @default(uuid())
-    firstName     String
-    lastName      String
-    gender        Gender            @default(M)
-    birthDate     DateTime          @db.Date
-    email         String
-    fotoS3Key     String
-    phone         String?
-    instagram     String?
-    isStudent     Boolean           @default(false)
-    workSector    String[]
-    desiredSalary DesiredSalary
-    createdAt     DateTime          @default(now())
-    languages     ProfileLanguage[]
+  id            String            @id @default(uuid())
+  firstName     String
+  lastName      String
+  gender        Gender            @default(M)
+  birthDate     DateTime          @db.Date
+  email         String
+  fotoS3Key     String
+  phone         String?
+  instagram     String?
+  isStudent     Boolean           @default(false)
+  workSector    String[]
+  desiredSalary DesiredSalary
+  createdAt     DateTime          @default(now())
+  languages     ProfileLanguage[]
 
-    @@index([createdAt])
-    @@index([lastName, firstName])
+  @@index([createdAt])
+  @@index([lastName, firstName])
 }
 
 model ProfileLanguage {
-    id        String      @id @default(uuid())
-    profileId String
-    profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
-    language  String
-    level     GermanLevel
+  id        String      @id @default(uuid())
+  profileId String
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  language  String
+  level     GermanLevel
 
-    @@index([profileId])
+  @@index([profileId])
 }

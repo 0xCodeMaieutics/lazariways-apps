@@ -62,15 +62,7 @@ export const applicationFormSchema = z
         city: z.string().min(1, 'ქალაქი სავალდებულოა'),
         country: z.string().min(1, 'ქვეყანა სავალდებულოა'),
         nationality: z.string().min(1, 'მოქალაქეობა სავალდებულოა'),
-        email: z
-            .string()
-            .refine(
-                (val) =>
-                    val.trim() === '' ||
-                    z.email().safeParse(val.trim()).success,
-                'არასწორი ელფოსტის ფორმატი'
-            )
-            .optional(),
+        email: z.email('ელფოსტა სავალდებულოა'),
         phone: z
             .string()
             .refine(
@@ -164,13 +156,10 @@ export const applicationFormSchema = z
         message: 'უნივერსიტეტი სავალდებულოა',
         path: ['university'],
     })
-    .refine(
-        (data) => !data.isStudent || hasText(data.studySubject),
-        {
-            message: 'სასწავლო სპეციალობა სავალდებულოა',
-            path: ['studySubject'],
-        }
-    )
+    .refine((data) => !data.isStudent || hasText(data.studySubject), {
+        message: 'სასწავლო სპეციალობა სავალდებულოა',
+        path: ['studySubject'],
+    })
     .refine(
         (data) =>
             !data.isStudent || data.standardStudyPeriodYears !== undefined,
@@ -179,20 +168,14 @@ export const applicationFormSchema = z
             path: ['standardStudyPeriodYears'],
         }
     )
-    .refine(
-        (data) => !data.isStudent || hasText(data.enrolledSince),
-        {
-            message: 'სწავლის დაწყების თარიღი სავალდებულოა',
-            path: ['enrolledSince'],
-        }
-    )
-    .refine(
-        (data) => !data.isStudent || hasText(data.expectedStudyEnd),
-        {
-            message: 'სწავლის დასრულების მოსალოდნელი თარიღი სავალდებულოა',
-            path: ['expectedStudyEnd'],
-        }
-    )
+    .refine((data) => !data.isStudent || hasText(data.enrolledSince), {
+        message: 'სწავლის დაწყების თარიღი სავალდებულოა',
+        path: ['enrolledSince'],
+    })
+    .refine((data) => !data.isStudent || hasText(data.expectedStudyEnd), {
+        message: 'სწავლის დასრულების მოსალოდნელი თარიღი სავალდებულოა',
+        path: ['expectedStudyEnd'],
+    })
     .refine(
         (data) => {
             if (!data.isStudent) return true
@@ -207,13 +190,10 @@ export const applicationFormSchema = z
             path: ['expectedStudyEnd'],
         }
     )
-    .refine(
-        (data) => !data.isStudent || hasText(data.semesterBreakFrom),
-        {
-            message: 'არდადეგების დასაწყისი სავალდებულოა',
-            path: ['semesterBreakFrom'],
-        }
-    )
+    .refine((data) => !data.isStudent || hasText(data.semesterBreakFrom), {
+        message: 'არდადეგების დასაწყისი სავალდებულოა',
+        path: ['semesterBreakFrom'],
+    })
     .refine((data) => !data.isStudent || hasText(data.semesterBreakTo), {
         message: 'არდადეგების დასასრული სავალდებულოა',
         path: ['semesterBreakTo'],

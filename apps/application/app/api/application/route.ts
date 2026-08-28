@@ -228,7 +228,7 @@ function applicationToPrismaCreateData(
         city: data.city.trim(),
         country: data.country.trim(),
         nationality: data.nationality.trim(),
-        email: optionalString(data.email),
+        email: data.email.trim(),
         phone: optionalString(data.phone),
         instagram: optionalString(data.instagram),
         taxId: optionalString(data.taxId),
@@ -273,7 +273,6 @@ function formOptionalFloat(
 }
 
 function applicationFormDataFromFormData(formData: FormData) {
-    const emailRaw = formString(formData, 'email')
     const germanLevelRaw = formString(formData, 'germanLevel')
     const universityIdRaw = formString(formData, 'universityId')
     return {
@@ -288,7 +287,7 @@ function applicationFormDataFromFormData(formData: FormData) {
         city: formString(formData, 'city'),
         country: formString(formData, 'country'),
         nationality: formString(formData, 'nationality') || 'Georgisch',
-        email: emailRaw.trim() === '' ? undefined : emailRaw,
+        email: formString(formData, 'email'),
         phone: formString(formData, 'phone'),
         instagram: formString(formData, 'instagram'),
         taxId: formString(formData, 'taxId'),
