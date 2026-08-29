@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { LearningAppTopic } from "@workspace/database/browser"
+import { Topic } from "@workspace/database/browser"
 import {
   DndContext,
   closestCenter,
@@ -34,7 +34,7 @@ import { GripVertical, Loader2, Plus } from "lucide-react"
 import { useMutation } from "@tanstack/react-query"
 import { useTRPC } from "@/lib/trpc/react"
 
-const TOPIC_TYPE_LABELS: Record<LearningAppTopic["type"], string> = {
+const TOPIC_TYPE_LABELS: Record<Topic["type"], string> = {
   STARTER: "Starter",
   BAECKEREI: "Backärei",
   FREIZEIT_PARK: "Freizeitpark",
@@ -46,7 +46,7 @@ function SortableRow({
   onToggleEnabled,
   isTogglePending,
 }: {
-  topic: LearningAppTopic
+  topic: Topic
   onNavigate: () => void
   onToggleEnabled: (enabled: boolean) => void
   isTogglePending: boolean
@@ -102,7 +102,7 @@ function SortableRow({
 export const TopicsList = ({
   topics: topicsOuter,
 }: {
-  topics: LearningAppTopic[]
+  topics: Topic[]
 }) => {
   const router = useRouter()
   const trpc = useTRPC()

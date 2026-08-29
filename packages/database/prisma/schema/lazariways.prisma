@@ -1,6 +1,8 @@
 enum Gender {
   M
   F
+
+  @@schema("public")
 }
 
 enum GermanLevel {
@@ -9,12 +11,16 @@ enum GermanLevel {
   B1
   B2
   C1
+
+  @@schema("public")
 }
 
 enum DesiredSalary {
   EURO_10_12
   EURO_12_14
   EURO_15_PLUS
+
+  @@schema("public")
 }
 
 model Application {
@@ -76,6 +82,7 @@ model Application {
   @@index([submittedAt])
   @@index([lastName, firstName])
   @@index([universityId])
+  @@schema("public")
 }
 
 model University {
@@ -92,6 +99,8 @@ model University {
   createdAt    DateTime @default(now())
 
   applications Application[]
+
+  @@schema("public")
 }
 
 model ApplicationInquiry {
@@ -108,6 +117,7 @@ model ApplicationInquiry {
 
   @@index([applicationId])
   @@index([submittedAt])
+  @@schema("public")
 }
 
 model TelegramVerification {
@@ -120,12 +130,15 @@ model TelegramVerification {
 
   @@index([code])
   @@index([createdAt])
+  @@schema("public")
 }
 
 model AdminSession {
   id        String   @id @default(uuid())
   token     String   @unique
   createdAt DateTime @default(now())
+
+  @@schema("public")
 }
 
 model Profile {
@@ -146,6 +159,7 @@ model Profile {
 
   @@index([createdAt])
   @@index([lastName, firstName])
+  @@schema("public")
 }
 
 model ProfileLanguage {
@@ -156,4 +170,5 @@ model ProfileLanguage {
   level     GermanLevel
 
   @@index([profileId])
+  @@schema("public")
 }

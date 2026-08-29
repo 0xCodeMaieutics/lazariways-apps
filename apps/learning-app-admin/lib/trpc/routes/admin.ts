@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { adminProcedure, router } from '../server'
-import { LearningAppTopicType } from '@workspace/database/browser'
+import { TopicType } from '@workspace/database/browser'
 import prisma from '@workspace/database/client'
 import { generateAudio } from '@/lib/narakeet'
 import { uploadToStorage } from '@workspace/file-upload/s3-client'
@@ -86,7 +86,7 @@ const examUpdateSchema = examCreateSchema.partial().extend({
 
 const topicCreateSchema = z.object({
     name: z.string().min(1, 'Name is required'),
-    type: z.enum(LearningAppTopicType),
+    type: z.enum(TopicType),
     order: z.number().int().min(0),
     enabled: z.boolean().default(false),
 })
@@ -119,7 +119,7 @@ export const adminRouter = router({
                     declaredType: 'audio/mp4',
                 })
 
-                await prisma.learningAppExercise.update({
+                await prisma.exercise.update({
                     where: { id: input.exerciseId },
                     data: { audioUrl: key },
                 })
@@ -131,7 +131,7 @@ export const adminRouter = router({
         create: adminProcedure
             .input(examCreateSchema)
             .mutation(async ({ input }) =>
-                prisma.learningAppExam.create({
+                prisma.exam.create({
                     data: {
                         title: input.title,
                         description: input.description,
@@ -151,7 +151,7 @@ export const adminRouter = router({
             .input(examUpdateSchema)
             .mutation(async ({ input }) => {
                 const { id, ...data } = input
-                return prisma.learningAppExam.update({
+                return prisma.exam.update({
                     where: { id },
                     data,
                 })
@@ -159,7 +159,7 @@ export const adminRouter = router({
         delete: adminProcedure
             .input(z.object({ id: z.string() }))
             .mutation(async ({ input }) =>
-                prisma.learningAppExam.delete({
+                prisma.exam.delete({
                     where: { id: input.id },
                 })
             ),
@@ -170,7 +170,7 @@ export const adminRouter = router({
             .mutation(async ({ input }) => {
                 await prisma.$transaction(
                     input.map(({ id, order }) =>
-                        prisma.learningAppExam.update({
+                        prisma.exam.update({
                             where: { id },
                             data: { order },
                         })
@@ -182,7 +182,7 @@ export const adminRouter = router({
         create: adminProcedure
             .input(exerciseCreateSchema)
             .mutation(async ({ input }) =>
-                prisma.learningAppExercise.create({
+                prisma.exercise.create({
                     data: {
                         examId: input.examId,
                         type: input.type,
@@ -210,7 +210,7 @@ export const adminRouter = router({
             )
             .mutation(async ({ input }) => {
                 const { id, ...data } = input
-                return prisma.learningAppExercise.update({
+                return prisma.exercise.update({
                     where: { id },
                     data: {
                         ...(data.examId !== undefined && {
@@ -249,7 +249,7 @@ export const adminRouter = router({
         delete: adminProcedure
             .input(z.object({ id: z.string() }))
             .mutation(async ({ input }) =>
-                prisma.learningAppExercise.delete({
+                prisma.exercise.delete({
                     where: { id: input.id },
                 })
             ),
@@ -260,7 +260,7 @@ export const adminRouter = router({
             .mutation(async ({ input }) => {
                 await prisma.$transaction(
                     input.map(({ id, order }) =>
-                        prisma.learningAppExercise.update({
+                        prisma.exercise.update({
                             where: { id },
                             data: { order },
                         })
@@ -277,7 +277,7 @@ export const adminRouter = router({
                 })
             )
             .mutation(({ input }) =>
-                prisma.learningAppTopic.update({
+                prisma.topic.update({
                     where: {
                         id: input.id,
                     },
@@ -293,7 +293,7 @@ export const adminRouter = router({
             .mutation(async ({ input }) => {
                 await prisma.$transaction(
                     input.map(({ id, order }) =>
-                        prisma.learningAppTopic.update({
+                        prisma.topic.update({
                             where: { id },
                             data: { order },
                         })
@@ -303,7 +303,7 @@ export const adminRouter = router({
         createNewTopic: adminProcedure
             .input(topicCreateSchema)
             .mutation(async ({ input }) =>
-                prisma.learningAppTopic.create({
+                prisma.topic.create({
                     data: {
                         name: input.name,
                         type: input.type,

@@ -3,9 +3,9 @@
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import {
-  type LearningAppExercise,
-  LearningAppExerciseType,
-  LearningAppUserExamAggregation,
+  type Exercise,
+  ExerciseType,
+  UserExamAggregation,
 } from "@workspace/database/browser"
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { cn } from "@/lib/utils"
@@ -27,7 +27,7 @@ import {
   useState,
 } from "react"
 import { useCountdown } from "@/utils/useCountdown"
-import { type LearningAppExam } from "@workspace/database/browser"
+import { type Exam } from "@workspace/database/browser"
 import { useExamLogic } from "@/utils/use-exam-logic"
 import { useMutation } from "@tanstack/react-query"
 import type { inferRouterInputs } from "@trpc/server"
@@ -93,9 +93,9 @@ export function Exam({
   userCompletions,
   exam,
 }: {
-  exercises: LearningAppExercise[]
-  userCompletions: LearningAppUserExamAggregation[]
-  exam: LearningAppExam
+  exercises: Exercise[]
+  userCompletions: UserExamAggregation[]
+  exam: Exam
 }) {
   const { topicId } = useParams()
   const router = useRouter()
@@ -128,13 +128,13 @@ export function Exam({
   const type = currentExercise.type
 
   const isChooseExercise =
-    type === LearningAppExerciseType.CHOOSE_FROM_AUDIO ||
-    type === LearningAppExerciseType.CHOOSE_FROM_TEXT
+    type === ExerciseType.CHOOSE_FROM_AUDIO ||
+    type === ExerciseType.CHOOSE_FROM_TEXT
 
   const isInputExercise =
-    type === LearningAppExerciseType.INPUT_FROM_AUDIO ||
-    type === LearningAppExerciseType.INPUT_FROM_TEXT ||
-    type === LearningAppExerciseType.INPUT_SENTENCE_FROM_TEXT
+    type === ExerciseType.INPUT_FROM_AUDIO ||
+    type === ExerciseType.INPUT_FROM_TEXT ||
+    type === ExerciseType.INPUT_SENTENCE_FROM_TEXT
 
   return (
     <context.Provider
@@ -166,9 +166,9 @@ function ExamTraining({
   exam,
   userCompletions,
 }: {
-  exercises: LearningAppExercise[]
-  exam: LearningAppExam
-  userCompletions: LearningAppUserExamAggregation[]
+  exercises: Exercise[]
+  exam: Exam
+  userCompletions: UserExamAggregation[]
 }) {
   const {
     correctCount,
@@ -238,10 +238,10 @@ function ExamTraining({
     if (
       (
         [
-          LearningAppExerciseType.CHOOSE_FROM_AUDIO,
-          LearningAppExerciseType.CHOOSE_FROM_TEXT,
-          LearningAppExerciseType.CHOOSE_MATCHING_PATTERNS,
-        ] as LearningAppExerciseType[]
+          ExerciseType.CHOOSE_FROM_AUDIO,
+          ExerciseType.CHOOSE_FROM_TEXT,
+          ExerciseType.CHOOSE_MATCHING_PATTERNS,
+        ] as ExerciseType[]
       ).includes(currentExercise.type)
     ) {
       const optionElements = (
@@ -281,10 +281,10 @@ function ExamTraining({
     } else if (
       (
         [
-          LearningAppExerciseType.INPUT_FROM_AUDIO,
-          LearningAppExerciseType.INPUT_FROM_TEXT,
-          LearningAppExerciseType.INPUT_SENTENCE_FROM_TEXT,
-        ] as LearningAppExerciseType[]
+          ExerciseType.INPUT_FROM_AUDIO,
+          ExerciseType.INPUT_FROM_TEXT,
+          ExerciseType.INPUT_SENTENCE_FROM_TEXT,
+        ] as ExerciseType[]
       ).includes(currentExercise.type)
     ) {
       if (continueButtonRef.current?.disabled === false && e.key === "Enter")
@@ -333,8 +333,8 @@ function ExamTraining({
         </div>
         <span className="text-2xl font-medium">{currentExercise.prompt}</span>
         <div className="flex-1 space-y-16">
-          {(type === LearningAppExerciseType.CHOOSE_FROM_AUDIO ||
-            type === LearningAppExerciseType.INPUT_FROM_AUDIO) && (
+          {(type === ExerciseType.CHOOSE_FROM_AUDIO ||
+            type === ExerciseType.INPUT_FROM_AUDIO) && (
             <>
               <audio
                 ref={audioRef}
@@ -371,9 +371,9 @@ function ExamTraining({
               </button>
             </>
           )}
-          {(type === LearningAppExerciseType.CHOOSE_FROM_TEXT ||
-            type === LearningAppExerciseType.INPUT_FROM_TEXT ||
-            type === LearningAppExerciseType.INPUT_SENTENCE_FROM_TEXT) && (
+          {(type === ExerciseType.CHOOSE_FROM_TEXT ||
+            type === ExerciseType.INPUT_FROM_TEXT ||
+            type === ExerciseType.INPUT_SENTENCE_FROM_TEXT) && (
             <p className="text-center text-4xl">{currentExercise.text}</p>
           )}
           <div className="flex w-full flex-col gap-4">

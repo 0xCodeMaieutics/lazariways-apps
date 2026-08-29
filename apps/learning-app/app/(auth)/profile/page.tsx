@@ -55,13 +55,13 @@ export default async function ProfilePage() {
     if (session === null) redirect('/login')
 
     const [dbUser, aggregations, completions] = await Promise.all([
-        prisma.learningAppUser.findUnique({
+        prisma.user.findUnique({
             where: { id: session.user.id },
         }),
-        prisma.learningAppUserExamAggregation.findMany({
+        prisma.userExamAggregation.findMany({
             where: { userId: session.user.id },
         }),
-        prisma.learningAppUserExam.findMany({
+        prisma.userExam.findMany({
             where: { userId: session.user.id },
             select: { createdAt: true },
             orderBy: { createdAt: 'desc' },

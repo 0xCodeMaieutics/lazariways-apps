@@ -11,7 +11,7 @@ import {
   Rocket,
 } from "lucide-react"
 import Link from "next/link"
-import { LearningAppTopicType } from "@workspace/database/browser"
+import { TopicType } from "@workspace/database/browser"
 
 function TopicsEmpty() {
   return (
@@ -32,14 +32,14 @@ export function TopicsHub({
 }: {
   topics: {
     id: string
-    type: LearningAppTopicType
+    type: TopicType
     name: string
     totalExams: number
     completedExams: number
   }[]
 }) {
   const starterTopic = topics.find(
-    (topic) => topic.type === LearningAppTopicType.STARTER
+    (topic) => topic.type === TopicType.STARTER
   )
   const starterAllDone =
     starterTopic === undefined
@@ -56,7 +56,7 @@ export function TopicsHub({
             const isAllExamsPassed =
               topic.totalExams > 0 && topic.completedExams >= topic.totalExams
             const isLocked =
-              topic.type !== LearningAppTopicType.STARTER && !starterAllDone
+              topic.type !== TopicType.STARTER && !starterAllDone
             return (
               <Link
                 key={topic.id}

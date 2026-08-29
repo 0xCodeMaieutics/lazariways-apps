@@ -3,7 +3,7 @@ import { prisma } from '@workspace/database/client'
 import { redirect } from 'next/navigation'
 import { TopicsHub } from './page.client'
 import { headers } from 'next/headers'
-import { LearningAppTopicType } from '@workspace/database/browser'
+import { TopicType } from '@workspace/database/browser'
 
 export default async function TopicsPage() {
     const user = await auth.api.getSession({
@@ -11,12 +11,12 @@ export default async function TopicsPage() {
     })
     if (user === null) redirect('/login')
 
-    const dbUser = await prisma.learningAppUser.findUnique({
+    const dbUser = await prisma.user.findUnique({
         where: { id: user.user.id },
     })
     if (dbUser === null) redirect('/login')
 
-    const topics = await prisma.learningAppTopic.findMany({
+    const topics = await prisma.topic.findMany({
         where: { enabled: true },
         orderBy: { order: 'asc' },
         include: {
@@ -35,7 +35,7 @@ export default async function TopicsPage() {
 
     const topicRows: {
         id: string
-        type: LearningAppTopicType
+        type: TopicType
         name: string
         totalExams: number
         completedExams: number

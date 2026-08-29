@@ -19,7 +19,7 @@ export default async function ExamCompletionPage({
     })
     if (session === null) return redirect('/login')
 
-    const completion = await prisma.learningAppUserExam.findUnique({
+    const completion = await prisma.userExam.findUnique({
         where: { id: completionId },
         include: {
             exam: {
@@ -41,11 +41,11 @@ export default async function ExamCompletionPage({
         notFound()
     }
 
-    const exerciseCount = await prisma.learningAppExercise.count({
+    const exerciseCount = await prisma.exercise.count({
         where: { examId },
     })
 
-    const aggregation = await prisma.learningAppUserExamAggregation.findUnique({
+    const aggregation = await prisma.userExamAggregation.findUnique({
         where: {
             userId_examId: {
                 userId: session.user.id,

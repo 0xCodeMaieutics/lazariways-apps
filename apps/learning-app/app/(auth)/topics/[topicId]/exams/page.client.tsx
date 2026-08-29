@@ -14,10 +14,10 @@ import {
     Target,
 } from 'lucide-react'
 import type {
-    LearningAppExam,
-    LearningAppTopic,
-    LearningAppUserExamAggregation,
-    LearningAppUserUnlockedExam,
+    Exam,
+    Topic,
+    UserExamAggregation,
+    UserUnlockedExam,
 } from '@workspace/database/browser'
 import Link from 'next/link'
 import { Banner } from '@/components/ui/banner'
@@ -60,12 +60,12 @@ function ExamCardTimer({
 function ExamCard({
     exam,
 }: {
-    exam: LearningAppExam & {
+    exam: Exam & {
         _count: {
             exercises: number
         }
-        userExamAggregation: LearningAppUserExamAggregation[]
-        userUnlockedExams: Pick<LearningAppUserUnlockedExam, 'examId'>[]
+        userExamAggregation: UserExamAggregation[]
+        userUnlockedExams: Pick<UserUnlockedExam, 'examId'>[]
     }
 }) {
     const { topicId } = useParams()
@@ -182,14 +182,14 @@ export function Exams({
     exams,
     topic,
 }: {
-    exams: (LearningAppExam & {
+    exams: (Exam & {
         _count: {
             exercises: number
         }
-        userExamAggregation: LearningAppUserExamAggregation[]
-        userUnlockedExams: Pick<LearningAppUserUnlockedExam, 'examId'>[]
+        userExamAggregation: UserExamAggregation[]
+        userUnlockedExams: Pick<UserUnlockedExam, 'examId'>[]
     })[]
-    topic: Pick<LearningAppTopic, 'type' | 'name'>
+    topic: Pick<Topic, 'type' | 'name'>
 }) {
     const isAllExamsPassed =
         exams.length > 0 &&

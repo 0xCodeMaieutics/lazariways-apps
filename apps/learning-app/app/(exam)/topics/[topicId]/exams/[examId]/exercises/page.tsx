@@ -25,7 +25,7 @@ export default async function ExamDetailPage({
 
     if (user === null) return redirect('/login')
 
-    const exam = await prisma.learningAppExam.findUnique({
+    const exam = await prisma.exam.findUnique({
         where: {
             id: examId,
         },

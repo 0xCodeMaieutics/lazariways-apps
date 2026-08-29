@@ -15,7 +15,7 @@ export default async function ExamDetailPage({
 }) {
     const { topicId, examId } = await params
 
-    const exam = await prisma.learningAppExam.findFirst({
+    const exam = await prisma.exam.findFirst({
         where: {
             id: examId,
             topicId,

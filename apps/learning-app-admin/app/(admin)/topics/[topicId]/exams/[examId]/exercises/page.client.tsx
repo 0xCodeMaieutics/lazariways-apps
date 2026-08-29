@@ -54,7 +54,7 @@ import {
     Trash2,
     GripVertical,
 } from 'lucide-react'
-import type { LearningAppExercise } from '@workspace/database/browser'
+import type { Exercise } from '@workspace/database/browser'
 
 function formatExerciseType(type: string) {
     return type
@@ -69,7 +69,7 @@ function SortableRow({
     examId,
     onRequestDelete,
 }: {
-    exercise: LearningAppExercise
+    exercise: Exercise
     topicId: string
     examId: string
     onRequestDelete: (target: { id: string; label: string }) => void
@@ -160,7 +160,7 @@ export function ExamExercisesTable({
     topicId,
     examId,
 }: {
-    exercises: LearningAppExercise[]
+    exercises: Exercise[]
     topicId: string
     examId: string
 }) {

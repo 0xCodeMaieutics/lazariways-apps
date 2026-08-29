@@ -10,7 +10,7 @@ export default async function AdminExamsPage({
 }) {
     const params = await paramsPromise
 
-    const exams = await prisma.learningAppExam.findMany({
+    const exams = await prisma.exam.findMany({
         where: {
             topicId: params.topicId,
         },

@@ -13,9 +13,9 @@ import Link from 'next/link'
 import { PropsWithChildren, ReactNode } from 'react'
 import { ClassValue } from 'clsx'
 import type {
-    LearningAppExam,
-    LearningAppUserExamAggregation,
-    LearningAppUserExam,
+    Exam,
+    UserExamAggregation,
+    UserExam,
 } from '@workspace/database/browser'
 
 export function ExamResult({
@@ -23,16 +23,16 @@ export function ExamResult({
     exam,
     aggregation,
 }: {
-    completion: Pick<LearningAppUserExam, 'correctCount' | 'hasPassed' | 'passCounted'>
+    completion: Pick<UserExam, 'correctCount' | 'hasPassed' | 'passCounted'>
     exam: Pick<
-        LearningAppExam,
+        Exam,
         | 'topicId'
         | 'minimumCorrectAnswerCount'
         | 'minimumPassedCount'
         | 'waitUntilPassAllowedInSeconds'
     > & { exerciseCount: number }
     aggregation: Pick<
-        LearningAppUserExamAggregation,
+        UserExamAggregation,
         'lastPassedAt' | 'passedCount'
     > | null
 }) {

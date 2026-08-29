@@ -5,7 +5,7 @@ import { CreateTopicForm } from "./page.client"
 import prisma from "@workspace/database/client"
 
 export default async function NewTopicPage() {
-  const lastTopic = await prisma.learningAppTopic.findFirst({
+  const lastTopic = await prisma.topic.findFirst({
     orderBy: { order: "desc" },
     select: { order: true },
   })

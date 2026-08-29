@@ -13,10 +13,10 @@ export default async function NewExamPage({
     const { topicId } = await params
 
     const [program, lastExam] = await Promise.all([
-        prisma.learningAppTopic.findUnique({
+        prisma.topic.findUnique({
             where: { id: topicId },
         }),
-        prisma.learningAppExam.findFirst({
+        prisma.exam.findFirst({
             where: { topicId },
             orderBy: { order: 'desc' },
             select: { order: true },

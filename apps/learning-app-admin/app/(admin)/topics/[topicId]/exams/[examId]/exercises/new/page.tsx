@@ -16,7 +16,7 @@ export default async function NewExercisePage({
 }) {
     const { programId, weekId, examId } = await params
 
-    const exam = await prisma.learningAppExam.findFirst({
+    const exam = await prisma.exam.findFirst({
         where: {
             id: examId,
             // TODO: the validity of this code needs to be changed
@@ -30,7 +30,7 @@ export default async function NewExercisePage({
 
     const nextOrder =
         (
-            await prisma.learningAppExercise.findMany({
+            await prisma.exercise.findMany({
                 where: { examId },
                 select: { order: true },
                 orderBy: { order: 'desc' },

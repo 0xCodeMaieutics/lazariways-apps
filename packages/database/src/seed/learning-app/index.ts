@@ -1,7 +1,7 @@
 import { createLearningAppAuth } from "@workspace/learning-app-auth"
 import { prisma } from "../../client"
 import { insertLearningData } from "./learning-seed"
-import { LearningAppUserRole } from "../../../prisma/generated/enums"
+import { UserRole } from "../../../prisma/generated/enums"
 
 const DEV_EMAIL = "dev@lazaryways.ge"
 const DEV_PASSWORD = "!Dev$LazaryIsAwesome"
@@ -18,12 +18,12 @@ export const learningAppSeed = async function () {
     },
   })
 
-  await prisma.learningAppUser.update({
+  await prisma.user.update({
     where: {
       id: session.user.id,
     },
     data: {
-      role: LearningAppUserRole.ADMIN,
+      role: UserRole.ADMIN,
     },
   })
 

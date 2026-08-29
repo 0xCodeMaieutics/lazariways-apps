@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { LearningAppExam } from "@workspace/database/browser"
+import { Exam } from "@workspace/database/browser"
 import {
   DndContext,
   closestCenter,
@@ -51,7 +51,7 @@ function SortableRow({
   topicId,
   onNavigate,
 }: {
-  exam: LearningAppExam
+  exam: Exam
   topicId: string
   onNavigate: () => void
 }) {
@@ -123,7 +123,7 @@ function SortableRow({
 export const AdminExams = ({
   exams: examsOuter,
 }: {
-  exams: LearningAppExam[]
+  exams: Exam[]
 }) => {
   const router = useRouter()
   const params = useParams()

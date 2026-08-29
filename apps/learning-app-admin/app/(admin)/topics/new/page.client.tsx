@@ -4,7 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { Controller, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
-import { LearningAppTopicType } from '@workspace/database/browser'
+import { TopicType } from '@workspace/database/browser'
 import { useMutation } from '@tanstack/react-query'
 import { useTRPC } from '@/lib/trpc/react'
 import { Button } from '@workspace/ui/components/button'
@@ -26,7 +26,7 @@ import { Loader2 } from 'lucide-react'
 
 const topicSchema = z.object({
     name: z.string().min(1, 'Name is required'),
-    type: z.enum(LearningAppTopicType),
+    type: z.enum(TopicType),
     order: z.coerce.number().int().min(0),
     enabled: z.boolean().default(false),
 })
@@ -35,9 +35,9 @@ type TopicFormInput = z.input<typeof topicSchema>
 type TopicFormValues = z.output<typeof topicSchema>
 
 const TYPE_OPTIONS = [
-    { value: LearningAppTopicType.STARTER, label: 'Starter' },
-    { value: LearningAppTopicType.BAECKEREI, label: 'Bäckerei' },
-    { value: LearningAppTopicType.FREIZEIT_PARK, label: 'Freizeit Park' },
+    { value: TopicType.STARTER, label: 'Starter' },
+    { value: TopicType.BAECKEREI, label: 'Bäckerei' },
+    { value: TopicType.FREIZEIT_PARK, label: 'Freizeit Park' },
 ] as const
 
 export function CreateTopicForm({
@@ -52,7 +52,7 @@ export function CreateTopicForm({
         resolver: standardSchemaResolver(topicSchema),
         defaultValues: {
             name: '',
-            type: LearningAppTopicType.STARTER,
+            type: TopicType.STARTER,
             order: 0,
             enabled: false,
             ...defaultValues,

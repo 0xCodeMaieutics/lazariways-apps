@@ -1,6 +1,6 @@
 import {
-    type LearningAppExam,
-    type LearningAppUserExamAggregation,
+    type Exam,
+    type UserExamAggregation,
 } from '@workspace/database/browser'
 import { useState } from 'react'
 
@@ -8,8 +8,8 @@ export const useExamLogic = ({
     exam,
     userExamAggregation,
 }: {
-    exam: LearningAppExam
-    userExamAggregation: LearningAppUserExamAggregation | null
+    exam: Exam
+    userExamAggregation: UserExamAggregation | null
 }) => {
     const [now] = useState(() => Date.now())
     const passedCount = userExamAggregation?.passedCount ?? 0

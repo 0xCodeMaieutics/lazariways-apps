@@ -43,7 +43,7 @@ export const userRouter = router({
         declaredType: input.contentType,
       })
 
-      await prisma.learningAppUser.update({
+      await prisma.user.update({
         where: { id: ctx.session.user.id },
         data: { image: key },
       })

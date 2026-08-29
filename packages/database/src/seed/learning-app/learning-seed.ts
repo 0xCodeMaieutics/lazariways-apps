@@ -1,6 +1,6 @@
 import {
-    LearningAppExerciseType,
-    LearningAppTopicType,
+    ExerciseType,
+    TopicType,
     PrismaClient,
 } from '../../../prisma/generated/client'
 import { uploadFilePathToStorage } from '@workspace/file-upload/s3-client'
@@ -62,10 +62,10 @@ export const insertLearningData = async ({
 
     let topicIndex = 0
     for (const topic of topicsJson) {
-        const created = await prisma.learningAppTopic.create({
+        const created = await prisma.topic.create({
             data: {
                 name: topic.name,
-                type: topic.type as LearningAppTopicType,
+                type: topic.type as TopicType,
                 enabled: topic.enabled,
                 order: topicIndex,
             },
@@ -124,7 +124,7 @@ export const insertLearningData = async ({
                 minimumPassedCount = 0,
                 waitUntilPassAllowedInSeconds = 3,
             } = exam ?? {}
-            const createdExam = await prisma.learningAppExam.create({
+            const createdExam = await prisma.exam.create({
                 data: {
                     id: exam.id,
                     topicId: topicId,
@@ -161,9 +161,9 @@ export const insertLearningData = async ({
                 }
             )
 
-            await prisma.learningAppUserExam.createMany({ data: completions })
+            await prisma.userExam.createMany({ data: completions })
 
-            await prisma.learningAppUserExamAggregation.create({
+            await prisma.userExamAggregation.create({
                 data: {
                     userId,
                     examId: createdExam.id,
@@ -174,7 +174,7 @@ export const insertLearningData = async ({
             })
 
             // if (userPassCount >= minimumPassedCount || currentExamIndex === 0)
-            await prisma.learningAppUserUnlockedExam.create({
+            await prisma.userUnlockedExam.create({
                 data: {
                     userId,
                     examId: exam.id,
@@ -210,9 +210,9 @@ export const insertLearningData = async ({
 
             let currentExerciseIndex = 0
             for (const exercise of exercisesJson) {
-                await prisma.learningAppExercise.create({
+                await prisma.exercise.create({
                     data: {
-                        type: exercise.type as LearningAppExerciseType,
+                        type: exercise.type as ExerciseType,
                         prompt: exercise.prompt ?? null,
                         text: exercise.text ?? null,
                         options: exercise.options,
@@ -234,7 +234,7 @@ export const insertLearningData = async ({
 
         for (const exam of examsJson) {
             const promises = (exam.unlocksExams ?? []).map((unlockedId) =>
-                prisma.learningAppExam.update({
+                prisma.exam.update({
                     where: { id: unlockedId },
                     data: { unlockedId: exam.id },
                 })

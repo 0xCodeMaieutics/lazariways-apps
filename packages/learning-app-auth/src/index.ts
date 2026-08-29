@@ -18,7 +18,7 @@ export function createLearningAppAuth(
       cookiePrefix: "learning-platform",
     },
     user: {
-      modelName: "LearningAppUser",
+      modelName: "User",
       additionalFields: {
         role: {
           type: "string",
@@ -29,10 +29,10 @@ export function createLearningAppAuth(
       },
     },
     session: {
-      modelName: "LearningAppSession",
+      modelName: "Session",
     },
     account: {
-      modelName: "LearningAppAccount",
+      modelName: "Account",
     },
     plugins,
   })

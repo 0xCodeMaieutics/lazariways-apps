@@ -9,7 +9,7 @@ export const examRouter = router({
         .input(z.object({ examId: z.string().min(1) }))
         .query(async ({ input }) => {
             const [error, exam] = await tryCatchAsync(() =>
-                prisma.learningAppExam.findUnique({
+                prisma.exam.findUnique({
                     where: { id: input.examId },
                 })
             )
@@ -35,7 +35,7 @@ export const examRouter = router({
         .input(z.object({ examId: z.string().min(1) }))
         .query(async ({ ctx, input }) => {
             const [error, result] = await tryCatchAsync(() =>
-                prisma.learningAppUserExamAggregation.findUnique({
+                prisma.userExamAggregation.findUnique({
                     where: {
                         userId_examId: {
                             userId: ctx.session.user.id,
@@ -79,7 +79,7 @@ export const examRouter = router({
             })
         )
         .mutation(async ({ ctx, input }) => {
-            const exam = await prisma.learningAppExam.findUnique({
+            const exam = await prisma.exam.findUnique({
                 where: { id: input.examId },
                 select: {
                     minimumCorrectAnswerCount: true,
@@ -100,7 +100,7 @@ export const examRouter = router({
             const hasPassed =
                 input.correctCount >= exam.minimumCorrectAnswerCount
 
-            const existing = await prisma.learningAppUserExamAggregation.findUnique({
+            const existing = await prisma.userExamAggregation.findUnique({
                 where: {
                     userId_examId: {
                         userId: ctx.session.user.id,
@@ -120,7 +120,7 @@ export const examRouter = router({
 
             const [error, result] = await tryCatchAsync(() =>
                 prisma.$transaction(async (tx) => {
-                    const completion = await tx.learningAppUserExam.create({
+                    const completion = await tx.userExam.create({
                         data: {
                             userId: ctx.session.user.id,
                             examId: input.examId,
@@ -130,7 +130,7 @@ export const examRouter = router({
                         },
                     })
 
-                    const aggregation = await tx.learningAppUserExamAggregation.upsert({
+                    const aggregation = await tx.userExamAggregation.upsert({
                         where: {
                             userId_examId: {
                                 userId: ctx.session.user.id,
@@ -158,7 +158,7 @@ export const examRouter = router({
                         aggregation.passedCount >= exam.minimumPassedCount &&
                         exam.unlocksExams.length > 0
                     ) {
-                        await tx.learningAppUserUnlockedExam.createMany({
+                        await tx.userUnlockedExam.createMany({
                             data: exam.unlocksExams.map((e) => ({
                                 userId: ctx.session.user.id,
                                 examId: e.id,

@@ -3,6 +3,7 @@
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["public", "lazari_lingo"]
 }
 
 generator client {

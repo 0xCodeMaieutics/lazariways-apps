@@ -16,7 +16,7 @@ export default async function EditExercisePage({
 }) {
     const { programId, examId, exerciseId } = await params
 
-    const exercise = await prisma.learningAppExercise.findFirst({
+    const exercise = await prisma.exercise.findFirst({
         where: {
             id: exerciseId,
             examId,

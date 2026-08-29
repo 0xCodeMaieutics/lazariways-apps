@@ -17,11 +17,11 @@ export default async function EditExamPage({
     const { topicId, examId } = await params
 
     const [exam, program] = await Promise.all([
-        prisma.learningAppExam.findFirst({
+        prisma.exam.findFirst({
             where: { id: examId },
         }),
         // TODO: this was program before so does not make sense
-        prisma.learningAppTopic.findUnique({
+        prisma.topic.findUnique({
             where: { id: topicId },
         }),
     ])

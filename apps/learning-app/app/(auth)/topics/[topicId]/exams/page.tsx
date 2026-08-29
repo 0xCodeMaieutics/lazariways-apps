@@ -16,14 +16,14 @@ export default async function TopicExamsPage({
     })
     if (user === null) redirect('/login')
 
-    const dbUser = await prisma.learningAppUser.findUnique({
+    const dbUser = await prisma.user.findUnique({
         where: {
             id: user.user.id,
         },
     })
     if (dbUser === null) redirect('/login')
 
-    const topic = await prisma.learningAppTopic.findFirst({
+    const topic = await prisma.topic.findFirst({
         where: {
             id: topicId,
             enabled: true,
@@ -32,7 +32,7 @@ export default async function TopicExamsPage({
     })
     if (topic === null) notFound()
 
-    const exams = await prisma.learningAppExam.findMany({
+    const exams = await prisma.exam.findMany({
         where: {
             topicId,
             enable: true,
