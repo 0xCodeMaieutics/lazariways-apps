@@ -1,10 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function tryCatchAsync<T extends () => Promise<any>>(
-    fn: T
+  fn: T
 ): Promise<[Error | null, Awaited<ReturnType<T>> | null]> {
-    try {
-        const result = await fn()
-        return [null, result]
-    } catch (error) {
-        return [error instanceof Error ? error : new Error(String(error)), null]
-    }
+  try {
+    const result = await fn()
+    return [null, result]
+  } catch (error) {
+    return [error instanceof Error ? error : new Error(String(error)), null]
+  }
 }
