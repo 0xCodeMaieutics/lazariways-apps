@@ -99,11 +99,7 @@ function SortableRow({
   )
 }
 
-export const TopicsList = ({
-  topics: topicsOuter,
-}: {
-  topics: Topic[]
-}) => {
+export const TopicsList = ({ topics: topicsOuter }: { topics: Topic[] }) => {
   const router = useRouter()
   const trpc = useTRPC()
   const [topics, setTopics] = useState([...topicsOuter])
@@ -150,12 +146,9 @@ export const TopicsList = ({
         <div></div>
         <div className="flex gap-2">
           <Button asChild>
-            <Link
-              href={"/topics/new"}
-              className="flex items-center gap-2"
-            >
+            <Link href={"/topics/new"} className="flex items-center gap-2">
               <Plus className="size-4" />
-              Create exercise
+              Create topic
             </Link>
           </Button>
         </div>
@@ -201,9 +194,7 @@ export const TopicsList = ({
                   <SortableRow
                     key={topic.id}
                     topic={topic}
-                    onNavigate={() =>
-                      router.push(`/topics/${topic.id}/exams`)
-                    }
+                    onNavigate={() => router.push(`/topics/${topic.id}/exams`)}
                     onToggleEnabled={(enabled) =>
                       updateTopicEnable({
                         id: topic.id,
