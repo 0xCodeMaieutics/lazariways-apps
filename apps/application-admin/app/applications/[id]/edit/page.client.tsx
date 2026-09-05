@@ -16,6 +16,7 @@ import {
   adminApplicationEditSchema,
   type AdminApplicationEditData,
   shoeSizeOptions,
+  workSectorLabels,
   workSectorOptions,
 } from "@workspace/application/schema"
 import { Button } from "@workspace/ui/components/button"
@@ -182,11 +183,11 @@ function BooleanRadioField({
           >
             <div className="flex items-center gap-2">
               <RadioGroupItem value="true" id={`${name}-yes`} />
-              <Label htmlFor={`${name}-yes`}>Yes</Label>
+              <Label htmlFor={`${name}-yes`}>დიახ</Label>
             </div>
             <div className="flex items-center gap-2">
               <RadioGroupItem value="false" id={`${name}-no`} />
-              <Label htmlFor={`${name}-no`}>No</Label>
+              <Label htmlFor={`${name}-no`}>არა</Label>
             </div>
           </RadioGroup>
         )}
@@ -308,19 +309,19 @@ export function ApplicationEditForm({
       onSubmit={form.handleSubmit(save)}
       noValidate
     >
-      <FormSection title="Personal data">
+      <FormSection title="პირადი ინფორმაცია">
         <Field>
-          <FieldLabel htmlFor="firstName">First name</FieldLabel>
+          <FieldLabel htmlFor="firstName">სახელი</FieldLabel>
           <Input id="firstName" {...register("firstName")} />
           <FieldError errors={[formState.errors.firstName]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="lastName">Last name</FieldLabel>
+          <FieldLabel htmlFor="lastName">გვარი</FieldLabel>
           <Input id="lastName" {...register("lastName")} />
           <FieldError errors={[formState.errors.lastName]} />
         </Field>
         <Field>
-          <FieldLabel>Gender</FieldLabel>
+          <FieldLabel>სქესი</FieldLabel>
           <Controller
             name="gender"
             control={control}
@@ -332,66 +333,66 @@ export function ApplicationEditForm({
               >
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="M" id="gender-m" />
-                  <Label htmlFor="gender-m">Male</Label>
+                  <Label htmlFor="gender-m">მამრობითი</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="F" id="gender-f" />
-                  <Label htmlFor="gender-f">Female</Label>
+                  <Label htmlFor="gender-f">მდედრობითი</Label>
                 </div>
               </RadioGroup>
             )}
           />
           <FieldError errors={[formState.errors.gender]} />
         </Field>
-        <DateField name="birthDate" label="Birth date" control={control} />
+        <DateField name="birthDate" label="დაბადების თარიღი" control={control} />
         <Field>
-          <FieldLabel htmlFor="birthPlace">Birth place</FieldLabel>
+          <FieldLabel htmlFor="birthPlace">დაბადების ადგილი</FieldLabel>
           <Input id="birthPlace" {...register("birthPlace")} />
           <FieldError errors={[formState.errors.birthPlace]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="birthCountry">Birth country</FieldLabel>
+          <FieldLabel htmlFor="birthCountry">დაბადების ქვეყანა</FieldLabel>
           <Input id="birthCountry" {...register("birthCountry")} />
           <FieldError errors={[formState.errors.birthCountry]} />
         </Field>
       </FormSection>
 
-      <FormSection title="Address">
+      <FormSection title="მისამართი">
         <Field>
-          <FieldLabel htmlFor="street">Street</FieldLabel>
+          <FieldLabel htmlFor="street">ქუჩა, სახლის ნომერი</FieldLabel>
           <Input id="street" {...register("street")} />
           <FieldError errors={[formState.errors.street]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="postalCode">Postal code</FieldLabel>
+          <FieldLabel htmlFor="postalCode">საფოსტო ინდექსი</FieldLabel>
           <Input id="postalCode" {...register("postalCode")} />
           <FieldError errors={[formState.errors.postalCode]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="city">City</FieldLabel>
+          <FieldLabel htmlFor="city">ქალაქი</FieldLabel>
           <Input id="city" {...register("city")} />
           <FieldError errors={[formState.errors.city]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="country">Country</FieldLabel>
+          <FieldLabel htmlFor="country">ქვეყანა</FieldLabel>
           <Input id="country" {...register("country")} />
           <FieldError errors={[formState.errors.country]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="nationality">Nationality</FieldLabel>
+          <FieldLabel htmlFor="nationality">მოქალაქეობა</FieldLabel>
           <Input id="nationality" {...register("nationality")} />
           <FieldError errors={[formState.errors.nationality]} />
         </Field>
       </FormSection>
 
-      <FormSection title="Contact">
+      <FormSection title="კონტაქტი და სოციალური ქსელები">
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="email">საფოსტო ემაილი</FieldLabel>
           <Input id="email" type="email" {...register("email")} />
           <FieldError errors={[formState.errors.email]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="phone">Phone</FieldLabel>
+          <FieldLabel htmlFor="phone">ტელეფონის ნომერი</FieldLabel>
           <Input id="phone" {...register("phone")} />
           <FieldError errors={[formState.errors.phone]} />
         </Field>
@@ -404,15 +405,15 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.instagram]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="taxId">Tax ID</FieldLabel>
+          <FieldLabel htmlFor="taxId">საგადასახადო იდენტიფიკაციის ნომერი</FieldLabel>
           <Input id="taxId" {...register("taxId")} />
           <FieldError errors={[formState.errors.taxId]} />
         </Field>
       </FormSection>
 
-      <FormSection title="Education">
+      <FormSection title="სწავლა">
         <Field>
-          <FieldLabel htmlFor="linkedUniversity">Linked university</FieldLabel>
+          <FieldLabel htmlFor="linkedUniversity">უნივერსიტეტი</FieldLabel>
           <NativeSelect
             id="linkedUniversity"
             className="w-full"
@@ -421,7 +422,7 @@ export function ApplicationEditForm({
             aria-invalid={!!formState.errors.universityId}
           >
             <NativeSelectOption value="">
-              Select a university
+              აირჩიეთ უნივერსიტეტი
             </NativeSelectOption>
             {universities.map((university) => (
               <NativeSelectOption key={university.id} value={university.id}>
@@ -429,26 +430,26 @@ export function ApplicationEditForm({
               </NativeSelectOption>
             ))}
             <NativeSelectOption value={UNIVERSITY_NOT_IN_LIST}>
-              University not in list
+              ჩემი უნივერსიტეტი სიაში არ არის
             </NativeSelectOption>
           </NativeSelect>
           <FieldError errors={[formState.errors.universityId]} />
         </Field>
         {showCustomUniversity ? (
           <Field>
-            <FieldLabel htmlFor="university">University (custom)</FieldLabel>
+            <FieldLabel htmlFor="university">უნივერსიტეტის სახელი</FieldLabel>
             <Input id="university" {...register("university")} />
             <FieldError errors={[formState.errors.university]} />
           </Field>
         ) : null}
         <Field>
-          <FieldLabel htmlFor="studySubject">Study subject</FieldLabel>
+          <FieldLabel htmlFor="studySubject">სასწავლო სპეციალობა</FieldLabel>
           <Input id="studySubject" {...register("studySubject")} />
           <FieldError errors={[formState.errors.studySubject]} />
         </Field>
         <Field>
           <FieldLabel htmlFor="standardStudyPeriodYears">
-            Standard study period (years)
+            რეგულირებული სწავლის პერიოდი (წლებში)
           </FieldLabel>
           <Controller
             name="standardStudyPeriodYears"
@@ -483,34 +484,34 @@ export function ApplicationEditForm({
         </Field>
         <DateField
           name="enrolledSince"
-          label="Enrolled since"
+          label="სწავლის დაწყების თარიღი"
           control={control}
         />
         <DateField
           name="expectedStudyEnd"
-          label="Expected study end"
+          label="სწავლის დასრულების მოსალოდნელი თარიღი"
           control={control}
         />
         <DateField
           name="semesterBreakFrom"
-          label="Semester break from"
+          label="არდადეგების დასაწყისი"
           control={control}
         />
         <DateField
           name="semesterBreakTo"
-          label="Semester break to"
+          label="არდადეგები დასასრული"
           control={control}
         />
         <BooleanRadioField
           name="studiesContinueAfterSemesterBreak"
-          label="Studies continue after semester break"
+          label="სწავლა გაგრძელდება არდადეგების შემდეგ?"
           control={control}
         />
       </FormSection>
 
-      <FormSection title="Skills & health">
+      <FormSection title="კვალიფიკაცია და ჯანმრთელობა">
         <Field>
-          <FieldLabel>German level</FieldLabel>
+          <FieldLabel>გერმანულის დონე</FieldLabel>
           <Controller
             name="germanLevel"
             control={control}
@@ -533,40 +534,42 @@ export function ApplicationEditForm({
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="otherLanguages">Other languages</FieldLabel>
+          <FieldLabel htmlFor="otherLanguages">
+            სხვა ენების ცოდნა / ენის დონე
+          </FieldLabel>
           <Input id="otherLanguages" {...register("otherLanguages")} />
         </Field>
         <BooleanRadioField
           name="driverLicense"
-          label="Driver license"
+          label="მართვის მოწმობა"
           control={control}
         />
         <BooleanRadioField
           name="canRideBike"
-          label="Can ride bike"
+          label="შეგიძლიათ ველოსიპედის ტარება?"
           control={control}
         />
         <BooleanRadioField
           name="shiftWork"
-          label="Shift work"
+          label="მზადყოფნა ცვლებში მუშაობისთვის"
           control={control}
         />
         <Field>
           <FieldLabel htmlFor="healthRestrictions">
-            Health restrictions
+            ჯანმრთელობის შეზღუდვები თუ არის
           </FieldLabel>
           <Input id="healthRestrictions" {...register("healthRestrictions")} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="allergies">Allergies</FieldLabel>
+          <FieldLabel htmlFor="allergies">ალერგიები</FieldLabel>
           <Input id="allergies" {...register("allergies")} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="clothingSize">Clothing size</FieldLabel>
+          <FieldLabel htmlFor="clothingSize">ტანსაცმლის ზომა</FieldLabel>
           <Input id="clothingSize" {...register("clothingSize")} />
         </Field>
         <Field>
-          <FieldLabel>Shoe size</FieldLabel>
+          <FieldLabel>ფეხსაცმლის ზომა</FieldLabel>
           <Controller
             name="shoeSize"
             control={control}
@@ -600,33 +603,33 @@ export function ApplicationEditForm({
         </Field>
       </FormSection>
 
-      <FormSection title="Germany stay">
+      <FormSection title="ყოფნა გერმანიაში">
         <BooleanRadioField
           name="hasBeenInGermanyBefore"
-          label="Has been in Germany before"
+          label="ყოფნა გერმანიაში"
           control={control}
         />
         <Field>
-          <FieldLabel htmlFor="previousStayPlace">
-            Previous stay place
-          </FieldLabel>
+          <FieldLabel htmlFor="previousStayPlace">თუ კი, სად</FieldLabel>
           <Input id="previousStayPlace" {...register("previousStayPlace")} />
         </Field>
         <DateField
           name="previousStayPeriodFrom"
-          label="Previous stay from"
+          label="პერიოდის დასაწყისი"
           control={control}
         />
         <DateField
           name="previousStayPeriodTo"
-          label="Previous stay to"
+          label="პერიოდის დასასრული"
           control={control}
         />
       </FormSection>
 
-      <FormSection title="Emergency contact">
+      <FormSection title="საგანგებო საკონტაქტო პირი">
         <Field>
-          <FieldLabel htmlFor="emergencyContactName">Name</FieldLabel>
+          <FieldLabel htmlFor="emergencyContactName">
+            საგანგებო საკონტაქტო პირი
+          </FieldLabel>
           <Input
             id="emergencyContactName"
             {...register("emergencyContactName")}
@@ -634,13 +637,13 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.emergencyContactName]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="emergencyPhone">Phone</FieldLabel>
+          <FieldLabel htmlFor="emergencyPhone">საგანგებო ტელეფონის ნომერი</FieldLabel>
           <Input id="emergencyPhone" {...register("emergencyPhone")} />
           <FieldError errors={[formState.errors.emergencyPhone]} />
         </Field>
       </FormSection>
 
-      <FormSection title="Work sector">
+      <FormSection title="სასურველი სამუშაო სფერო">
         <Field>
           <Controller
             name="workSector"
@@ -664,7 +667,9 @@ export function ApplicationEditForm({
                           }
                         }}
                       />
-                      <Label htmlFor={`sector-${sector}`}>{sector}</Label>
+                      <Label htmlFor={`sector-${sector}`}>
+                        {workSectorLabels[sector]}
+                      </Label>
                     </div>
                   )
                 })}
