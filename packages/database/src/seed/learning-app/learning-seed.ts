@@ -60,18 +60,30 @@ export const insertLearningData = async ({
 
     const topicIdByNumber = new Map<number, string>()
 
-    let topicIndex = 0
-    for (const topic of topicsJson) {
-        const created = await prisma.topic.create({
+    for (const [topicIndex, topic] of topicsJson.entries()) {
+        await prisma.topic.create({
             data: {
+                id: topic.id,
                 name: topic.name,
                 type: topic.type as TopicType,
                 enabled: topic.enabled,
-                order: topicIndex,
+                order: topic.order,
+                isAlwaysUnlocked: topic.isAlwaysUnlocked ?? false,
+                minimumCompletedExamsToUnlock:
+                    topic.minimumCompletedExamsToUnlock ?? null,
             },
         })
-        topicIdByNumber.set(topicIndex, created.id)
-        topicIndex++
+        topicIdByNumber.set(topicIndex, topic.id)
+    }
+
+    for (const topic of topicsJson) {
+        const promises = (topic.unlocks ?? []).map((unlockedTopicId) =>
+            prisma.topic.update({
+                where: { id: unlockedTopicId },
+                data: { unlockedId: topic.id },
+            })
+        )
+        await Promise.all(promises)
     }
 
     for (const programFolderName of programFolderNames) {

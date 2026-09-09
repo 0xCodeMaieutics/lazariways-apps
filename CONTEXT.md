@@ -32,6 +32,34 @@ _Avoid_: Profession, role, job title
 The consultant-facing application PDF an Admin generates from a saved Application.
 _Avoid_: Remote application PDF, application PDF, Guili CV
 
+## Lazari Lingo
+
+Language-learning app where learners complete **Exams** within **Topics**.
+
+**Exam**:
+A practice unit in a Topic, made up of Exercises. Learners must reach a pass threshold (minimum correct answers × minimum pass count) before progression unlocks.
+_Avoid_: Test, quiz, lesson
+
+**Unlocks exams**:
+The exams that become available to a learner after they fully pass this exam. Configured on the source exam (e.g. "Exam A unlocks B and C").
+_Avoid_: unlockExams, prerequisites, dependencies
+
+**Unlocked exam** (per learner):
+A UserUnlockedExam record showing a specific learner may access an exam. Created when the learner fully passes the exam that unlocks it, or via seed data.
+_Avoid_: unlocked, available, open
+
+**Always unlocked topic**:
+A Topic with `isAlwaysUnlocked` set to true. Every learner can access it without a UserUnlockedTopic record (e.g. Starter).
+_Avoid_: free topic, open topic, starter-only
+
+**Unlocked topic** (per learner):
+A UserUnlockedTopic record showing a specific learner may access a topic. Created when progression criteria are met in the unlocker topic, or via seed data.
+_Avoid_: unlocked, available, open
+
+**Unlocks topics**:
+The topics that become available after a learner completes enough exams in the unlocker topic. Configured via `unlockedId` on the target topic and `minimumCompletedExamsToUnlock` on the unlocker topic.
+_Avoid_: unlockTopics, prerequisites, dependencies
+
 ## References
 
 - For TypeScript conventions, see docs/TYPESCRIPT.md

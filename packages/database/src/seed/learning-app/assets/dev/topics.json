@@ -1,20 +1,31 @@
 [
     {
+        "id": "PLf3qkDXC9FYkANh5rkcB",
         "name": "სტარტერ (Starter)",
         "enabled": true,
         "order": 1,
-        "type": "STARTER"
+        "type": "STARTER",
+        "isAlwaysUnlocked": true,
+        "minimumCompletedExamsToUnlock": 6,
+        "unlocks": [
+            "3c7MZwzhHpw6ppQDtZKmg",
+            "D2ZtxLkPVWF9NvUO-VvZU"
+        ]
     },
     {
+        "id": "3c7MZwzhHpw6ppQDtZKmg",
         "name": "მცხობელი",
         "enabled": true,
         "order": 2,
-        "type": "BAECKEREI"
+        "type": "BAECKEREI",
+        "unlocks": []
     },
     {
+        "id": "D2ZtxLkPVWF9NvUO-VvZU",
         "name": "გასართობი პარკები (Freizeitparks)",
         "enabled": true,
         "order": 3,
-        "type": "FREIZEIT_PARK"
+        "type": "FREIZEIT_PARK",
+        "unlocks": []
     }
 ]
