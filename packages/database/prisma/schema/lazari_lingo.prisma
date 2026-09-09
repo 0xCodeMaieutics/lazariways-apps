@@ -20,6 +20,7 @@ model User {
   userExamAggregations UserExamAggregation[]
   userExamCompletions  UserExam[]
   userUnlockedExams    UserUnlockedExam[]
+  userUnlockedTopics   UserUnlockedTopic[]
 
   @@schema("lazari_lingo")
 }
@@ -66,6 +67,8 @@ enum TopicType {
   STARTER
   BAECKEREI
   FREIZEIT_PARK
+  GARTEN_LANDSCHAFTBAU
+  HOTEL
 
   @@schema("lazari_lingo")
 }
@@ -75,13 +78,35 @@ model Topic {
 
   createdAt DateTime @default(now())
 
-  name    String
-  type    TopicType
-  enabled Boolean
-  order   Int
+  name                          String
+  type                          TopicType
+  enabled                       Boolean
+  order                         Int
+  isAlwaysUnlocked              Boolean   @default(false)
+  minimumCompletedExamsToUnlock Int?
 
-  exams Exam[]
+  unlockedId    String?
+  unlockedTopic Topic?  @relation("UnlocksTopics", fields: [unlockedId], references: [id])
+  unlocksTopics Topic[] @relation("UnlocksTopics")
 
+  exams              Exam[]
+  userUnlockedTopics UserUnlockedTopic[]
+
+  @@schema("lazari_lingo")
+}
+
+model UserUnlockedTopic {
+  id         String   @id @default(nanoid())
+  unlockedAt DateTime @default(now())
+
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, topicId])
+  @@index([userId])
+  @@index([topicId])
   @@schema("lazari_lingo")
 }
 
