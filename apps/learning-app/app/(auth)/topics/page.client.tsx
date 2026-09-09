@@ -36,16 +36,9 @@ export function TopicsHub({
     name: string
     totalExams: number
     completedExams: number
+    isUnlocked: boolean
   }[]
 }) {
-  const starterTopic = topics.find(
-    (topic) => topic.type === TopicType.STARTER
-  )
-  const starterAllDone =
-    starterTopic === undefined
-      ? false
-      : starterTopic.totalExams > 0 &&
-        starterTopic.completedExams >= starterTopic.totalExams
   return (
     <div className="flex flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
       {topics.length === 0 ? (
@@ -55,8 +48,7 @@ export function TopicsHub({
           {topics.map((topic) => {
             const isAllExamsPassed =
               topic.totalExams > 0 && topic.completedExams >= topic.totalExams
-            const isLocked =
-              topic.type !== TopicType.STARTER && !starterAllDone
+            const isLocked = !topic.isUnlocked
             return (
               <Link
                 key={topic.id}
@@ -107,6 +99,24 @@ export function TopicsHub({
                             />
                           ),
                           FREIZEIT_PARK: (
+                            <Puzzle
+                              className={cn(
+                                "size-4",
+                                isAllExamsPassed &&
+                                  "text-emerald-600 dark:text-emerald-400"
+                              )}
+                            />
+                          ),
+                          HOTEL: (
+                            <Puzzle
+                              className={cn(
+                                "size-4",
+                                isAllExamsPassed &&
+                                  "text-emerald-600 dark:text-emerald-400"
+                              )}
+                            />
+                          ),
+                          GARTEN_LANDSCHAFTBAU: (
                             <Puzzle
                               className={cn(
                                 "size-4",

@@ -1,4 +1,5 @@
 import { auth } from '@/lib/auth.server'
+import { isTopicUnlockedForUser } from '@/lib/topic-access'
 import { prisma } from '@workspace/database/client'
 import { redirect } from 'next/navigation'
 import { TopicsHub } from './page.client'
@@ -16,22 +17,32 @@ export default async function TopicsPage() {
     })
     if (dbUser === null) redirect('/login')
 
-    const topics = await prisma.topic.findMany({
-        where: { enabled: true },
-        orderBy: { order: 'asc' },
-        include: {
-            exams: {
-                select: {
-                    topicId: true,
-                    minimumPassedCount: true,
-                    userExamAggregation: {
-                        where: { userId: user.user.id },
-                        select: { passedCount: true },
+    const [topics, userUnlockedTopics] = await Promise.all([
+        prisma.topic.findMany({
+            where: { enabled: true },
+            orderBy: { order: 'asc' },
+            include: {
+                exams: {
+                    select: {
+                        topicId: true,
+                        minimumPassedCount: true,
+                        userExamAggregation: {
+                            where: { userId: user.user.id },
+                            select: { passedCount: true },
+                        },
                     },
                 },
             },
-        },
-    })
+        }),
+        prisma.userUnlockedTopic.findMany({
+            where: { userId: user.user.id },
+            select: { topicId: true },
+        }),
+    ])
+
+    const unlockedTopicIds = new Set(
+        userUnlockedTopics.map((row) => row.topicId)
+    )
 
     const topicRows: {
         id: string
@@ -39,6 +50,7 @@ export default async function TopicsPage() {
         name: string
         totalExams: number
         completedExams: number
+        isUnlocked: boolean
     }[] = []
 
     for (const topic of topics) {
@@ -60,6 +72,11 @@ export default async function TopicsPage() {
             name: topic.name,
             totalExams: totalExamsAmount,
             completedExams: completedExamsAmount,
+            isUnlocked: isTopicUnlockedForUser({
+                isAlwaysUnlocked: topic.isAlwaysUnlocked,
+                topicId: topic.id,
+                unlockedTopicIds,
+            }),
         })
     }
 

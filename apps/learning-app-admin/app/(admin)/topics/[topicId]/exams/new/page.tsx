@@ -12,7 +12,7 @@ export default async function NewExamPage({
 }) {
     const { topicId } = await params
 
-    const [program, lastExam] = await Promise.all([
+    const [program, lastExam, unlockableExams] = await Promise.all([
         prisma.topic.findUnique({
             where: { id: topicId },
         }),
@@ -20,6 +20,11 @@ export default async function NewExamPage({
             where: { topicId },
             orderBy: { order: 'desc' },
             select: { order: true },
+        }),
+        prisma.exam.findMany({
+            where: { topicId, enable: true },
+            orderBy: { order: 'asc' },
+            select: { id: true, title: true, order: true },
         }),
     ])
 
@@ -43,6 +48,7 @@ export default async function NewExamPage({
             <ExamForm
                 topicId={topicId}
                 lastOrder={(lastExam?.order ?? -1) + 1}
+                unlockableExams={unlockableExams}
             />
         </div>
     )

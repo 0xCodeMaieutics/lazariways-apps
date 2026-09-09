@@ -1,4 +1,5 @@
 import { tryCatchAsync } from '@/lib/try-catch'
+import { unlockTopicsAfterExamCompletion } from '@/lib/unlock-topics-after-exam'
 import { authedProcedure, router } from '../server'
 import { prisma } from '@workspace/database/client'
 import { TRPCError } from '@trpc/server'
@@ -88,6 +89,7 @@ export const examRouter = router({
                     unlocksExams: { select: { id: true } },
                     unlockedId: true,
                     id: true,
+                    topicId: true,
                 },
             })
             if (!exam) {
@@ -164,6 +166,18 @@ export const examRouter = router({
                                 examId: e.id,
                             })),
                             skipDuplicates: true,
+                        })
+                    }
+
+                    const examJustFullyCompleted =
+                        passCounted &&
+                        aggregation.passedCount >= exam.minimumPassedCount &&
+                        aggregation.passedCount - 1 < exam.minimumPassedCount
+
+                    if (examJustFullyCompleted) {
+                        await unlockTopicsAfterExamCompletion(tx, {
+                            userId: ctx.session.user.id,
+                            topicId: exam.topicId,
                         })
                     }
 
