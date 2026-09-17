@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { GermanLevel } from "@workspace/database/browser"
 import { Badge } from "@workspace/ui/components/badge"
 import { InstagramLink } from "./instagram-link"
 
@@ -7,6 +8,7 @@ interface ApplicationCardProps {
   firstName: string
   lastName: string
   linkedUniversityName: string | null
+  germanLevel: GermanLevel | null
   fotoUrl: string
   instagram: string | null
 }
@@ -16,6 +18,7 @@ export function ApplicationCard({
   firstName,
   lastName,
   linkedUniversityName,
+  germanLevel,
   fotoUrl,
   instagram,
 }: ApplicationCardProps) {
@@ -37,14 +40,23 @@ export function ApplicationCard({
           <p className="truncate font-medium">
             {firstName} {lastName}
           </p>
-          {linkedUniversityName !== null ? (
-            <Badge
-              variant="secondary"
-              className="mt-1 max-w-[200px] min-w-0 justify-start"
-              title={linkedUniversityName}
-            >
-              <span className="min-w-0 truncate">{linkedUniversityName}</span>
-            </Badge>
+          {linkedUniversityName !== null || germanLevel !== null ? (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {linkedUniversityName !== null ? (
+                <Badge
+                  variant="secondary"
+                  className="max-w-[200px] min-w-0 justify-start"
+                  title={linkedUniversityName}
+                >
+                  <span className="min-w-0 truncate">
+                    {linkedUniversityName}
+                  </span>
+                </Badge>
+              ) : null}
+              {germanLevel !== null ? (
+                <Badge variant="secondary">{germanLevel}</Badge>
+              ) : null}
+            </div>
           ) : null}
         </div>
       </Link>
