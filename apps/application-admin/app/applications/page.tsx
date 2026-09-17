@@ -80,6 +80,7 @@ export default async function ApplicationsPage({
                   linkedUniversityName={
                     application.linkedUniversity?.name ?? null
                   }
+                  germanLevel={application.germanLevel}
                   fotoUrl={fotoUrl}
                   instagram={application.instagram}
                 />
