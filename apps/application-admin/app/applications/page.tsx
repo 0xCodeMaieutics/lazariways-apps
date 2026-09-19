@@ -52,7 +52,7 @@ export default async function ApplicationsPage({
   )
 
   return (
-    <main className="mx-auto w-full max-w-lg px-4 py-6">
+    <main className="mx-auto w-full max-w-lg px-4 py-6 md:max-w-5xl md:px-6">
       <header className="mb-6">
         <div className="flex items-start justify-between gap-4">
           <p className="mt-1 text-sm text-muted-foreground">
@@ -71,20 +71,22 @@ export default async function ApplicationsPage({
           {applicationGroups.map((group) => (
             <section key={group.key} className="space-y-3">
               <h2 className="text-sm text-muted-foreground">{group.label}</h2>
-              {group.items.map(({ application, fotoUrl }) => (
-                <ApplicationCard
-                  key={application.id}
-                  id={application.id}
-                  firstName={application.firstName}
-                  lastName={application.lastName}
-                  linkedUniversityName={
-                    application.linkedUniversity?.name ?? null
-                  }
-                  germanLevel={application.germanLevel}
-                  fotoUrl={fotoUrl}
-                  instagram={application.instagram}
-                />
-              ))}
+              <div className="flex flex-col gap-3 md:flex-row md:flex-wrap">
+                {group.items.map(({ application, fotoUrl }) => (
+                  <ApplicationCard
+                    key={application.id}
+                    id={application.id}
+                    firstName={application.firstName}
+                    lastName={application.lastName}
+                    linkedUniversityName={
+                      application.linkedUniversity?.name ?? null
+                    }
+                    germanLevel={application.germanLevel}
+                    fotoUrl={fotoUrl}
+                    instagram={application.instagram}
+                  />
+                ))}
+              </div>
             </section>
           ))}
         </div>
