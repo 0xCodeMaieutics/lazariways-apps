@@ -23,7 +23,7 @@ export function ApplicationCard({
   instagram,
 }: ApplicationCardProps) {
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40 md:min-w-[16rem] md:flex-1 md:max-w-sm md:flex-col md:items-stretch md:gap-3">
+    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40 md:flex-col md:items-stretch md:gap-3">
       <Link
         href={`/applications/${id}/edit`}
         className="flex flex-1 items-center gap-4 md:flex-col md:items-stretch md:gap-3"

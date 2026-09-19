@@ -71,7 +71,7 @@ export default async function ApplicationsPage({
           {applicationGroups.map((group) => (
             <section key={group.key} className="space-y-3">
               <h2 className="text-sm text-muted-foreground">{group.label}</h2>
-              <div className="flex flex-col gap-3 md:flex-row md:flex-wrap">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                 {group.items.map(({ application, fotoUrl }) => (
                   <ApplicationCard
                     key={application.id}
