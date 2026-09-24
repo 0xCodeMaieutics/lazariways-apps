@@ -46,3 +46,6 @@ next-env.d.ts
 !.env.example
 .pnpm-store
 non-tech-docs
+
+e2e/cross-app/test-results
+e2e/cross-app/playwright-report
