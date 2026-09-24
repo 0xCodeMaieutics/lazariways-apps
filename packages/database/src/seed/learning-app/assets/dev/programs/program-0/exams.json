@@ -7,9 +7,10 @@
         "estimatedTimeInMinutes": 30,
         "minimumCorrectAnswerCount": 2,
         "minimumPassedCount": 3,
-        "userPassCount": 2,
+        "userPassCount": 3,
         "userAttemptedCount": 5,
         "relativeExercisePath": "./exercise-0.json",
+        "isAlwaysUnlocked": true,
         "unlocksExams": [
             "Zr4xD0pLGRW7gdCrWuSLf"
         ]
