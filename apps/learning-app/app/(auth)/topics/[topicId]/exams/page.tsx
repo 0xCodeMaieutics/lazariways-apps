@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth.server"
+import { isExamUnlockedForUser } from "@/lib/exam-access"
 import { isTopicUnlockedForUser } from "@/lib/topic-access"
 import { prisma } from "@workspace/database/client"
 import { notFound, redirect } from "next/navigation"
@@ -89,5 +90,19 @@ export default async function TopicExamsPage({
   })
   const { id, ...propsTopic } = topic
 
-  return <Exams topic={propsTopic} exams={exams} />
+  const examsWithAccess = exams.map((exam) => {
+    const { userUnlockedExams, ...examWithoutUnlockRows } = exam
+    return {
+      ...examWithoutUnlockRows,
+      isUnlocked: isExamUnlockedForUser({
+        isAlwaysUnlocked: exam.isAlwaysUnlocked,
+        examId: exam.id,
+        unlockedExamIds: new Set(
+          userUnlockedExams.map((unlockedExam) => unlockedExam.examId)
+        ),
+      }),
+    }
+  })
+
+  return <Exams topic={propsTopic} exams={examsWithAccess} />
 }
