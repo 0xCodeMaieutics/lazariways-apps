@@ -1,3 +1,4 @@
+import { isExamUnlockedForUser } from '@/lib/exam-access'
 import { tryCatchAsync } from '@/lib/try-catch'
 import { unlockTopicsAfterExamCompletion } from '@/lib/unlock-topics-after-exam'
 import { authedProcedure, router } from '../server'
@@ -88,6 +89,7 @@ export const examRouter = router({
                     waitUntilPassAllowedInSeconds: true,
                     unlocksExams: { select: { id: true } },
                     unlockedId: true,
+                    isAlwaysUnlocked: true,
                     id: true,
                     topicId: true,
                 },
@@ -96,6 +98,31 @@ export const examRouter = router({
                 throw new TRPCError({
                     code: 'NOT_FOUND',
                     message: 'Exam not found',
+                })
+            }
+
+            const unlockedExam = await prisma.userUnlockedExam.findUnique({
+                where: {
+                    userId_examId: {
+                        userId: ctx.session.user.id,
+                        examId: exam.id,
+                    },
+                },
+                select: { examId: true },
+            })
+
+            const isUnlocked = isExamUnlockedForUser({
+                isAlwaysUnlocked: exam.isAlwaysUnlocked,
+                examId: exam.id,
+                unlockedExamIds: new Set(
+                    unlockedExam === null ? [] : [unlockedExam.examId]
+                ),
+            })
+
+            if (!isUnlocked) {
+                throw new TRPCError({
+                    code: 'FORBIDDEN',
+                    message: 'Exam is locked',
                 })
             }
 
