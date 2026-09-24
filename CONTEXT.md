@@ -41,23 +41,27 @@ A practice unit in a Topic, made up of Exercises. Learners must reach a pass thr
 _Avoid_: Test, quiz, lesson
 
 **Unlocks exams**:
-The exams that become available to a learner after they fully pass this exam. Configured on the source exam (e.g. "Exam A unlocks B and C").
+The exams that become available to a learner after they fully pass this exam. Each exam has at most one unlocker. Configured on the target exam as Unlocked by (e.g. "Exam B is unlocked by Exam A").
 _Avoid_: unlockExams, prerequisites, dependencies
 
 **Unlocked exam** (per learner):
-A UserUnlockedExam record showing a specific learner may access an exam. Created when the learner fully passes the exam that unlocks it, or via seed data.
+A UserUnlockedExam record showing a specific learner may access an exam. Created when the learner fully passes the exam that unlocks it, when the exam is later attached as one of that unlocker’s Unlocks exams and the learner already fully passed the unlocker, when the exam later gains an unlocker and the learner already fully passed that exam, or via seed data. Once created, it is not removed.
 _Avoid_: unlocked, available, open
 
 **Always unlocked topic**:
-A Topic with `isAlwaysUnlocked` set to true. Every learner can access it without a UserUnlockedTopic record (e.g. Starter).
+A Topic with `isAlwaysUnlocked` set to true. Every learner can access it without a UserUnlockedTopic record. There can be more than one. It has no unlocker and is not represented by Unlocked topic grants. Clearing the flag does not create grants; learners without an Unlocked topic then cannot access it.
 _Avoid_: free topic, open topic, starter-only
 
+**Always unlocked exam**:
+An Exam with `isAlwaysUnlocked` set to true. Every learner who can access the topic can take it without a UserUnlockedExam record. There can be more than one in a topic. It has no unlocker and is not represented by Unlocked exam grants. Clearing the flag does not create grants; learners without an Unlocked exam then cannot access it.
+_Avoid_: free exam, open exam, starter exam
+
 **Unlocked topic** (per learner):
-A UserUnlockedTopic record showing a specific learner may access a topic. Created when progression criteria are met in the unlocker topic, or via seed data.
+A UserUnlockedTopic record showing a specific learner may access a topic when it is enabled. Created when progression criteria are met in the unlocker topic, when the topic is later attached as one of that unlocker’s Unlocks topics and the learner already meets those criteria, when those criteria become easier and the learner already meets them, when an exam in the unlocker becomes enabled and that newly counted completion meets the minimum, or via seed data for learners who already meet those criteria. Grants are still created if the topic is disabled. Once created, it is not removed: not when Unlocks topics or the unlocker change, and not when the unlocker’s progression criteria become stricter.
 _Avoid_: unlocked, available, open
 
 **Unlocks topics**:
-The topics that become available after a learner completes enough exams in the unlocker topic. Configured via `unlockedId` on the target topic and `minimumCompletedExamsToUnlock` on the unlocker topic.
+The topics that become available after a learner completes enough exams in the unlocker topic. Each topic has at most one unlocker. The unlocker must have a minimum completed-exam count; that count may be higher than the number of enabled exams at the time. Only currently enabled exams that the learner has fully passed (passedCount at or above that exam’s minimumPassedCount) count toward that minimum. The chain cannot cycle (a topic cannot unlock itself, directly or through other topics). Configured via `unlockedId` on the target topic and `minimumCompletedExamsToUnlock` on the unlocker topic.
 _Avoid_: unlockTopics, prerequisites, dependencies
 
 ## References
