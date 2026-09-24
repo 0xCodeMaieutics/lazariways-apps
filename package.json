@@ -8,7 +8,7 @@
     "lint": "turbo lint",
     "format": "turbo format",
     "typecheck": "turbo typecheck",
-    "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@asavita/db prisma"
+    "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@workspace/database exec prisma"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.61.0",
