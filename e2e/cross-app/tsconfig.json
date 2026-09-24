@@ -1,0 +1,12 @@
+{
+    "extends": "@workspace/typescript-config/base.json",
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "noEmit": true,
+        "moduleResolution": "bundler",
+        "module": "es2022"
+    },
+    "include": [
+        "tests/**/*.ts"
+    ]
+}
