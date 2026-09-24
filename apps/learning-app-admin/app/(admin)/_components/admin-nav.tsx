@@ -34,7 +34,7 @@ function buildBreadcrumbs(
     const examsIdx = segments.indexOf('exams')
     const exercisesIdx = segments.indexOf('exercises')
 
-    const programId =
+    const topicId =
         topicIdx >= 0 && topicIdx + 1 < segments.length
             ? segments[topicIdx + 1]
             : null
@@ -45,17 +45,17 @@ function buildBreadcrumbs(
 
     items.push({ href: '/topics', label: 'Topics', isLast: false })
 
-    if (programId && programId !== 'topics' && programId !== 'new') {
+    if (topicId && topicId !== 'topics' && topicId !== 'new') {
         items.push({
-            href: `/topics/${programId}/exams`,
+            href: `/topics/${topicId}/exams`,
             label: 'Exams',
             isLast: examsIdx < 0 || !examId,
         })
     }
 
-    if (programId && examId && examsIdx >= 0 && exercisesIdx >= 0) {
+    if (topicId && examId && examsIdx >= 0 && exercisesIdx >= 0) {
         items.push({
-            href: `/topics/${programId}/exams/${examId}/exercises`,
+            href: `/topics/${topicId}/exams/${examId}/exercises`,
             label: 'Exercises',
             isLast: true,
         })

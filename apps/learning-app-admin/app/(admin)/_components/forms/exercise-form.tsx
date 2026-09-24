@@ -119,19 +119,19 @@ const EXERCISE_TYPE_LABELS: Record<(typeof EXERCISE_TYPES)[number], string> = {
 }
 
 export function ExerciseForm({
-    programId,
+    topicId,
     examId,
     defaultValues,
     exerciseId,
 }: {
-    programId: string
+    topicId: string
     examId: string
     defaultValues?: Partial<ExerciseFormValues>
     exerciseId?: string
 }) {
     const router = useRouter()
     const isEdit = !!exerciseId
-    const backUrl = `/topics/${programId}/exams/${examId}/exercises`
+    const backUrl = `/topics/${topicId}/exams/${examId}/exercises`
     const trpc = useTRPC()
 
     const form = useForm<ExerciseFormInput, unknown, ExerciseFormValues>({
@@ -186,10 +186,8 @@ export function ExerciseForm({
 
     const createMutation = useMutation(
         trpc.admin.exercises.create.mutationOptions({
-            onSuccess: (data) => {
-                router.push(
-                    `/topics/${programId}/exams/${examId}/exercises/${data.id}/edit`
-                )
+            onSuccess: () => {
+                router.push(backUrl)
                 router.refresh()
             },
         })

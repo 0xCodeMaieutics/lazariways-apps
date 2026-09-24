@@ -17,6 +17,10 @@ import {
 } from '@workspace/ui/components/field'
 import { Input } from '@workspace/ui/components/input'
 import { Label } from '@workspace/ui/components/label'
+import {
+    NativeSelect,
+    NativeSelectOption,
+} from '@workspace/ui/components/native-select'
 import { Loader2 } from 'lucide-react'
 import { parseHoursMinutesToSeconds } from '@/utils/format-duration'
 
@@ -31,20 +35,36 @@ const passCooldownSchema = z
         return minutes >= 0 && minutes < 60
     }, 'Minutes must be between 00 and 59')
 
-const examSchema = z.object({
-    title: z.string().min(1, 'Title is required'),
-    description: z.string().min(1, 'Description is required'),
-    estimatedTimeInMinutes: z.number().int().min(1).optional(),
-    minimumCorrectAnswerCount: z.number().int().min(1),
-    minimumPassedCount: z.number().int().min(1),
-    passCooldown: passCooldownSchema,
-    enable: z.boolean(),
-    unlocksExamIds: z.array(z.string()),
-})
+const examSchema = z
+    .object({
+        title: z.string().min(1, 'Title is required'),
+        description: z.string().min(1, 'Description is required'),
+        estimatedTimeInMinutes: z.number().int().min(1).optional(),
+        minimumCorrectAnswerCount: z.number().int().min(1),
+        minimumPassedCount: z.number().int().min(1),
+        passCooldown: passCooldownSchema,
+        enable: z.boolean(),
+        isAlwaysUnlocked: z.boolean(),
+        unlockedByExamId: z.string(),
+    })
+    .superRefine((data, ctx) => {
+        if (data.isAlwaysUnlocked && data.unlockedByExamId !== '') {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'An always unlocked exam cannot have an unlocker',
+                path: ['unlockedByExamId'],
+            })
+        }
+    })
 
 type ExamFormValues = z.infer<typeof examSchema>
 
-export type UnlockableExamOption = { id: string; title: string; order: number }
+export type UnlockableExamOption = {
+    id: string
+    title: string
+    order: number
+    isAlwaysUnlocked: boolean
+}
 
 export function ExamForm({
     topicId,
@@ -74,7 +94,8 @@ export function ExamForm({
             minimumPassedCount: 1,
             passCooldown: '04:00',
             enable: false,
-            unlocksExamIds: [],
+            isAlwaysUnlocked: false,
+            unlockedByExamId: '',
             ...defaultValues,
         },
     })
@@ -102,7 +123,7 @@ export function ExamForm({
     )
 
     const onSubmit = (data: ExamFormValues) => {
-        const { passCooldown, ...rest } = data
+        const { passCooldown, unlockedByExamId, ...rest } = data
         const payload = {
             ...rest,
             estimatedTimeInMinutes:
@@ -111,6 +132,10 @@ export function ExamForm({
                     : undefined,
             waitUntilPassAllowedInSeconds:
                 parseHoursMinutesToSeconds(passCooldown),
+            unlockedByExamId:
+                data.isAlwaysUnlocked || unlockedByExamId === ''
+                    ? null
+                    : unlockedByExamId,
             topicId,
         }
         if (isEdit) {
@@ -121,7 +146,8 @@ export function ExamForm({
         }
     }
 
-    const { control, register, formState } = form
+    const { control, register, formState, watch, setValue } = form
+    const isAlwaysUnlocked = watch('isAlwaysUnlocked')
     const isPending = createMutation.isPending || updateMutation.isPending
     const error =
         (createMutation.error as { message?: string })?.message ||
@@ -310,85 +336,96 @@ export function ExamForm({
                             />
                         </Field>
                         <Field>
-                            <FieldLabel>Unlocks exams</FieldLabel>
-                            {selectableUnlockableExams.length === 0 ? (
-                                <p className="text-muted-foreground text-sm">
-                                    No other enabled exams in this topic yet.
-                                </p>
-                            ) : (
-                                <Controller
-                                    name="unlocksExamIds"
-                                    control={control}
-                                    render={({ field, fieldState }) => (
-                                        <>
-                                            <div className="space-y-2">
-                                                {selectableUnlockableExams.map(
-                                                    (exam) => {
-                                                        const checked =
-                                                            field.value.includes(
-                                                                exam.id
-                                                            )
-                                                        return (
-                                                            <div
-                                                                key={exam.id}
-                                                                className="flex items-center gap-2"
-                                                            >
-                                                                <Checkbox
-                                                                    id={`unlocks-${exam.id}`}
-                                                                    checked={
-                                                                        checked
-                                                                    }
-                                                                    onCheckedChange={(
-                                                                        isChecked
-                                                                    ) => {
-                                                                        if (
-                                                                            isChecked
-                                                                        ) {
-                                                                            field.onChange(
-                                                                                [
-                                                                                    ...field.value,
-                                                                                    exam.id,
-                                                                                ]
-                                                                            )
-                                                                            return
-                                                                        }
-                                                                        field.onChange(
-                                                                            field.value.filter(
-                                                                                (
-                                                                                    id
-                                                                                ) =>
-                                                                                    id !==
-                                                                                    exam.id
-                                                                            )
-                                                                        )
-                                                                    }}
-                                                                    disabled={
-                                                                        isPending
-                                                                    }
-                                                                />
-                                                                <Label
-                                                                    htmlFor={`unlocks-${exam.id}`}
-                                                                >
-                                                                    {exam.order +
-                                                                        1}
-                                                                    .{' '}
-                                                                    {exam.title}
-                                                                </Label>
-                                                            </div>
+                            <Controller
+                                name="isAlwaysUnlocked"
+                                control={control}
+                                render={({ field, fieldState }) => (
+                                    <>
+                                        <div className="flex items-center gap-2">
+                                            <Checkbox
+                                                id="isAlwaysUnlocked"
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => {
+                                                    field.onChange(
+                                                        checked === true
+                                                    )
+                                                    if (checked === true) {
+                                                        setValue(
+                                                            'unlockedByExamId',
+                                                            ''
                                                         )
                                                     }
-                                                )}
-                                            </div>
-                                            <FieldError
-                                                errors={[fieldState.error]}
+                                                }}
+                                                disabled={isPending}
                                             />
-                                        </>
-                                    )}
-                                />
-                            )}
+                                            <Label htmlFor="isAlwaysUnlocked">
+                                                Always unlocked
+                                            </Label>
+                                        </div>
+                                        <p className="text-muted-foreground mt-2 text-xs">
+                                            Learners who can open the topic can
+                                            take this exam without an Unlocked
+                                            exam grant. Cannot have an unlocker.
+                                        </p>
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    </>
+                                )}
+                            />
+                        </Field>
+                        <Field>
+                            <FieldLabel htmlFor="unlockedByExamId">
+                                Unlocked by
+                            </FieldLabel>
+                            <Controller
+                                name="unlockedByExamId"
+                                control={control}
+                                render={({ field, fieldState }) => (
+                                    <>
+                                        <NativeSelect
+                                            id="unlockedByExamId"
+                                            className="w-full"
+                                            value={field.value}
+                                            onChange={(event) =>
+                                                field.onChange(
+                                                    event.target.value
+                                                )
+                                            }
+                                            onBlur={field.onBlur}
+                                            disabled={
+                                                isPending || isAlwaysUnlocked
+                                            }
+                                            aria-invalid={fieldState.invalid}
+                                        >
+                                            <NativeSelectOption value="">
+                                                None
+                                            </NativeSelectOption>
+                                            {selectableUnlockableExams.map(
+                                                (exam) => (
+                                                    <NativeSelectOption
+                                                        key={exam.id}
+                                                        value={exam.id}
+                                                    >
+                                                        {exam.order + 1}.{' '}
+                                                        {exam.title}
+                                                        {exam.isAlwaysUnlocked
+                                                            ? ' (always unlocked)'
+                                                            : ''}
+                                                    </NativeSelectOption>
+                                                )
+                                            )}
+                                        </NativeSelect>
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    </>
+                                )}
+                            />
                             <p className="text-muted-foreground mt-2 text-xs">
-                                Learners unlock these exams after fully passing
-                                this one.
+                                Learners unlock this exam after fully passing
+                                the selected exam. Leave empty if it is always
+                                unlocked or not yet attached.
                             </p>
                         </Field>
                         <Field>

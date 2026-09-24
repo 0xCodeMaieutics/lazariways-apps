@@ -5,10 +5,16 @@ import { CreateTopicForm } from "./page.client"
 import prisma from "@workspace/database/client"
 
 export default async function NewTopicPage() {
-  const lastTopic = await prisma.topic.findFirst({
-    orderBy: { order: "desc" },
-    select: { order: true },
-  })
+  const [lastTopic, parentTopics] = await Promise.all([
+    prisma.topic.findFirst({
+      orderBy: { order: "desc" },
+      select: { order: true },
+    }),
+    prisma.topic.findMany({
+      orderBy: { order: "asc" },
+      select: { id: true, name: true },
+    }),
+  ])
 
   return (
     <div className="px-6 py-8">
@@ -21,6 +27,7 @@ export default async function NewTopicPage() {
         </Button>
       </div>
       <CreateTopicForm
+        parentTopics={parentTopics}
         defaultValues={{ order: (lastTopic?.order ?? -1) + 1 }}
       />
     </div>

@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server'
 import prisma from '@workspace/database/client'
+import { backfillUnlockedExamsForUnlocker } from '@/lib/backfill-unlocked-exams'
 
 type TransactionClient = Parameters<
     Parameters<typeof prisma.$transaction>[0]
@@ -27,50 +28,42 @@ function detectUnlockCycle(unlockerByExamId: Map<string, string | null>) {
 export async function syncExamUnlocks(
     tx: TransactionClient,
     {
-        sourceExamId,
+        examId,
         topicId,
-        unlocksExamIds,
+        isAlwaysUnlocked,
+        unlockedByExamId,
     }: {
-        sourceExamId: string
+        examId: string
         topicId: string
-        unlocksExamIds: string[]
+        isAlwaysUnlocked: boolean
+        unlockedByExamId: string | null
     }
 ) {
-    const uniqueTargetIds = [...new Set(unlocksExamIds)]
+    if (isAlwaysUnlocked && unlockedByExamId !== null) {
+        throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'An always unlocked exam cannot have an unlocker',
+        })
+    }
 
-    if (uniqueTargetIds.includes(sourceExamId)) {
+    if (unlockedByExamId === examId) {
         throw new TRPCError({
             code: 'BAD_REQUEST',
             message: 'An exam cannot unlock itself',
         })
     }
 
-    const enabledExamsInTopic = await tx.exam.findMany({
-        where: { topicId, enable: true },
-        select: { id: true, title: true, unlockedId: true },
-    })
-    const enabledExamById = new Map(
-        enabledExamsInTopic.map((exam) => [exam.id, exam])
-    )
+    if (unlockedByExamId !== null) {
+        const unlocker = await tx.exam.findFirst({
+            where: { id: unlockedByExamId, topicId, enable: true },
+            select: { id: true },
+        })
 
-    for (const targetId of uniqueTargetIds) {
-        const target = enabledExamById.get(targetId)
-        if (!target) {
+        if (unlocker === null) {
             throw new TRPCError({
                 code: 'BAD_REQUEST',
-                message: 'All unlocked exams must be enabled exams in this topic',
-            })
-        }
-        if (
-            target.unlockedId !== null &&
-            target.unlockedId !== sourceExamId
-        ) {
-            const existingUnlocker = enabledExamsInTopic.find(
-                (exam) => exam.id === target.unlockedId
-            )
-            throw new TRPCError({
-                code: 'BAD_REQUEST',
-                message: `"${target.title}" is already unlocked by "${existingUnlocker?.title ?? 'another exam'}"`,
+                message:
+                    'The unlocker must be an enabled exam in this topic',
             })
         }
     }
@@ -83,31 +76,19 @@ export async function syncExamUnlocks(
     const unlockerByExamId = new Map<string, string | null>(
         allExamsInTopic.map((exam) => [exam.id, exam.unlockedId])
     )
-
-    for (const [examId, unlockerId] of unlockerByExamId) {
-        if (unlockerId === sourceExamId && !uniqueTargetIds.includes(examId)) {
-            unlockerByExamId.set(examId, null)
-        }
-    }
-
-    for (const targetId of uniqueTargetIds) {
-        unlockerByExamId.set(targetId, sourceExamId)
-    }
+    unlockerByExamId.set(examId, unlockedByExamId)
 
     detectUnlockCycle(unlockerByExamId)
 
-    await tx.exam.updateMany({
-        where: {
-            unlockedId: sourceExamId,
-            id: { notIn: uniqueTargetIds },
+    await tx.exam.update({
+        where: { id: examId },
+        data: {
+            isAlwaysUnlocked,
+            unlockedId: unlockedByExamId,
         },
-        data: { unlockedId: null },
     })
 
-    if (uniqueTargetIds.length > 0) {
-        await tx.exam.updateMany({
-            where: { id: { in: uniqueTargetIds } },
-            data: { unlockedId: sourceExamId },
-        })
+    if (unlockedByExamId !== null) {
+        await backfillUnlockedExamsForUnlocker(tx, unlockedByExamId, [examId])
     }
 }

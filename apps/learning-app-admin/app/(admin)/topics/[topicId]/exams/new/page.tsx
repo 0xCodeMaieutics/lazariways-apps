@@ -24,7 +24,12 @@ export default async function NewExamPage({
         prisma.exam.findMany({
             where: { topicId, enable: true },
             orderBy: { order: 'asc' },
-            select: { id: true, title: true, order: true },
+            select: {
+                id: true,
+                title: true,
+                order: true,
+                isAlwaysUnlocked: true,
+            },
         }),
     ])
 
@@ -49,6 +54,7 @@ export default async function NewExamPage({
                 topicId={topicId}
                 lastOrder={(lastExam?.order ?? -1) + 1}
                 unlockableExams={unlockableExams}
+                defaultValues={{ isAlwaysUnlocked: lastExam == null }}
             />
         </div>
     )
