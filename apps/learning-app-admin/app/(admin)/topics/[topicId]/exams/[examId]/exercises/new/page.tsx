@@ -9,18 +9,16 @@ export default async function NewExercisePage({
     params,
 }: {
     params: Promise<{
-        programId: string
-        weekId: string
+        topicId: string
         examId: string
     }>
 }) {
-    const { programId, weekId, examId } = await params
+    const { topicId, examId } = await params
 
     const exam = await prisma.exam.findFirst({
         where: {
             id: examId,
-            // TODO: the validity of this code needs to be changed
-            topicId: programId,
+            topicId,
         },
     })
 
@@ -43,7 +41,7 @@ export default async function NewExercisePage({
             <div className="mb-6">
                 <Button asChild variant="ghost" size="sm">
                     <Link
-                        href={`/topics/${programId}/exams/${examId}/exercises`}
+                        href={`/topics/${topicId}/exams/${examId}/exercises`}
                         className="flex items-center gap-2"
                     >
                         <ChevronLeft className="size-4" />
@@ -52,7 +50,7 @@ export default async function NewExercisePage({
                 </Button>
             </div>
             <ExerciseForm
-                programId={programId}
+                topicId={topicId}
                 examId={examId}
                 defaultValues={{ order: nextOrder + 1 }}
             />

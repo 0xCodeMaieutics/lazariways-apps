@@ -2,6 +2,10 @@
 
 import { useState } from "react"
 import { Topic } from "@workspace/database/browser"
+
+interface TopicListItem extends Topic {
+  unlockedTopic: { name: string } | null
+}
 import {
   DndContext,
   closestCenter,
@@ -30,7 +34,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Switch } from "@workspace/ui/components/switch"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { GripVertical, Loader2, Plus } from "lucide-react"
+import { Edit2, GripVertical, Loader2, Plus } from "lucide-react"
 import { useMutation } from "@tanstack/react-query"
 import { useTRPC } from "@/lib/trpc/react"
 
@@ -38,6 +42,18 @@ const TOPIC_TYPE_LABELS: Record<Topic["type"], string> = {
   STARTER: "Starter",
   BAECKEREI: "Backärei",
   FREIZEIT_PARK: "Freizeitpark",
+  HOTEL: "Hotel",
+  GARTEN_LANDSCHAFTBAU: "Garten und Landschaftbau",
+}
+
+function unlocksWhenLabel(topic: TopicListItem) {
+  if (topic.isAlwaysUnlocked) {
+    return "Always unlocked"
+  }
+  if (topic.unlockedTopic !== null) {
+    return topic.unlockedTopic.name
+  }
+  return "—"
 }
 
 function SortableRow({
@@ -46,7 +62,7 @@ function SortableRow({
   onToggleEnabled,
   isTogglePending,
 }: {
-  topic: Topic
+  topic: TopicListItem
   onNavigate: () => void
   onToggleEnabled: (enabled: boolean) => void
   isTogglePending: boolean
@@ -85,6 +101,7 @@ function SortableRow({
       </TableCell>
       <TableCell>{topic.name}</TableCell>
       <TableCell>{TOPIC_TYPE_LABELS[topic.type]}</TableCell>
+      <TableCell>{unlocksWhenLabel(topic)}</TableCell>
       <TableCell className="relative flex max-w-max gap-2">
         <Switch
           onClick={(e) => e.stopPropagation()}
@@ -95,11 +112,22 @@ function SortableRow({
           <Loader2 className="absolute -right-5 size-5 animate-spin" />
         )}
       </TableCell>
+      <TableCell>
+        <Button onClick={(e) => e.stopPropagation()} asChild variant={"ghost"}>
+          <Link href={`topics/${topic.id}/edit`}>
+            <Edit2 />
+          </Link>
+        </Button>
+      </TableCell>
     </TableRow>
   )
 }
 
-export const TopicsList = ({ topics: topicsOuter }: { topics: Topic[] }) => {
+export const TopicsList = ({
+  topics: topicsOuter,
+}: {
+  topics: TopicListItem[]
+}) => {
   const router = useRouter()
   const trpc = useTRPC()
   const [topics, setTopics] = useState([...topicsOuter])
@@ -182,7 +210,9 @@ export const TopicsList = ({ topics: topicsOuter }: { topics: Topic[] }) => {
                 <TableHead className="w-10" />
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
-                <TableHead></TableHead>
+                <TableHead>Unlocks when</TableHead>
+                <TableHead>Visibility</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

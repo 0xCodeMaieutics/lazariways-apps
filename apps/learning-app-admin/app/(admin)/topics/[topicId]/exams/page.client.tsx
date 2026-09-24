@@ -27,6 +27,7 @@ import {
   TableCell,
 } from "@workspace/ui/components/table"
 import { Button } from "@workspace/ui/components/button"
+import { Switch } from "@workspace/ui/components/switch"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,6 +39,9 @@ import { useParams, useRouter } from "next/navigation"
 import {
   ArrowLeft,
   GripVertical,
+  Loader2,
+  Lock,
+  LockOpen,
   MoreHorizontal,
   Pencil,
   Plus,
@@ -45,15 +49,24 @@ import {
 import { useMutation } from "@tanstack/react-query"
 import { useTRPC } from "@/lib/trpc/react"
 import { formatSecondsAsHoursMinutes } from "@/utils/format-duration"
+import { toast } from "sonner"
 
 function SortableRow({
   exam,
   topicId,
   onNavigate,
+  onToggleEnabled,
+  onToggleAlwaysUnlocked,
+  isTogglePending,
+  isAlwaysUnlockedPending,
 }: {
   exam: Exam
   topicId: string
   onNavigate: () => void
+  onToggleEnabled: (enable: boolean) => void
+  onToggleAlwaysUnlocked: () => void
+  isTogglePending: boolean
+  isAlwaysUnlockedPending: boolean
 }) {
   const {
     attributes,
@@ -94,6 +107,16 @@ function SortableRow({
       <TableCell className="tabular-nums">
         {formatSecondsAsHoursMinutes(exam.waitUntilPassAllowedInSeconds)}
       </TableCell>
+      <TableCell className="relative flex max-w-max gap-2">
+        <Switch
+          onClick={(e) => e.stopPropagation()}
+          checked={exam.enable}
+          onCheckedChange={onToggleEnabled}
+        />
+        {isTogglePending && (
+          <Loader2 className="absolute -right-5 size-5 animate-spin" />
+        )}
+      </TableCell>
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -112,6 +135,25 @@ function SortableRow({
                 <Pencil className="mr-2 size-4" />
                 Edit
               </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={isAlwaysUnlockedPending}
+              onClick={(e) => {
+                e.stopPropagation()
+                onToggleAlwaysUnlocked()
+              }}
+            >
+              {exam.isAlwaysUnlocked ? (
+                <>
+                  <Lock className="mr-2 size-4" />
+                  Disable Always unlocked
+                </>
+              ) : (
+                <>
+                  <LockOpen className="mr-2 size-4" />
+                  Make Always Unlocked
+                </>
+              )}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -135,6 +177,55 @@ export const AdminExams = ({
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, {
       activationConstraint: { delay: 200, tolerance: 5 },
+    })
+  )
+
+  const {
+    mutate: updateExamEnable,
+    isPending: isTogglePending,
+    variables,
+  } = useMutation(
+    trpc.admin.exams.updateExamEnabled.mutationOptions({
+      onSuccess: (_, { id, enable }) => {
+        router.refresh()
+        setExams((previousExams) =>
+          previousExams.map((previousExam) => {
+            if (id === previousExam.id) {
+              return {
+                ...previousExam,
+                enable,
+              }
+            }
+            return { ...previousExam }
+          })
+        )
+      },
+    })
+  )
+
+  const {
+    mutate: updateExamAlwaysUnlocked,
+    isPending: isAlwaysUnlockedPending,
+    variables: alwaysUnlockedVariables,
+  } = useMutation(
+    trpc.admin.exams.updateExamAlwaysUnlocked.mutationOptions({
+      onSuccess: (_, { id, isAlwaysUnlocked }) => {
+        router.refresh()
+        setExams((previousExams) =>
+          previousExams.map((previousExam) => {
+            if (id === previousExam.id) {
+              return {
+                ...previousExam,
+                isAlwaysUnlocked,
+              }
+            }
+            return { ...previousExam }
+          })
+        )
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
     })
   )
 
@@ -195,6 +286,7 @@ export const AdminExams = ({
                 <TableHead>Min correct answer</TableHead>
                 <TableHead>Min passed</TableHead>
                 <TableHead>Pass cooldown (HH:MM)</TableHead>
+                <TableHead>Visibility</TableHead>
                 <TableHead className="w-[50px]" />
               </TableRow>
             </TableHeader>
@@ -212,6 +304,25 @@ export const AdminExams = ({
                       router.push(
                         `/topics/${topicId}/exams/${exam.id}/exercises`
                       )
+                    }
+                    onToggleEnabled={(enable) =>
+                      updateExamEnable({
+                        id: exam.id,
+                        enable,
+                      })
+                    }
+                    onToggleAlwaysUnlocked={() =>
+                      updateExamAlwaysUnlocked({
+                        id: exam.id,
+                        isAlwaysUnlocked: !exam.isAlwaysUnlocked,
+                      })
+                    }
+                    isTogglePending={
+                      isTogglePending && variables?.id === exam.id
+                    }
+                    isAlwaysUnlockedPending={
+                      isAlwaysUnlockedPending &&
+                      alwaysUnlockedVariables?.id === exam.id
                     }
                   />
                 ))}

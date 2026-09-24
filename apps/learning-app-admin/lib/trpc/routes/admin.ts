@@ -4,6 +4,8 @@ import { adminProcedure, router } from '../server'
 import { TopicType } from '@workspace/database/browser'
 import prisma from '@workspace/database/client'
 import { syncExamUnlocks } from '@/lib/sync-exam-unlocks'
+import { validateAndApplyTopicUnlock } from '@/lib/sync-topic-unlock'
+import { backfillUnlockedTopicsForUnlocker } from '@/lib/backfill-unlocked-topics'
 import { generateAudio } from '@/lib/narakeet'
 import { uploadToStorage } from '@workspace/file-upload/s3-client'
 import { env } from '@/env'
@@ -80,18 +82,22 @@ const examCreateSchema = z.object({
     waitUntilPassAllowedInSeconds: z.number().int().min(0).default(14400),
     topicId: z.string().min(1, 'Topic is required'),
     enable: z.boolean().default(false),
-    unlocksExamIds: z.array(z.string()).default([]),
+    isAlwaysUnlocked: z.boolean().default(false),
+    unlockedByExamId: z.string().min(1).nullable(),
 })
 
 const examUpdateSchema = examCreateSchema.partial().extend({
     id: z.string().min(1),
 })
 
-const topicCreateSchema = z.object({
+const topicWriteSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     type: z.enum(TopicType),
     order: z.number().int().min(0),
     enabled: z.boolean().default(false),
+    isAlwaysUnlocked: z.boolean().default(false),
+    unlockedByTopicId: z.string().min(1).nullable(),
+    minimumCompletedExamsToUnlock: z.number().int().min(1).nullable(),
 })
 
 function sanitizeForFilename(text: string): string {
@@ -134,7 +140,8 @@ export const adminRouter = router({
         create: adminProcedure
             .input(examCreateSchema)
             .mutation(async ({ input }) => {
-                const { unlocksExamIds, ...examData } = input
+                const { unlockedByExamId, isAlwaysUnlocked, ...examData } =
+                    input
 
                 return prisma.$transaction(async (tx) => {
                     const exam = await tx.exam.create({
@@ -142,9 +149,10 @@ export const adminRouter = router({
                     })
 
                     await syncExamUnlocks(tx, {
-                        sourceExamId: exam.id,
+                        examId: exam.id,
                         topicId: input.topicId,
-                        unlocksExamIds,
+                        isAlwaysUnlocked,
+                        unlockedByExamId,
                     })
 
                     return exam
@@ -153,11 +161,14 @@ export const adminRouter = router({
         update: adminProcedure
             .input(examUpdateSchema)
             .mutation(async ({ input }) => {
-                const { id, unlocksExamIds, topicId, ...data } = input
+                const { id, unlockedByExamId, topicId, ...data } = input
 
                 const existingExam = await prisma.exam.findUnique({
                     where: { id },
-                    select: { topicId: true },
+                    select: {
+                        topicId: true,
+                        enable: true,
+                    },
                 })
 
                 if (!existingExam) {
@@ -178,15 +189,108 @@ export const adminRouter = router({
                         },
                     })
 
-                    if (unlocksExamIds !== undefined) {
+                    if (unlockedByExamId !== undefined) {
                         await syncExamUnlocks(tx, {
-                            sourceExamId: id,
+                            examId: id,
                             topicId: resolvedTopicId,
-                            unlocksExamIds,
+                            isAlwaysUnlocked: exam.isAlwaysUnlocked,
+                            unlockedByExamId,
+                        })
+                    } else if (
+                        exam.isAlwaysUnlocked &&
+                        exam.unlockedId !== null
+                    ) {
+                        throw new TRPCError({
+                            code: 'BAD_REQUEST',
+                            message:
+                                'An always unlocked exam cannot have an unlocker',
                         })
                     }
 
+                    const isExamNewlyEnabled =
+                        data.enable === true && existingExam.enable === false
+                    if (isExamNewlyEnabled) {
+                        await backfillUnlockedTopicsForUnlocker(
+                            tx,
+                            resolvedTopicId
+                        )
+                    }
+
                     return exam
+                })
+            }),
+        updateExamEnabled: adminProcedure
+            .input(
+                z.object({
+                    id: z.string(),
+                    enable: z.boolean(),
+                })
+            )
+            .mutation(async ({ input }) => {
+                const existingExam = await prisma.exam.findUnique({
+                    where: { id: input.id },
+                    select: { topicId: true, enable: true },
+                })
+
+                if (!existingExam) {
+                    throw new TRPCError({
+                        code: 'NOT_FOUND',
+                        message: 'Exam not found',
+                    })
+                }
+
+                return prisma.$transaction(async (tx) => {
+                    const exam = await tx.exam.update({
+                        where: { id: input.id },
+                        data: { enable: input.enable },
+                    })
+
+                    const isExamNewlyEnabled =
+                        input.enable === true && existingExam.enable === false
+                    if (isExamNewlyEnabled) {
+                        await backfillUnlockedTopicsForUnlocker(
+                            tx,
+                            existingExam.topicId
+                        )
+                    }
+
+                    return exam
+                })
+            }),
+        updateExamAlwaysUnlocked: adminProcedure
+            .input(
+                z.object({
+                    id: z.string(),
+                    isAlwaysUnlocked: z.boolean(),
+                })
+            )
+            .mutation(async ({ input }) => {
+                const existingExam = await prisma.exam.findUnique({
+                    where: { id: input.id },
+                    select: { unlockedId: true },
+                })
+
+                if (!existingExam) {
+                    throw new TRPCError({
+                        code: 'NOT_FOUND',
+                        message: 'Exam not found',
+                    })
+                }
+
+                if (
+                    input.isAlwaysUnlocked &&
+                    existingExam.unlockedId !== null
+                ) {
+                    throw new TRPCError({
+                        code: 'BAD_REQUEST',
+                        message:
+                            'An always unlocked exam cannot have an unlocker',
+                    })
+                }
+
+                return prisma.exam.update({
+                    where: { id: input.id },
+                    data: { isAlwaysUnlocked: input.isAlwaysUnlocked },
                 })
             }),
         delete: adminProcedure
@@ -334,16 +438,92 @@ export const adminRouter = router({
                 )
             }),
         createNewTopic: adminProcedure
-            .input(topicCreateSchema)
-            .mutation(async ({ input }) =>
-                prisma.topic.create({
-                    data: {
-                        name: input.name,
-                        type: input.type,
-                        order: input.order,
-                        enabled: input.enabled,
-                    },
+            .input(topicWriteSchema)
+            .mutation(async ({ input }) => {
+                const {
+                    unlockedByTopicId,
+                    isAlwaysUnlocked,
+                    minimumCompletedExamsToUnlock,
+                    ...topicData
+                } = input
+
+                return prisma.$transaction(async (tx) => {
+                    const topic = await tx.topic.create({
+                        data: topicData,
+                    })
+
+                    await validateAndApplyTopicUnlock(tx, {
+                        topicId: topic.id,
+                        isAlwaysUnlocked,
+                        unlockedByTopicId,
+                        minimumCompletedExamsToUnlock,
+                    })
+
+                    if (unlockedByTopicId !== null) {
+                        await backfillUnlockedTopicsForUnlocker(
+                            tx,
+                            unlockedByTopicId
+                        )
+                    }
+
+                    await backfillUnlockedTopicsForUnlocker(tx, topic.id)
+
+                    return tx.topic.findUniqueOrThrow({
+                        where: { id: topic.id },
+                    })
                 })
-            ),
+            }),
+        update: adminProcedure
+            .input(
+                topicWriteSchema.extend({
+                    id: z.string().min(1),
+                })
+            )
+            .mutation(async ({ input }) => {
+                const {
+                    id,
+                    unlockedByTopicId,
+                    isAlwaysUnlocked,
+                    minimumCompletedExamsToUnlock,
+                    ...topicData
+                } = input
+
+                const existing = await prisma.topic.findUnique({
+                    where: { id },
+                    select: { id: true },
+                })
+
+                if (!existing) {
+                    throw new TRPCError({
+                        code: 'NOT_FOUND',
+                        message: 'Topic not found',
+                    })
+                }
+
+                return prisma.$transaction(async (tx) => {
+                    await tx.topic.update({
+                        where: { id },
+                        data: topicData,
+                    })
+
+                    await validateAndApplyTopicUnlock(tx, {
+                        topicId: id,
+                        isAlwaysUnlocked,
+                        unlockedByTopicId,
+                        minimumCompletedExamsToUnlock,
+                    })
+
+                    if (unlockedByTopicId !== null) {
+                        await backfillUnlockedTopicsForUnlocker(
+                            tx,
+                            unlockedByTopicId
+                        )
+                    }
+
+                    await backfillUnlockedTopicsForUnlocker(tx, id)
+
+                    return tx.topic.findUniqueOrThrow({ where: { id } })
+                })
+            }),
     },
 })

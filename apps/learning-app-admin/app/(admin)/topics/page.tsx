@@ -6,6 +6,11 @@ export default async function AdminTopics() {
         orderBy: {
             order: 'asc',
         },
+        include: {
+            unlockedTopic: {
+                select: { name: true },
+            },
+        },
     })
     return <TopicsList topics={topics} />
 }
