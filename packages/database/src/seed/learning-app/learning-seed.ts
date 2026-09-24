@@ -116,6 +116,7 @@ export const insertLearningData = async ({
             userPassCount?: number
             userAttemptedCount: number
             unlocksExams?: string[]
+            isAlwaysUnlocked?: boolean
         }>
 
         try {
@@ -144,6 +145,7 @@ export const insertLearningData = async ({
                     description: exam.description,
                     order: currentExamIndex,
                     enable: true,
+                    isAlwaysUnlocked: exam.isAlwaysUnlocked ?? false,
                     estimatedTimeInMinutes: exam.estimatedTimeInMinutes ?? null,
                     minimumPassedCount: exam.minimumPassedCount ?? 1,
                     minimumCorrectAnswerCount: exam.minimumCorrectAnswerCount,
@@ -253,6 +255,65 @@ export const insertLearningData = async ({
             )
             await Promise.all([...promises])
         }
+    }
+
+    const unlockerTopics = await prisma.topic.findMany({
+        where: { minimumCompletedExamsToUnlock: { not: null } },
+        select: {
+            id: true,
+            minimumCompletedExamsToUnlock: true,
+            unlocksTopics: { select: { id: true } },
+            exams: {
+                where: { enable: true },
+                select: {
+                    minimumPassedCount: true,
+                    userExamAggregation: {
+                        where: { userId },
+                        select: { passedCount: true },
+                    },
+                },
+            },
+        },
+    })
+
+    const unlockedTopicRows: Array<{ userId: string; topicId: string }> = []
+    for (const unlocker of unlockerTopics) {
+        if (
+            unlocker.minimumCompletedExamsToUnlock === null ||
+            unlocker.unlocksTopics.length === 0
+        ) {
+            continue
+        }
+
+        let completedEnabledExamCount = 0
+        for (const exam of unlocker.exams) {
+            const aggregation = exam.userExamAggregation[0]
+            if (
+                aggregation !== undefined &&
+                aggregation.passedCount >= exam.minimumPassedCount
+            ) {
+                completedEnabledExamCount += 1
+            }
+        }
+
+        if (
+            completedEnabledExamCount >=
+            unlocker.minimumCompletedExamsToUnlock
+        ) {
+            for (const unlockedTopic of unlocker.unlocksTopics) {
+                unlockedTopicRows.push({
+                    userId,
+                    topicId: unlockedTopic.id,
+                })
+            }
+        }
+    }
+
+    if (unlockedTopicRows.length > 0) {
+        await prisma.userUnlockedTopic.createMany({
+            data: unlockedTopicRows,
+            skipDuplicates: true,
+        })
     }
 
     console.log(`Inserted ${totalExams} exams and ${totalExercises} exercises.`)

@@ -1,0 +1,47 @@
+[
+    {
+        "type": "CHOOSE_FROM_AUDIO",
+        "prompt": "რა გესმის?",
+        "audioUrl": "learning-app-platform/audios/hallo-welt-1772436520376.m4a",
+        "slowAudioUrl": "/audio/greetings/hallo_slow.mp3",
+        "options": [
+            "Hallo",
+            "Danke",
+            "Tschüss"
+        ],
+        "correctOptionIndex": [
+            0
+        ],
+        "correctInputs": []
+    },
+    {
+        "type": "CHOOSE_FROM_AUDIO",
+        "prompt": "რა გესმის?",
+        "audioUrl": "learning-app-platform/audios/hallo-welt-1772436520376.m4a",
+        "slowAudioUrl": "/audio/greetings/guten_tag_slow.mp3",
+        "options": [
+            "Gute Nacht",
+            "Guten Tag",
+            "Guten Abend"
+        ],
+        "correctOptionIndex": [
+            1
+        ],
+        "correctInputs": []
+    },
+    {
+        "type": "CHOOSE_FROM_AUDIO",
+        "prompt": "რა გესმის?",
+        "audioUrl": "learning-app-platform/audios/hallo-welt-1772436520376.m4a",
+        "slowAudioUrl": "/audio/greetings/guten_morgen_slow.mp3",
+        "options": [
+            "Guten Morgen",
+            "Guten Abend",
+            "Gute Nacht"
+        ],
+        "correctOptionIndex": [
+            0
+        ],
+        "correctInputs": []
+    }
+]
