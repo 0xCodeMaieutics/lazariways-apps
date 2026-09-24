@@ -13,12 +13,7 @@ import {
   Lock,
   Target,
 } from "lucide-react"
-import type {
-  Exam,
-  Topic,
-  UserExamAggregation,
-  UserUnlockedExam,
-} from "@workspace/database/browser"
+import type { Exam, Topic, UserExamAggregation } from "@workspace/database/browser"
 import Link from "next/link"
 import { Banner } from "@/components/ui/banner"
 import { useCountdown } from "@/utils/useCountdown"
@@ -53,16 +48,18 @@ function ExamCardTimer({
   )
 }
 
+type ExamListItem = Exam & {
+  _count: {
+    exercises: number
+  }
+  userExamAggregation: UserExamAggregation[]
+  isUnlocked: boolean
+}
+
 function ExamCard({
   exam,
 }: {
-  exam: Exam & {
-    _count: {
-      exercises: number
-    }
-    userExamAggregation: UserExamAggregation[]
-    userUnlockedExams: Pick<UserUnlockedExam, "examId">[]
-  }
+  exam: ExamListItem
 }) {
   const { topicId } = useParams()
   const userExamAggregation =
@@ -79,9 +76,7 @@ function ExamCard({
       ? Math.round((examPassedCount / exam.minimumPassedCount) * 100)
       : 100
 
-  const isCardUnlocked = exam.userUnlockedExams.some(
-    (unlockedExam) => unlockedExam.examId === exam.id
-  )
+  const isCardUnlocked = exam.isUnlocked
 
   return (
     <Link
@@ -175,13 +170,7 @@ export function Exams({
   exams,
   topic,
 }: {
-  exams: (Exam & {
-    _count: {
-      exercises: number
-    }
-    userExamAggregation: UserExamAggregation[]
-    userUnlockedExams: Pick<UserUnlockedExam, "examId">[]
-  })[]
+  exams: ExamListItem[]
   topic: Pick<Topic, "type" | "name">
 }) {
   const isAllExamsPassed =
