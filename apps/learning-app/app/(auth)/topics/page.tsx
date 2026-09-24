@@ -23,6 +23,7 @@ export default async function TopicsPage() {
             orderBy: { order: 'asc' },
             include: {
                 exams: {
+                    where: { enable: true },
                     select: {
                         topicId: true,
                         minimumPassedCount: true,
