@@ -31,7 +31,7 @@ export async function unlockTopicsAfterExamCompletion(
     }
 
     const examsInTopic = await tx.exam.findMany({
-        where: { topicId },
+        where: { topicId, enable: true },
         select: {
             minimumPassedCount: true,
             userExamAggregation: {
