@@ -16,13 +16,23 @@ export default async function EditExamPage({
 }) {
     const { topicId, examId } = await params
 
-    const [exam, program] = await Promise.all([
+    const [exam, program, unlockableExams] = await Promise.all([
         prisma.exam.findFirst({
             where: { id: examId },
+            include: {
+                unlocksExams: {
+                    select: { id: true },
+                },
+            },
         }),
         // TODO: this was program before so does not make sense
         prisma.topic.findUnique({
             where: { id: topicId },
+        }),
+        prisma.exam.findMany({
+            where: { topicId, enable: true },
+            orderBy: { order: 'asc' },
+            select: { id: true, title: true, order: true },
         }),
     ])
 
@@ -46,6 +56,7 @@ export default async function EditExamPage({
             <ExamForm
                 topicId={topicId}
                 examId={examId}
+                unlockableExams={unlockableExams}
                 defaultValues={{
                     title: exam.title,
                     description: exam.description,
@@ -55,6 +66,10 @@ export default async function EditExamPage({
                     minimumPassedCount: exam.minimumPassedCount,
                     passCooldown: formatSecondsAsHoursMinutes(
                         exam.waitUntilPassAllowedInSeconds
+                    ),
+                    enable: exam.enable,
+                    unlocksExamIds: exam.unlocksExams.map(
+                        (unlockedExam) => unlockedExam.id
                     ),
                 }}
             />

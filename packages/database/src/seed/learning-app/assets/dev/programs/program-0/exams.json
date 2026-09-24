@@ -7,7 +7,7 @@
         "estimatedTimeInMinutes": 30,
         "minimumCorrectAnswerCount": 2,
         "minimumPassedCount": 3,
-        "userPassCount": 0,
+        "userPassCount": 2,
         "userAttemptedCount": 5,
         "relativeExercisePath": "./exercise-0.json",
         "unlocksExams": [
@@ -22,7 +22,7 @@
         "estimatedTimeInMinutes": 25,
         "minimumCorrectAnswerCount": 3,
         "minimumPassedCount": 3,
-        "userPassCount": 0,
+        "userPassCount": 3,
         "userAttemptedCount": 5,
         "relativeExercisePath": "./exercise-1.json",
         "unlocksExams": [
@@ -37,7 +37,7 @@
         "estimatedTimeInMinutes": 25,
         "minimumCorrectAnswerCount": 3,
         "minimumPassedCount": 4,
-        "userPassCount": 0,
+        "userPassCount": 4,
         "userAttemptedCount": 5,
         "relativeExercisePath": "./exercise-2.json",
         "unlocksExams": [
@@ -52,7 +52,7 @@
         "estimatedTimeInMinutes": 25,
         "minimumCorrectAnswerCount": 3,
         "minimumPassedCount": 4,
-        "userPassCount": 0,
+        "userPassCount": 4,
         "userAttemptedCount": 5,
         "relativeExercisePath": "./exercise-3.json",
         "unlocksExams": [
@@ -67,7 +67,7 @@
         "estimatedTimeInMinutes": 25,
         "minimumCorrectAnswerCount": 3,
         "minimumPassedCount": 4,
-        "userPassCount": 0,
+        "userPassCount": 4,
         "userAttemptedCount": 5,
         "relativeExercisePath": "./exercise-4.json",
         "unlocksExams": [
@@ -82,7 +82,7 @@
         "estimatedTimeInMinutes": 25,
         "minimumCorrectAnswerCount": 1,
         "minimumPassedCount": 4,
-        "userPassCount": 0,
+        "userPassCount": 4,
         "userAttemptedCount": 5,
         "relativeExercisePath": "./exercise-5.json"
     }

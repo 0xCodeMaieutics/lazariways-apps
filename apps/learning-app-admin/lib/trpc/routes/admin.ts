@@ -1,7 +1,9 @@
 import { z } from 'zod'
+import { TRPCError } from '@trpc/server'
 import { adminProcedure, router } from '../server'
 import { TopicType } from '@workspace/database/browser'
 import prisma from '@workspace/database/client'
+import { syncExamUnlocks } from '@/lib/sync-exam-unlocks'
 import { generateAudio } from '@/lib/narakeet'
 import { uploadToStorage } from '@workspace/file-upload/s3-client'
 import { env } from '@/env'
@@ -78,6 +80,7 @@ const examCreateSchema = z.object({
     waitUntilPassAllowedInSeconds: z.number().int().min(0).default(14400),
     topicId: z.string().min(1, 'Topic is required'),
     enable: z.boolean().default(false),
+    unlocksExamIds: z.array(z.string()).default([]),
 })
 
 const examUpdateSchema = examCreateSchema.partial().extend({
@@ -130,30 +133,60 @@ export const adminRouter = router({
     exams: {
         create: adminProcedure
             .input(examCreateSchema)
-            .mutation(async ({ input }) =>
-                prisma.exam.create({
-                    data: {
-                        title: input.title,
-                        description: input.description,
-                        order: input.order,
-                        estimatedTimeInMinutes: input.estimatedTimeInMinutes,
-                        minimumCorrectAnswerCount:
-                            input.minimumCorrectAnswerCount,
-                        minimumPassedCount: input.minimumPassedCount,
-                        waitUntilPassAllowedInSeconds:
-                            input.waitUntilPassAllowedInSeconds,
-                        enable: input.enable,
+            .mutation(async ({ input }) => {
+                const { unlocksExamIds, ...examData } = input
+
+                return prisma.$transaction(async (tx) => {
+                    const exam = await tx.exam.create({
+                        data: examData,
+                    })
+
+                    await syncExamUnlocks(tx, {
+                        sourceExamId: exam.id,
                         topicId: input.topicId,
-                    },
+                        unlocksExamIds,
+                    })
+
+                    return exam
                 })
-            ),
+            }),
         update: adminProcedure
             .input(examUpdateSchema)
             .mutation(async ({ input }) => {
-                const { id, ...data } = input
-                return prisma.exam.update({
+                const { id, unlocksExamIds, topicId, ...data } = input
+
+                const existingExam = await prisma.exam.findUnique({
                     where: { id },
-                    data,
+                    select: { topicId: true },
+                })
+
+                if (!existingExam) {
+                    throw new TRPCError({
+                        code: 'NOT_FOUND',
+                        message: 'Exam not found',
+                    })
+                }
+
+                const resolvedTopicId = topicId ?? existingExam.topicId
+
+                return prisma.$transaction(async (tx) => {
+                    const exam = await tx.exam.update({
+                        where: { id },
+                        data: {
+                            ...data,
+                            ...(topicId !== undefined && { topicId }),
+                        },
+                    })
+
+                    if (unlocksExamIds !== undefined) {
+                        await syncExamUnlocks(tx, {
+                            sourceExamId: id,
+                            topicId: resolvedTopicId,
+                            unlocksExamIds,
+                        })
+                    }
+
+                    return exam
                 })
             }),
         delete: adminProcedure

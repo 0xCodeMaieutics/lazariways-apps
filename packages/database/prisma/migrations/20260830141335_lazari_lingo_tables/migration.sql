@@ -5,7 +5,7 @@ CREATE SCHEMA IF NOT EXISTS "lazari_lingo";
 CREATE TYPE "lazari_lingo"."UserRole" AS ENUM ('ADMIN', 'USER');
 
 -- CreateEnum
-CREATE TYPE "lazari_lingo"."TopicType" AS ENUM ('STARTER', 'BAECKEREI', 'FREIZEIT_PARK');
+CREATE TYPE "lazari_lingo"."TopicType" AS ENUM ('STARTER', 'BAECKEREI', 'FREIZEIT_PARK', 'GARTEN_LANDSCHAFTBAU', 'HOTEL');
 
 -- CreateEnum
 CREATE TYPE "lazari_lingo"."ExerciseType" AS ENUM ('CHOOSE_FROM_AUDIO', 'INPUT_FROM_AUDIO', 'CHOOSE_FROM_TEXT', 'INPUT_FROM_TEXT', 'INPUT_SENTENCE_FROM_TEXT', 'CHOOSE_MATCHING_PATTERNS');
@@ -66,8 +66,21 @@ CREATE TABLE "lazari_lingo"."Topic" (
     "type" "lazari_lingo"."TopicType" NOT NULL,
     "enabled" BOOLEAN NOT NULL,
     "order" INTEGER NOT NULL,
+    "isAlwaysUnlocked" BOOLEAN NOT NULL DEFAULT false,
+    "minimumCompletedExamsToUnlock" INTEGER,
+    "unlockedId" TEXT,
 
     CONSTRAINT "Topic_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "lazari_lingo"."UserUnlockedTopic" (
+    "id" TEXT NOT NULL,
+    "unlockedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+    "topicId" TEXT NOT NULL,
+
+    CONSTRAINT "UserUnlockedTopic_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -158,6 +171,15 @@ CREATE INDEX "Account_userId_idx" ON "lazari_lingo"."Account"("userId");
 CREATE UNIQUE INDEX "Account_issuer_accountId_key" ON "lazari_lingo"."Account"("issuer", "accountId");
 
 -- CreateIndex
+CREATE INDEX "UserUnlockedTopic_userId_idx" ON "lazari_lingo"."UserUnlockedTopic"("userId");
+
+-- CreateIndex
+CREATE INDEX "UserUnlockedTopic_topicId_idx" ON "lazari_lingo"."UserUnlockedTopic"("topicId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserUnlockedTopic_userId_topicId_key" ON "lazari_lingo"."UserUnlockedTopic"("userId", "topicId");
+
+-- CreateIndex
 CREATE INDEX "UserUnlockedExam_userId_idx" ON "lazari_lingo"."UserUnlockedExam"("userId");
 
 -- CreateIndex
@@ -183,6 +205,15 @@ ALTER TABLE "lazari_lingo"."Session" ADD CONSTRAINT "Session_userId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "lazari_lingo"."Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "lazari_lingo"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "lazari_lingo"."Topic" ADD CONSTRAINT "Topic_unlockedId_fkey" FOREIGN KEY ("unlockedId") REFERENCES "lazari_lingo"."Topic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "lazari_lingo"."UserUnlockedTopic" ADD CONSTRAINT "UserUnlockedTopic_userId_fkey" FOREIGN KEY ("userId") REFERENCES "lazari_lingo"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "lazari_lingo"."UserUnlockedTopic" ADD CONSTRAINT "UserUnlockedTopic_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "lazari_lingo"."Topic"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "lazari_lingo"."Exam" ADD CONSTRAINT "Exam_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "lazari_lingo"."Topic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
