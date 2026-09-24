@@ -89,6 +89,7 @@ CREATE TABLE "lazari_lingo"."Exam" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "enable" BOOLEAN NOT NULL DEFAULT false,
+    "isAlwaysUnlocked" BOOLEAN NOT NULL DEFAULT false,
     "order" INTEGER NOT NULL,
     "estimatedTimeInMinutes" INTEGER,
     "minimumCorrectAnswerCount" INTEGER NOT NULL DEFAULT 1,

@@ -114,8 +114,9 @@ model Exam {
   id          String     @id @default(nanoid())
   title       String
   description String
-  enable      Boolean    @default(false)
-  exercises   Exercise[]
+  enable           Boolean    @default(false)
+  isAlwaysUnlocked Boolean    @default(false)
+  exercises        Exercise[]
 
   order                         Int
   estimatedTimeInMinutes        Int?
