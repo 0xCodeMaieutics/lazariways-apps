@@ -77,9 +77,7 @@ export function GenerateBewerberChecklistButton({
         disabled={isGenerating}
         onClick={generateChecklist}
       >
-        {isGenerating
-          ? "მუშავდება…"
-          : "გიულის Checklist's გენერირება"}
+        {isGenerating ? "მუშავდება…" : "გიულის Checklist's გენერირება"}
       </Button>
 
       <Dialog open={isErrorDialogOpen} onOpenChange={setIsErrorDialogOpen}>

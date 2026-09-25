@@ -1,68 +1,68 @@
-import prisma from '@workspace/database/client'
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@workspace/ui/components/button'
-import { ChevronLeft } from 'lucide-react'
-import { ExerciseForm } from '@/app/(admin)/_components/forms/exercise-form'
+import prisma from "@workspace/database/client"
+import { notFound } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@workspace/ui/components/button"
+import { ChevronLeft } from "lucide-react"
+import { ExerciseForm } from "@/app/(admin)/_components/forms/exercise-form"
 
 export default async function EditExercisePage({
-    params,
+  params,
 }: {
-    params: Promise<{
-        topicId: string
-        examId: string
-        exerciseId: string
-    }>
+  params: Promise<{
+    topicId: string
+    examId: string
+    exerciseId: string
+  }>
 }) {
-    const { topicId, examId, exerciseId } = await params
+  const { topicId, examId, exerciseId } = await params
 
-    const exercise = await prisma.exercise.findFirst({
-        where: {
-            id: exerciseId,
-            examId,
-            exam: {
-                topicId,
-            },
-        },
-    })
+  const exercise = await prisma.exercise.findFirst({
+    where: {
+      id: exerciseId,
+      examId,
+      exam: {
+        topicId,
+      },
+    },
+  })
 
-    if (!exercise) {
-        notFound()
-    }
+  if (!exercise) {
+    notFound()
+  }
 
-    const defaultValues = {
-        type: exercise.type,
-        prompt: exercise.prompt ?? '',
-        text: exercise.text ?? '',
-        order: exercise.order,
-        audioUrl: exercise.audioUrl ?? '',
-        slowAudioUrl: exercise.slowAudioUrl ?? '',
-        optionsText: exercise.options.join('\n'),
-        correctOptionIndexText: exercise.correctOptionIndex.join(', '),
-        allowsMultipleCorrectOptions:
-            exercise.allowsMultipleCorrectOptions ?? false,
-        correctInputsText: exercise.correctInputs.join('\n'),
-    }
+  const defaultValues = {
+    type: exercise.type,
+    prompt: exercise.prompt ?? "",
+    text: exercise.text ?? "",
+    order: exercise.order,
+    audioUrl: exercise.audioUrl ?? "",
+    slowAudioUrl: exercise.slowAudioUrl ?? "",
+    optionsText: exercise.options.join("\n"),
+    correctOptionIndexText: exercise.correctOptionIndex.join(", "),
+    allowsMultipleCorrectOptions:
+      exercise.allowsMultipleCorrectOptions ?? false,
+    correctInputsText: exercise.correctInputs.join("\n"),
+  }
 
-    return (
-        <div className="px-6 py-8">
-            <div className="mb-6">
-                <Button asChild variant="ghost" size="sm">
-                    <Link
-                        href={`/topics/${topicId}/exams/${examId}/exercises`}
-                        className="flex items-center gap-2"
-                    >
-                        <ChevronLeft className="size-4" />
-                        Back to exercises
-                    </Link>
-                </Button>
-            </div>
-            <ExerciseForm
-                topicId={topicId}
-                examId={examId}
-                exerciseId={exerciseId}
-                defaultValues={defaultValues}
-            />
-        </div>
-    )
+  return (
+    <div className="px-6 py-8">
+      <div className="mb-6">
+        <Button asChild variant="ghost" size="sm">
+          <Link
+            href={`/topics/${topicId}/exams/${examId}/exercises`}
+            className="flex items-center gap-2"
+          >
+            <ChevronLeft className="size-4" />
+            Back to exercises
+          </Link>
+        </Button>
+      </div>
+      <ExerciseForm
+        topicId={topicId}
+        examId={examId}
+        exerciseId={exerciseId}
+        defaultValues={defaultValues}
+      />
+    </div>
+  )
 }

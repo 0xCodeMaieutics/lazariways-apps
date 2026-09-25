@@ -136,7 +136,10 @@ function formBoolean(formData: FormData, key: string): boolean {
   return formString(formData, key) === "true"
 }
 
-function formRequiredBool(formData: FormData, key: string): boolean | undefined {
+function formRequiredBool(
+  formData: FormData,
+  key: string
+): boolean | undefined {
   const v = formData.get(key)
   if (v === null || v === "") return undefined
   if (v === "true") return true

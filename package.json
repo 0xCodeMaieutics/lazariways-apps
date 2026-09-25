@@ -8,7 +8,9 @@
     "lint": "turbo lint",
     "format": "turbo format",
     "typecheck": "turbo typecheck",
-    "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@workspace/database exec prisma"
+    "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@workspace/database exec prisma",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write ."
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.61.0",

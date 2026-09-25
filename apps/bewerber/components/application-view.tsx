@@ -20,7 +20,13 @@ interface ViewField {
   show: boolean
 }
 
-function ViewSection({ title, fields }: { title: string; fields: ViewField[] }) {
+function ViewSection({
+  title,
+  fields,
+}: {
+  title: string
+  fields: ViewField[]
+}) {
   const visibleFields = fields.filter((field) => field.show)
 
   if (visibleFields.length === 0) {
@@ -41,7 +47,13 @@ function ViewSection({ title, fields }: { title: string; fields: ViewField[] }) 
   )
 }
 
-function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
+function ExternalLink({
+  href,
+  children,
+}: {
+  href: string
+  children: ReactNode
+}) {
   return (
     <a
       href={href}
@@ -272,7 +284,7 @@ export function ApplicationView({ data }: ApplicationViewProps) {
                 {data.workSector.map((sector) => (
                   <li
                     key={sector}
-                    className="bg-muted rounded-full px-3 py-1 text-sm"
+                    className="rounded-full bg-muted px-3 py-1 text-sm"
                   >
                     {sector}
                   </li>

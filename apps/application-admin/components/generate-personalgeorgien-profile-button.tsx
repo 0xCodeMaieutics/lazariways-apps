@@ -110,7 +110,9 @@ export function GeneratePersonalgeorgienProfileButton({
           onClick={generateProfile}
         >
           <span className="min-w-0 truncate">
-            {isGenerating ? "მუშავდება…" : "Personalgeorgien პროფილის გენერირება"}
+            {isGenerating
+              ? "მუშავდება…"
+              : "Personalgeorgien პროფილის გენერირება"}
           </span>
         </Button>
       </div>

@@ -6,10 +6,7 @@ import {
 } from "@workspace/file-upload/s3-client"
 import { env } from "@/env"
 import { requireAdminSessionForApi } from "@/lib/auth"
-import {
-  isAllowedFotoMimeType,
-  replacementFotoS3Key,
-} from "@/lib/foto"
+import { isAllowedFotoMimeType, replacementFotoS3Key } from "@/lib/foto"
 
 const FOTO_SIGNED_URL_EXPIRES_IN_SECONDS = 60 * 10
 

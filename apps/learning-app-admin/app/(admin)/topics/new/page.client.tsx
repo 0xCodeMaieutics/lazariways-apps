@@ -9,7 +9,5 @@ export function CreateTopicForm({
   parentTopics: { id: string; name: string }[]
   defaultValues?: { order: number }
 }) {
-  return (
-    <TopicForm parentTopics={parentTopics} defaultValues={defaultValues} />
-  )
+  return <TopicForm parentTopics={parentTopics} defaultValues={defaultValues} />
 }

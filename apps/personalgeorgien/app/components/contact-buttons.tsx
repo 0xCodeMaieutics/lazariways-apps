@@ -44,13 +44,8 @@ export function ContactButtons({
         size="lg"
         className={cn(outlineClassName, widthClassName)}
       >
-        <a
-          href={`mailto:${SITE.email}`}
-          aria-label={`E-Mail an ${SITE.email}`}
-        >
-          {iconOnlyOnMobile ? (
-            <MailIcon className="size-5 lg:hidden" />
-          ) : null}
+        <a href={`mailto:${SITE.email}`} aria-label={`E-Mail an ${SITE.email}`}>
+          {iconOnlyOnMobile ? <MailIcon className="size-5 lg:hidden" /> : null}
           <span className={cn(iconOnlyOnMobile && "sr-only lg:not-sr-only")}>
             {SITE.email}
           </span>
@@ -63,9 +58,7 @@ export function ContactButtons({
         className={cn(outlineClassName, widthClassName)}
       >
         <a href={SITE.phoneUrl} aria-label={`Anrufen: ${SITE.phone}`}>
-          {iconOnlyOnMobile ? (
-            <PhoneIcon className="size-5 lg:hidden" />
-          ) : null}
+          {iconOnlyOnMobile ? <PhoneIcon className="size-5 lg:hidden" /> : null}
           <span className={cn(iconOnlyOnMobile && "sr-only lg:not-sr-only")}>
             {SITE.phone}
           </span>

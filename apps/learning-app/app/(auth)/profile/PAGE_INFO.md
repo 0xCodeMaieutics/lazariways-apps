@@ -9,7 +9,7 @@
 ## Statistics section
 
 - Total attempted count (maybe we can gamify this number a bit, multiplying with base values.)
-    - Base number stored on the client or server?
-    - Gold, silver, bronze clasification based on the number?
+  - Base number stored on the client or server?
+  - Gold, silver, bronze clasification based on the number?
 - Streak days? ()
 - Joined in date. (Account.createdAt)

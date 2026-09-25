@@ -18,9 +18,9 @@ export function ApplicationInquiryCard({
   return (
     <Link
       href={`/application-inquiries/${id}`}
-      className="border-border bg-card hover:bg-accent/40 flex items-center gap-4 rounded-xl border p-4 transition-colors"
+      className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40"
     >
-      <div className="bg-muted h-16 w-16 shrink-0 overflow-hidden rounded-lg">
+      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={fotoUrl}

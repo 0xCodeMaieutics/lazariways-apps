@@ -1,16 +1,16 @@
 [
-    {
-        "id": "0gIehPqp7bMtlcnNJh-An",
-        "title": "A",
-        "description": "A",
-        "difficulty": "BEGINNER",
-        "estimatedTimeInMinutes": 30,
-        "minimumCorrectAnswerCount": 2,
-        "minimumPassedCount": 3,
-        "userPassCount": 3,
-        "userAttemptedCount": 5,
-        "relativeExercisePath": "./exercise-0.json",
-        "isAlwaysUnlocked": true,
-        "unlocksExams": []
-    }
+  {
+    "id": "0gIehPqp7bMtlcnNJh-An",
+    "title": "A",
+    "description": "A",
+    "difficulty": "BEGINNER",
+    "estimatedTimeInMinutes": 30,
+    "minimumCorrectAnswerCount": 2,
+    "minimumPassedCount": 3,
+    "userPassCount": 3,
+    "userAttemptedCount": 5,
+    "relativeExercisePath": "./exercise-0.json",
+    "isAlwaysUnlocked": true,
+    "unlocksExams": []
+  }
 ]

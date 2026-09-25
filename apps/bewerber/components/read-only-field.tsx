@@ -8,7 +8,7 @@ interface ReadOnlyFieldProps {
 export function ReadOnlyField({ label, children }: ReadOnlyFieldProps) {
   return (
     <div className="space-y-1">
-      <dt className="text-muted-foreground text-sm">{label}</dt>
+      <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="text-base break-words">{children}</dd>
     </div>
   )

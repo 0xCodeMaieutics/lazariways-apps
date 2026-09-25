@@ -344,7 +344,11 @@ export function ApplicationEditForm({
           />
           <FieldError errors={[formState.errors.gender]} />
         </Field>
-        <DateField name="birthDate" label="დაბადების თარიღი" control={control} />
+        <DateField
+          name="birthDate"
+          label="დაბადების თარიღი"
+          control={control}
+        />
         <Field>
           <FieldLabel htmlFor="birthPlace">დაბადების ადგილი</FieldLabel>
           <Input id="birthPlace" {...register("birthPlace")} />
@@ -405,7 +409,9 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.instagram]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="taxId">საგადასახადო იდენტიფიკაციის ნომერი</FieldLabel>
+          <FieldLabel htmlFor="taxId">
+            საგადასახადო იდენტიფიკაციის ნომერი
+          </FieldLabel>
           <Input id="taxId" {...register("taxId")} />
           <FieldError errors={[formState.errors.taxId]} />
         </Field>
@@ -637,7 +643,9 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.emergencyContactName]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="emergencyPhone">საგანგებო ტელეფონის ნომერი</FieldLabel>
+          <FieldLabel htmlFor="emergencyPhone">
+            საგანგებო ტელეფონის ნომერი
+          </FieldLabel>
           <Input id="emergencyPhone" {...register("emergencyPhone")} />
           <FieldError errors={[formState.errors.emergencyPhone]} />
         </Field>

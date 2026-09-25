@@ -1,320 +1,309 @@
 import {
-    ExerciseType,
-    TopicType,
-    PrismaClient,
-} from '../../../prisma/generated/client'
-import { uploadFilePathToStorage } from '@workspace/file-upload/s3-client'
-import { readdir, readFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import topicsJson from './assets/dev/topics.json'
+  ExerciseType,
+  TopicType,
+  PrismaClient,
+} from "../../../prisma/generated/client"
+import { uploadFilePathToStorage } from "@workspace/file-upload/s3-client"
+import { readdir, readFile } from "node:fs/promises"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
+import topicsJson from "./assets/dev/topics.json"
 
 const SEED_AUDIO_FILES = [
-    {
-        filename: 'hallo-welt-1772436520376.m4a',
-        key: 'learning-app-platform/audios/hallo-welt-1772436520376.m4a',
-    },
+  {
+    filename: "hallo-welt-1772436520376.m4a",
+    key: "learning-app-platform/audios/hallo-welt-1772436520376.m4a",
+  },
 ]
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const ASSETS_DEV_PATH = join(__dirname, 'assets', 'dev')
-const PROGRAMS_PATH = join(ASSETS_DEV_PATH, 'programs')
+const ASSETS_DEV_PATH = join(__dirname, "assets", "dev")
+const PROGRAMS_PATH = join(ASSETS_DEV_PATH, "programs")
 
 async function uploadSeedAudios() {
-    const bucket = process.env.S3_BUCKET_NAME
-    if (bucket === undefined || bucket === '') {
-        throw new Error(
-            'S3_BUCKET_NAME is required to seed learning app audio files'
-        )
-    }
+  const bucket = process.env.S3_BUCKET_NAME
+  if (bucket === undefined || bucket === "") {
+    throw new Error(
+      "S3_BUCKET_NAME is required to seed learning app audio files"
+    )
+  }
 
-    for (const audio of SEED_AUDIO_FILES) {
-        const filePath = join(__dirname, audio.filename)
-        await uploadFilePathToStorage({
-            filePath,
-            bucket,
-            fileKey: audio.key,
-        })
-        console.log(`Uploaded ${audio.filename} → ${audio.key}`)
-    }
+  for (const audio of SEED_AUDIO_FILES) {
+    const filePath = join(__dirname, audio.filename)
+    await uploadFilePathToStorage({
+      filePath,
+      bucket,
+      fileKey: audio.key,
+    })
+    console.log(`Uploaded ${audio.filename} → ${audio.key}`)
+  }
 }
 
 export const insertLearningData = async ({
-    prisma,
-    userId,
+  prisma,
+  userId,
 }: {
-    prisma: PrismaClient
-    userId: string
+  prisma: PrismaClient
+  userId: string
 }) => {
-    console.log('Uploading seed audio files to S3...')
-    await uploadSeedAudios()
-    console.log('Inserting programs...')
+  console.log("Uploading seed audio files to S3...")
+  await uploadSeedAudios()
+  console.log("Inserting programs...")
 
-    let totalExams = 0
-    let totalExercises = 0
+  let totalExams = 0
+  let totalExercises = 0
 
-    const programDirs = await readdir(PROGRAMS_PATH, { withFileTypes: true })
-    const programFolderNames = programDirs
-        .filter((d) => d.isDirectory() && d.name.startsWith('program-'))
-        .map((d) => d.name)
+  const programDirs = await readdir(PROGRAMS_PATH, { withFileTypes: true })
+  const programFolderNames = programDirs
+    .filter((d) => d.isDirectory() && d.name.startsWith("program-"))
+    .map((d) => d.name)
 
-    const topicIdByNumber = new Map<number, string>()
+  const topicIdByNumber = new Map<number, string>()
 
-    for (const [topicIndex, topic] of topicsJson.entries()) {
-        await prisma.topic.create({
-            data: {
-                id: topic.id,
-                name: topic.name,
-                type: topic.type as TopicType,
-                enabled: topic.enabled,
-                order: topic.order,
-                isAlwaysUnlocked: topic.isAlwaysUnlocked ?? false,
-                minimumCompletedExamsToUnlock:
-                    topic.minimumCompletedExamsToUnlock ?? null,
-            },
-        })
-        topicIdByNumber.set(topicIndex, topic.id)
-    }
-
-    for (const topic of topicsJson) {
-        const promises = (topic.unlocks ?? []).map((unlockedTopicId) =>
-            prisma.topic.update({
-                where: { id: unlockedTopicId },
-                data: { unlockedId: topic.id },
-            })
-        )
-        await Promise.all(promises)
-    }
-
-    for (const programFolderName of programFolderNames) {
-        const programNumber = parseInt(
-            programFolderName.replace('program-', '')
-        )
-        if (isNaN(programNumber)) continue
-
-        const topicId = topicIdByNumber.get(programNumber)
-        if (!topicId) {
-            console.warn(
-                `No program found for ${programFolderName} (number ${programNumber}), skipping`
-            )
-            continue
-        }
-
-        const programPath = join(PROGRAMS_PATH, programFolderName)
-        const examsPath = join(programPath, 'exams.json')
-
-        let examsJson: Array<{
-            id: string
-            title: string
-            description: string
-            category: string
-            estimatedTimeInMinutes?: number
-            minimumCorrectAnswerCount?: number
-            minimumPassedCount?: number
-            relativeExercisePath: string
-            waitUntilPassAllowedInSeconds?: number
-            userPassCount?: number
-            userAttemptedCount: number
-            unlocksExams?: string[]
-            isAlwaysUnlocked?: boolean
-        }>
-
-        try {
-            const content = await readFile(examsPath, 'utf-8')
-            examsJson = JSON.parse(content) as typeof examsJson
-        } catch {
-            console.warn(
-                `Could not read ${examsPath}, skipping program ${programNumber}`
-            )
-            continue
-        }
-
-        const examIds = []
-        let currentExamIndex = 0
-        for (const exam of examsJson) {
-            const {
-                userPassCount = 0,
-                minimumPassedCount = 0,
-                waitUntilPassAllowedInSeconds = 3,
-            } = exam ?? {}
-            const createdExam = await prisma.exam.create({
-                data: {
-                    id: exam.id,
-                    topicId: topicId,
-                    title: exam.title,
-                    description: exam.description,
-                    order: currentExamIndex,
-                    enabled: true,
-                    isAlwaysUnlocked: exam.isAlwaysUnlocked ?? false,
-                    estimatedTimeInMinutes: exam.estimatedTimeInMinutes ?? null,
-                    minimumPassedCount: exam.minimumPassedCount ?? 1,
-                    minimumCorrectAnswerCount: exam.minimumCorrectAnswerCount,
-                    waitUntilPassAllowedInSeconds:
-                        waitUntilPassAllowedInSeconds,
-                },
-            })
-
-            examIds.push(createdExam.id)
-
-            totalExams++
-
-            const attemptedCount = exam.userAttemptedCount
-            const passedCount = Math.min(userPassCount, attemptedCount)
-            const failedCount = attemptedCount - passedCount
-            const completions = Array.from(
-                { length: attemptedCount },
-                (_, i) => {
-                    const hasPassed = i < passedCount
-                    return {
-                        userId,
-                        examId: createdExam.id,
-                        correctCount: hasPassed ? 3 : 1,
-                        hasPassed,
-                        passCounted: hasPassed,
-                    }
-                }
-            )
-
-            await prisma.userExam.createMany({ data: completions })
-
-            await prisma.userExamAggregation.create({
-                data: {
-                    userId,
-                    examId: createdExam.id,
-                    attemptedCount,
-                    passedCount,
-                    failedCount,
-                },
-            })
-
-            // if (userPassCount >= minimumPassedCount || currentExamIndex === 0)
-            await prisma.userUnlockedExam.create({
-                data: {
-                    userId,
-                    examId: exam.id,
-                },
-            })
-
-            const exercisePath = join(
-                programPath,
-                exam.relativeExercisePath.replace(/^\.\//, '')
-            )
-
-            let exercisesJson: Array<{
-                type: string
-                prompt?: string
-                text?: string
-                options: string[]
-                correctOptionIndex: number[]
-                allowsMultipleCorrectOptions?: boolean
-                correctInputs: string[]
-                audioUrl?: string
-                slowAudioUrl?: string
-            }>
-
-            try {
-                const content = await readFile(exercisePath, 'utf-8')
-                exercisesJson = JSON.parse(content) as typeof exercisesJson
-            } catch {
-                console.warn(
-                    `Could not read exercises from ${exercisePath}, skipping`
-                )
-                continue
-            }
-
-            let currentExerciseIndex = 0
-            for (const exercise of exercisesJson) {
-                await prisma.exercise.create({
-                    data: {
-                        type: exercise.type as ExerciseType,
-                        prompt: exercise.prompt ?? null,
-                        text: exercise.text ?? null,
-                        options: exercise.options,
-                        correctOptionIndex: exercise.correctOptionIndex,
-                        allowsMultipleCorrectOptions:
-                            exercise.allowsMultipleCorrectOptions ?? false,
-                        correctInputs: exercise.correctInputs,
-                        audioUrl: exercise.audioUrl ?? null,
-                        slowAudioUrl: exercise.slowAudioUrl ?? null,
-                        order: currentExerciseIndex,
-                        examId: createdExam.id,
-                    },
-                })
-                totalExercises++
-                currentExerciseIndex++
-            }
-            currentExamIndex++
-        }
-
-        for (const exam of examsJson) {
-            const promises = (exam.unlocksExams ?? []).map((unlockedId) =>
-                prisma.exam.update({
-                    where: { id: unlockedId },
-                    data: { unlockedId: exam.id },
-                })
-            )
-            await Promise.all([...promises])
-        }
-    }
-
-    const unlockerTopics = await prisma.topic.findMany({
-        where: { minimumCompletedExamsToUnlock: { not: null } },
-        select: {
-            id: true,
-            minimumCompletedExamsToUnlock: true,
-            unlocksTopics: { select: { id: true } },
-            exams: {
-                where: { enabled: true },
-                select: {
-                    minimumPassedCount: true,
-                    userExamAggregation: {
-                        where: { userId },
-                        select: { passedCount: true },
-                    },
-                },
-            },
-        },
+  for (const [topicIndex, topic] of topicsJson.entries()) {
+    await prisma.topic.create({
+      data: {
+        id: topic.id,
+        name: topic.name,
+        type: topic.type as TopicType,
+        enabled: topic.enabled,
+        order: topic.order,
+        isAlwaysUnlocked: topic.isAlwaysUnlocked ?? false,
+        minimumCompletedExamsToUnlock:
+          topic.minimumCompletedExamsToUnlock ?? null,
+      },
     })
+    topicIdByNumber.set(topicIndex, topic.id)
+  }
 
-    const unlockedTopicRows: Array<{ userId: string; topicId: string }> = []
-    for (const unlocker of unlockerTopics) {
-        if (
-            unlocker.minimumCompletedExamsToUnlock === null ||
-            unlocker.unlocksTopics.length === 0
-        ) {
-            continue
-        }
+  for (const topic of topicsJson) {
+    const promises = (topic.unlocks ?? []).map((unlockedTopicId) =>
+      prisma.topic.update({
+        where: { id: unlockedTopicId },
+        data: { unlockedId: topic.id },
+      })
+    )
+    await Promise.all(promises)
+  }
 
-        let completedEnabledExamCount = 0
-        for (const exam of unlocker.exams) {
-            const aggregation = exam.userExamAggregation[0]
-            if (
-                aggregation !== undefined &&
-                aggregation.passedCount >= exam.minimumPassedCount
-            ) {
-                completedEnabledExamCount += 1
-            }
-        }
+  for (const programFolderName of programFolderNames) {
+    const programNumber = parseInt(programFolderName.replace("program-", ""))
+    if (isNaN(programNumber)) continue
 
-        if (
-            completedEnabledExamCount >=
-            unlocker.minimumCompletedExamsToUnlock
-        ) {
-            for (const unlockedTopic of unlocker.unlocksTopics) {
-                unlockedTopicRows.push({
-                    userId,
-                    topicId: unlockedTopic.id,
-                })
-            }
-        }
+    const topicId = topicIdByNumber.get(programNumber)
+    if (!topicId) {
+      console.warn(
+        `No program found for ${programFolderName} (number ${programNumber}), skipping`
+      )
+      continue
     }
 
-    if (unlockedTopicRows.length > 0) {
-        await prisma.userUnlockedTopic.createMany({
-            data: unlockedTopicRows,
-            skipDuplicates: true,
+    const programPath = join(PROGRAMS_PATH, programFolderName)
+    const examsPath = join(programPath, "exams.json")
+
+    let examsJson: Array<{
+      id: string
+      title: string
+      description: string
+      category: string
+      estimatedTimeInMinutes?: number
+      minimumCorrectAnswerCount?: number
+      minimumPassedCount?: number
+      relativeExercisePath: string
+      waitUntilPassAllowedInSeconds?: number
+      userPassCount?: number
+      userAttemptedCount: number
+      unlocksExams?: string[]
+      isAlwaysUnlocked?: boolean
+    }>
+
+    try {
+      const content = await readFile(examsPath, "utf-8")
+      examsJson = JSON.parse(content) as typeof examsJson
+    } catch {
+      console.warn(
+        `Could not read ${examsPath}, skipping program ${programNumber}`
+      )
+      continue
+    }
+
+    const examIds = []
+    let currentExamIndex = 0
+    for (const exam of examsJson) {
+      const {
+        userPassCount = 0,
+        minimumPassedCount = 0,
+        waitUntilPassAllowedInSeconds = 3,
+      } = exam ?? {}
+      const createdExam = await prisma.exam.create({
+        data: {
+          id: exam.id,
+          topicId: topicId,
+          title: exam.title,
+          description: exam.description,
+          order: currentExamIndex,
+          enabled: true,
+          isAlwaysUnlocked: exam.isAlwaysUnlocked ?? false,
+          estimatedTimeInMinutes: exam.estimatedTimeInMinutes ?? null,
+          minimumPassedCount: exam.minimumPassedCount ?? 1,
+          minimumCorrectAnswerCount: exam.minimumCorrectAnswerCount,
+          waitUntilPassAllowedInSeconds: waitUntilPassAllowedInSeconds,
+        },
+      })
+
+      examIds.push(createdExam.id)
+
+      totalExams++
+
+      const attemptedCount = exam.userAttemptedCount
+      const passedCount = Math.min(userPassCount, attemptedCount)
+      const failedCount = attemptedCount - passedCount
+      const completions = Array.from({ length: attemptedCount }, (_, i) => {
+        const hasPassed = i < passedCount
+        return {
+          userId,
+          examId: createdExam.id,
+          correctCount: hasPassed ? 3 : 1,
+          hasPassed,
+          passCounted: hasPassed,
+        }
+      })
+
+      await prisma.userExam.createMany({ data: completions })
+
+      await prisma.userExamAggregation.create({
+        data: {
+          userId,
+          examId: createdExam.id,
+          attemptedCount,
+          passedCount,
+          failedCount,
+        },
+      })
+
+      // if (userPassCount >= minimumPassedCount || currentExamIndex === 0)
+      await prisma.userUnlockedExam.create({
+        data: {
+          userId,
+          examId: exam.id,
+        },
+      })
+
+      const exercisePath = join(
+        programPath,
+        exam.relativeExercisePath.replace(/^\.\//, "")
+      )
+
+      let exercisesJson: Array<{
+        type: string
+        prompt?: string
+        text?: string
+        options: string[]
+        correctOptionIndex: number[]
+        allowsMultipleCorrectOptions?: boolean
+        correctInputs: string[]
+        audioUrl?: string
+        slowAudioUrl?: string
+      }>
+
+      try {
+        const content = await readFile(exercisePath, "utf-8")
+        exercisesJson = JSON.parse(content) as typeof exercisesJson
+      } catch {
+        console.warn(`Could not read exercises from ${exercisePath}, skipping`)
+        continue
+      }
+
+      let currentExerciseIndex = 0
+      for (const exercise of exercisesJson) {
+        await prisma.exercise.create({
+          data: {
+            type: exercise.type as ExerciseType,
+            prompt: exercise.prompt ?? null,
+            text: exercise.text ?? null,
+            options: exercise.options,
+            correctOptionIndex: exercise.correctOptionIndex,
+            allowsMultipleCorrectOptions:
+              exercise.allowsMultipleCorrectOptions ?? false,
+            correctInputs: exercise.correctInputs,
+            audioUrl: exercise.audioUrl ?? null,
+            slowAudioUrl: exercise.slowAudioUrl ?? null,
+            order: currentExerciseIndex,
+            examId: createdExam.id,
+          },
         })
+        totalExercises++
+        currentExerciseIndex++
+      }
+      currentExamIndex++
     }
 
-    console.log(`Inserted ${totalExams} exams and ${totalExercises} exercises.`)
+    for (const exam of examsJson) {
+      const promises = (exam.unlocksExams ?? []).map((unlockedId) =>
+        prisma.exam.update({
+          where: { id: unlockedId },
+          data: { unlockedId: exam.id },
+        })
+      )
+      await Promise.all([...promises])
+    }
+  }
+
+  const unlockerTopics = await prisma.topic.findMany({
+    where: { minimumCompletedExamsToUnlock: { not: null } },
+    select: {
+      id: true,
+      minimumCompletedExamsToUnlock: true,
+      unlocksTopics: { select: { id: true } },
+      exams: {
+        where: { enabled: true },
+        select: {
+          minimumPassedCount: true,
+          userExamAggregation: {
+            where: { userId },
+            select: { passedCount: true },
+          },
+        },
+      },
+    },
+  })
+
+  const unlockedTopicRows: Array<{ userId: string; topicId: string }> = []
+  for (const unlocker of unlockerTopics) {
+    if (
+      unlocker.minimumCompletedExamsToUnlock === null ||
+      unlocker.unlocksTopics.length === 0
+    ) {
+      continue
+    }
+
+    let completedEnabledExamCount = 0
+    for (const exam of unlocker.exams) {
+      const aggregation = exam.userExamAggregation[0]
+      if (
+        aggregation !== undefined &&
+        aggregation.passedCount >= exam.minimumPassedCount
+      ) {
+        completedEnabledExamCount += 1
+      }
+    }
+
+    if (completedEnabledExamCount >= unlocker.minimumCompletedExamsToUnlock) {
+      for (const unlockedTopic of unlocker.unlocksTopics) {
+        unlockedTopicRows.push({
+          userId,
+          topicId: unlockedTopic.id,
+        })
+      }
+    }
+  }
+
+  if (unlockedTopicRows.length > 0) {
+    await prisma.userUnlockedTopic.createMany({
+      data: unlockedTopicRows,
+      skipDuplicates: true,
+    })
+  }
+
+  console.log(`Inserted ${totalExams} exams and ${totalExercises} exercises.`)
 }

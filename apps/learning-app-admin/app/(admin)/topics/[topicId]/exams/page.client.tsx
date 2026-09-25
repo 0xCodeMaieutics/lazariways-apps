@@ -162,11 +162,7 @@ function SortableRow({
   )
 }
 
-export const AdminExams = ({
-  exams: examsOuter,
-}: {
-  exams: Exam[]
-}) => {
+export const AdminExams = ({ exams: examsOuter }: { exams: Exam[] }) => {
   const router = useRouter()
   const params = useParams()
   const topicId = params.topicId as string

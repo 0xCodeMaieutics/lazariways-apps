@@ -1,61 +1,61 @@
-import prisma from '@workspace/database/client'
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@workspace/ui/components/button'
-import { ChevronLeft } from 'lucide-react'
-import { ExamForm } from '@/app/(admin)/_components/forms/exam-form'
+import prisma from "@workspace/database/client"
+import { notFound } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@workspace/ui/components/button"
+import { ChevronLeft } from "lucide-react"
+import { ExamForm } from "@/app/(admin)/_components/forms/exam-form"
 
 export default async function NewExamPage({
-    params,
+  params,
 }: {
-    params: Promise<{ topicId: string }>
+  params: Promise<{ topicId: string }>
 }) {
-    const { topicId } = await params
+  const { topicId } = await params
 
-    const [program, lastExam, unlockableExams] = await Promise.all([
-        prisma.topic.findUnique({
-            where: { id: topicId },
-        }),
-        prisma.exam.findFirst({
-            where: { topicId },
-            orderBy: { order: 'desc' },
-            select: { order: true },
-        }),
-        prisma.exam.findMany({
-            where: { topicId, enabled: true },
-            orderBy: { order: 'asc' },
-            select: {
-                id: true,
-                title: true,
-                order: true,
-                isAlwaysUnlocked: true,
-            },
-        }),
-    ])
+  const [program, lastExam, unlockableExams] = await Promise.all([
+    prisma.topic.findUnique({
+      where: { id: topicId },
+    }),
+    prisma.exam.findFirst({
+      where: { topicId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    }),
+    prisma.exam.findMany({
+      where: { topicId, enabled: true },
+      orderBy: { order: "asc" },
+      select: {
+        id: true,
+        title: true,
+        order: true,
+        isAlwaysUnlocked: true,
+      },
+    }),
+  ])
 
-    if (!program) {
-        notFound()
-    }
+  if (!program) {
+    notFound()
+  }
 
-    return (
-        <div className="px-6 py-8">
-            <div className="mb-6">
-                <Button asChild variant="ghost" size="sm">
-                    <Link
-                        href={`/topics/${topicId}/exams`}
-                        className="flex items-center gap-2"
-                    >
-                        <ChevronLeft className="size-4" />
-                        Back to exams
-                    </Link>
-                </Button>
-            </div>
-            <ExamForm
-                topicId={topicId}
-                lastOrder={(lastExam?.order ?? -1) + 1}
-                unlockableExams={unlockableExams}
-                defaultValues={{ isAlwaysUnlocked: lastExam == null }}
-            />
-        </div>
-    )
+  return (
+    <div className="px-6 py-8">
+      <div className="mb-6">
+        <Button asChild variant="ghost" size="sm">
+          <Link
+            href={`/topics/${topicId}/exams`}
+            className="flex items-center gap-2"
+          >
+            <ChevronLeft className="size-4" />
+            Back to exams
+          </Link>
+        </Button>
+      </div>
+      <ExamForm
+        topicId={topicId}
+        lastOrder={(lastExam?.order ?? -1) + 1}
+        unlockableExams={unlockableExams}
+        defaultValues={{ isAlwaysUnlocked: lastExam == null }}
+      />
+    </div>
+  )
 }
