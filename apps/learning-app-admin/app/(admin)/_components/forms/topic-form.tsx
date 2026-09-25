@@ -1,7 +1,7 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { TopicType } from "@workspace/database/browser"
@@ -131,8 +131,8 @@ export function TopicForm({
     })
   )
 
-  const { control, register, formState, watch, setValue } = form
-  const isAlwaysUnlocked = watch("isAlwaysUnlocked")
+  const { control, register, formState, setValue } = form
+  const isAlwaysUnlocked = useWatch({ control, name: "isAlwaysUnlocked" })
   const isPending = createMutation.isPending || updateMutation.isPending
   const error = (
     (isEdit ? updateMutation.error : createMutation.error) as {
