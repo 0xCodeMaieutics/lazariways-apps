@@ -17,7 +17,11 @@
         "TELEGRAM_CHAT_ID",
         "RESEND_API_KEY",
         "RESEND_FROM_EMAIL",
-        "BEWERBER_APP_URL"
+        "BEWERBER_APP_URL",
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "BUCKET_AUDIOS_PATH",
+        "NARAKEET_API_KEY"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
