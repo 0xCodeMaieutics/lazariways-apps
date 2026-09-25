@@ -1,9 +1,0 @@
-attachments/
-preview/
-templates/*/generated/
-.tmp/
-.env.extract
-/extract-company-info/input.html
-/bewerbungen
-!.env.extract.example
-templates/kooperation-reinigungskraft/bewerbungen

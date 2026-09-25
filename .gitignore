@@ -36,6 +36,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+!packages/email/.env.extract.example
 
 # vercel
 .vercel
@@ -43,9 +45,21 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-!.env.example
 .pnpm-store
 non-tech-docs
 
 e2e/cross-app/test-results
 e2e/cross-app/playwright-report
+
+# packages/database
+packages/database/prisma/generated
+
+# packages/email
+packages/email/attachments/
+packages/email/preview/
+packages/email/templates/*/generated/
+packages/email/.tmp/
+packages/email/.env.extract
+packages/email/extract-company-info/input.html
+packages/email/bewerbungen
+packages/email/templates/kooperation-reinigungskraft/bewerbungen
