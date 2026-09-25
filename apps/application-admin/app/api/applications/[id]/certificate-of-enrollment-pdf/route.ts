@@ -66,8 +66,7 @@ export const POST = async (
       },
       courseOfStudy: {
         subject: existing.studySubject ?? "",
-        standardPeriodYears:
-          existing.standardStudyPeriodYears ?? undefined,
+        standardPeriodYears: existing.standardStudyPeriodYears ?? undefined,
         enrolledSince: formatIsoDate(existing.enrolledSince),
         expectedEnd: formatIsoDate(existing.expectedStudyEnd),
       },

@@ -1,7 +1,4 @@
-import {
-  PDFDocument,
-  PDFPage,
-} from "pdf-lib"
+import { PDFDocument, PDFPage } from "pdf-lib"
 import { ApplicationFormData, workSectorOptions } from "../application-schema"
 import fontkit from "@pdf-lib/fontkit"
 

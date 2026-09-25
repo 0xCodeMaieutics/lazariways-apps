@@ -31,7 +31,9 @@ export async function generateMetadata({
   }
 }
 
-export default async function ApplicationPage({ params }: ApplicationPageProps) {
+export default async function ApplicationPage({
+  params,
+}: ApplicationPageProps) {
   const { applicationId } = await params
   const application = await prisma.application.findUnique({
     where: { id: applicationId },
@@ -58,9 +60,9 @@ export default async function ApplicationPage({ params }: ApplicationPageProps) 
             <h1 className="text-2xl font-semibold tracking-tight">
               {application.firstName} {application.lastName}
             </h1>
-            <p className="text-muted-foreground text-sm">Bewerbung ansehen</p>
+            <p className="text-sm text-muted-foreground">Bewerbung ansehen</p>
           </div>
-          <div className="bg-muted mx-auto aspect-[3/4] w-full max-w-[12rem] overflow-hidden rounded-xl sm:max-w-[14rem]">
+          <div className="mx-auto aspect-[3/4] w-full max-w-[12rem] overflow-hidden rounded-xl bg-muted sm:max-w-[14rem]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={fotoUrl}

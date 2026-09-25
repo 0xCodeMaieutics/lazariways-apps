@@ -1,10 +1,7 @@
 import { z } from "zod"
 
 export const applicationInquiryFormSchema = z.object({
-  companyName: z
-    .string()
-    .trim()
-    .min(1, "Bitte geben Sie den Firmennamen an."),
+  companyName: z.string().trim().min(1, "Bitte geben Sie den Firmennamen an."),
   contactPersonName: z
     .string()
     .trim()

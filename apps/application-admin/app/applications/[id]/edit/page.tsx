@@ -45,7 +45,9 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
           <h1 className="text-2xl font-semibold tracking-tight">
             {application.firstName} {application.lastName}
           </h1>
-          <p className="text-sm text-muted-foreground">განაცხადის რედაქტირება</p>
+          <p className="text-sm text-muted-foreground">
+            განაცხადის რედაქტირება
+          </p>
         </div>
       </header>
 

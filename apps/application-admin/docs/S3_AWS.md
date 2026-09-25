@@ -8,5 +8,5 @@ This project uses `@workspace/file-upload` package to handle s3 bucket operation
 import {
   getSignedUrlForDownload,
   uploadToStorage,
-} from "@workspace/file-upload/s3-client.ts";
+} from "@workspace/file-upload/s3-client.ts"
 ```

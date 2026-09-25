@@ -33,8 +33,9 @@ function parseWorkSectors(
   sectors: string[]
 ): AdminProfileEditData["workSector"] {
   const allowed = new Set<string>(workSectorOptions)
-  return sectors.filter((sector): sector is (typeof workSectorOptions)[number] =>
-    allowed.has(sector)
+  return sectors.filter(
+    (sector): sector is (typeof workSectorOptions)[number] =>
+      allowed.has(sector)
   )
 }
 

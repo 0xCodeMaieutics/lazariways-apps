@@ -13,7 +13,11 @@ import {
   Lock,
   Target,
 } from "lucide-react"
-import type { Exam, Topic, UserExamAggregation } from "@workspace/database/browser"
+import type {
+  Exam,
+  Topic,
+  UserExamAggregation,
+} from "@workspace/database/browser"
 import Link from "next/link"
 import { Banner } from "@/components/ui/banner"
 import { useCountdown } from "@/utils/useCountdown"
@@ -56,11 +60,7 @@ type ExamListItem = Exam & {
   isUnlocked: boolean
 }
 
-function ExamCard({
-  exam,
-}: {
-  exam: ExamListItem
-}) {
+function ExamCard({ exam }: { exam: ExamListItem }) {
   const { topicId } = useParams()
   const userExamAggregation =
     exam.userExamAggregation.find((userExam) => userExam.examId === exam.id) ??

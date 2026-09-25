@@ -11,8 +11,7 @@ export const universityCreateSchema = z.object({
   email: z
     .string()
     .refine(
-      (val) =>
-        val.trim() === "" || z.email().safeParse(val.trim()).success,
+      (val) => val.trim() === "" || z.email().safeParse(val.trim()).success,
       "Invalid email format"
     )
     .optional(),

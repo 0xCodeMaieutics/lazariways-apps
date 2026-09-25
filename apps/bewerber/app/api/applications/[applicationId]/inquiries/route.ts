@@ -41,7 +41,10 @@ export const POST = async (request: Request, context: RouteContext) => {
   })
 
   if (application === null) {
-    return Response.json({ error: "Bewerbung nicht gefunden." }, { status: 404 })
+    return Response.json(
+      { error: "Bewerbung nicht gefunden." },
+      { status: 404 }
+    )
   }
 
   const inquiryData = {

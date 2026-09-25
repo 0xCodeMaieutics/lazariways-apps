@@ -1,233 +1,232 @@
-import { isExamUnlockedForUser } from '@/lib/exam-access'
-import { tryCatchAsync } from '@/lib/try-catch'
-import { unlockTopicsAfterExamCompletion } from '@/lib/unlock-topics-after-exam'
-import { authedProcedure, router } from '../server'
-import { prisma } from '@workspace/database/client'
-import { TRPCError } from '@trpc/server'
-import { z } from 'zod'
+import { isExamUnlockedForUser } from "@/lib/exam-access"
+import { tryCatchAsync } from "@/lib/try-catch"
+import { unlockTopicsAfterExamCompletion } from "@/lib/unlock-topics-after-exam"
+import { authedProcedure, router } from "../server"
+import { prisma } from "@workspace/database/client"
+import { TRPCError } from "@trpc/server"
+import { z } from "zod"
 
 export const examRouter = router({
-    getExam: authedProcedure
-        .input(z.object({ examId: z.string().min(1) }))
-        .query(async ({ input }) => {
-            const [error, exam] = await tryCatchAsync(() =>
-                prisma.exam.findUnique({
-                    where: { id: input.examId },
-                })
-            )
+  getExam: authedProcedure
+    .input(z.object({ examId: z.string().min(1) }))
+    .query(async ({ input }) => {
+      const [error, exam] = await tryCatchAsync(() =>
+        prisma.exam.findUnique({
+          where: { id: input.examId },
+        })
+      )
 
-            if (error) {
-                throw new TRPCError({
-                    code: 'INTERNAL_SERVER_ERROR',
-                    message: 'Failed to fetch exam',
-                    cause: error,
-                })
-            }
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch exam",
+          cause: error,
+        })
+      }
 
-            if (!exam) {
-                throw new TRPCError({
-                    code: 'NOT_FOUND',
-                    message: 'Exam not found',
-                })
-            }
+      if (!exam) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Exam not found",
+        })
+      }
 
-            return exam
-        }),
-    getExamCompletion: authedProcedure
-        .input(z.object({ examId: z.string().min(1) }))
-        .query(async ({ ctx, input }) => {
-            const [error, result] = await tryCatchAsync(() =>
-                prisma.userExamAggregation.findUnique({
-                    where: {
-                        userId_examId: {
-                            userId: ctx.session.user.id,
-                            examId: input.examId,
-                        },
-                    },
-                    include: {
-                        exam: {
-                            select: {
-                                minimumPassedCount: true,
-                                minimumCorrectAnswerCount: true,
-                            },
-                        },
-                    },
-                })
-            )
+      return exam
+    }),
+  getExamCompletion: authedProcedure
+    .input(z.object({ examId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const [error, result] = await tryCatchAsync(() =>
+        prisma.userExamAggregation.findUnique({
+          where: {
+            userId_examId: {
+              userId: ctx.session.user.id,
+              examId: input.examId,
+            },
+          },
+          include: {
+            exam: {
+              select: {
+                minimumPassedCount: true,
+                minimumCorrectAnswerCount: true,
+              },
+            },
+          },
+        })
+      )
 
-            if (error) {
-                throw new TRPCError({
-                    code: 'INTERNAL_SERVER_ERROR',
-                    message: 'Failed to fetch exam completion',
-                    cause: error,
-                })
-            }
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch exam completion",
+          cause: error,
+        })
+      }
 
-            if (!result) {
-                throw new TRPCError({
-                    code: 'NOT_FOUND',
-                    message: 'Exam completion record not found',
-                })
-            }
+      if (!result) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Exam completion record not found",
+        })
+      }
 
-            return result
-        }),
+      return result
+    }),
 
-    completeExam: authedProcedure
-        .input(
-            z.object({
-                examId: z.string().min(1),
-                correctCount: z.number().int().min(0),
+  completeExam: authedProcedure
+    .input(
+      z.object({
+        examId: z.string().min(1),
+        correctCount: z.number().int().min(0),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const exam = await prisma.exam.findUnique({
+        where: { id: input.examId },
+        select: {
+          minimumCorrectAnswerCount: true,
+          minimumPassedCount: true,
+          waitUntilPassAllowedInSeconds: true,
+          unlocksExams: { select: { id: true } },
+          unlockedId: true,
+          isAlwaysUnlocked: true,
+          id: true,
+          topicId: true,
+        },
+      })
+      if (!exam) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Exam not found",
+        })
+      }
+
+      const unlockedExam = await prisma.userUnlockedExam.findUnique({
+        where: {
+          userId_examId: {
+            userId: ctx.session.user.id,
+            examId: exam.id,
+          },
+        },
+        select: { examId: true },
+      })
+
+      const isUnlocked = isExamUnlockedForUser({
+        isAlwaysUnlocked: exam.isAlwaysUnlocked,
+        examId: exam.id,
+        unlockedExamIds: new Set(
+          unlockedExam === null ? [] : [unlockedExam.examId]
+        ),
+      })
+
+      if (!isUnlocked) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Exam is locked",
+        })
+      }
+
+      const hasPassed = input.correctCount >= exam.minimumCorrectAnswerCount
+
+      const existing = await prisma.userExamAggregation.findUnique({
+        where: {
+          userId_examId: {
+            userId: ctx.session.user.id,
+            examId: input.examId,
+          },
+        },
+        select: { lastPassedAt: true },
+      })
+
+      const now = new Date()
+      const lastPassedAt = existing?.lastPassedAt ?? null
+      const waitElapsed =
+        lastPassedAt === null ||
+        now.getTime() - lastPassedAt.getTime() >=
+          exam.waitUntilPassAllowedInSeconds * 1000
+      const passCounted = hasPassed && waitElapsed
+
+      const [error, result] = await tryCatchAsync(() =>
+        prisma.$transaction(async (tx) => {
+          const completion = await tx.userExam.create({
+            data: {
+              userId: ctx.session.user.id,
+              examId: input.examId,
+              correctCount: input.correctCount,
+              hasPassed,
+              passCounted,
+            },
+          })
+
+          const aggregation = await tx.userExamAggregation.upsert({
+            where: {
+              userId_examId: {
+                userId: ctx.session.user.id,
+                examId: input.examId,
+              },
+            },
+            create: {
+              userId: ctx.session.user.id,
+              examId: input.examId,
+              attemptedCount: 1,
+              passedCount: passCounted ? 1 : 0,
+              failedCount: passCounted ? 0 : 1,
+              ...(passCounted && { lastPassedAt: now }),
+            },
+            update: {
+              attemptedCount: { increment: 1 },
+              passedCount: { increment: passCounted ? 1 : 0 },
+              failedCount: { increment: passCounted ? 0 : 1 },
+              ...(passCounted && { lastPassedAt: now }),
+            },
+          })
+
+          if (
+            passCounted &&
+            aggregation.passedCount >= exam.minimumPassedCount &&
+            exam.unlocksExams.length > 0
+          ) {
+            await tx.userUnlockedExam.createMany({
+              data: exam.unlocksExams.map((e) => ({
+                userId: ctx.session.user.id,
+                examId: e.id,
+              })),
+              skipDuplicates: true,
             })
-        )
-        .mutation(async ({ ctx, input }) => {
-            const exam = await prisma.exam.findUnique({
-                where: { id: input.examId },
-                select: {
-                    minimumCorrectAnswerCount: true,
-                    minimumPassedCount: true,
-                    waitUntilPassAllowedInSeconds: true,
-                    unlocksExams: { select: { id: true } },
-                    unlockedId: true,
-                    isAlwaysUnlocked: true,
-                    id: true,
-                    topicId: true,
-                },
+          }
+
+          const examJustFullyCompleted =
+            passCounted &&
+            aggregation.passedCount >= exam.minimumPassedCount &&
+            aggregation.passedCount - 1 < exam.minimumPassedCount
+
+          if (examJustFullyCompleted) {
+            await unlockTopicsAfterExamCompletion(tx, {
+              userId: ctx.session.user.id,
+              topicId: exam.topicId,
             })
-            if (!exam) {
-                throw new TRPCError({
-                    code: 'NOT_FOUND',
-                    message: 'Exam not found',
-                })
-            }
+          }
 
-            const unlockedExam = await prisma.userUnlockedExam.findUnique({
-                where: {
-                    userId_examId: {
-                        userId: ctx.session.user.id,
-                        examId: exam.id,
-                    },
-                },
-                select: { examId: true },
-            })
+          return { completionId: completion.id }
+        })
+      )
 
-            const isUnlocked = isExamUnlockedForUser({
-                isAlwaysUnlocked: exam.isAlwaysUnlocked,
-                examId: exam.id,
-                unlockedExamIds: new Set(
-                    unlockedExam === null ? [] : [unlockedExam.examId]
-                ),
-            })
+      if (error) {
+        console.error(error)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Internal server error",
+          cause: error,
+        })
+      }
 
-            if (!isUnlocked) {
-                throw new TRPCError({
-                    code: 'FORBIDDEN',
-                    message: 'Exam is locked',
-                })
-            }
+      if (result === null)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Internal server error",
+          cause: error,
+        })
 
-            const hasPassed =
-                input.correctCount >= exam.minimumCorrectAnswerCount
-
-            const existing = await prisma.userExamAggregation.findUnique({
-                where: {
-                    userId_examId: {
-                        userId: ctx.session.user.id,
-                        examId: input.examId,
-                    },
-                },
-                select: { lastPassedAt: true },
-            })
-
-            const now = new Date()
-            const lastPassedAt = existing?.lastPassedAt ?? null
-            const waitElapsed =
-                lastPassedAt === null ||
-                now.getTime() - lastPassedAt.getTime() >=
-                    exam.waitUntilPassAllowedInSeconds * 1000
-            const passCounted = hasPassed && waitElapsed
-
-            const [error, result] = await tryCatchAsync(() =>
-                prisma.$transaction(async (tx) => {
-                    const completion = await tx.userExam.create({
-                        data: {
-                            userId: ctx.session.user.id,
-                            examId: input.examId,
-                            correctCount: input.correctCount,
-                            hasPassed,
-                            passCounted,
-                        },
-                    })
-
-                    const aggregation = await tx.userExamAggregation.upsert({
-                        where: {
-                            userId_examId: {
-                                userId: ctx.session.user.id,
-                                examId: input.examId,
-                            },
-                        },
-                        create: {
-                            userId: ctx.session.user.id,
-                            examId: input.examId,
-                            attemptedCount: 1,
-                            passedCount: passCounted ? 1 : 0,
-                            failedCount: passCounted ? 0 : 1,
-                            ...(passCounted && { lastPassedAt: now }),
-                        },
-                        update: {
-                            attemptedCount: { increment: 1 },
-                            passedCount: { increment: passCounted ? 1 : 0 },
-                            failedCount: { increment: passCounted ? 0 : 1 },
-                            ...(passCounted && { lastPassedAt: now }),
-                        },
-                    })
-
-                    if (
-                        passCounted &&
-                        aggregation.passedCount >= exam.minimumPassedCount &&
-                        exam.unlocksExams.length > 0
-                    ) {
-                        await tx.userUnlockedExam.createMany({
-                            data: exam.unlocksExams.map((e) => ({
-                                userId: ctx.session.user.id,
-                                examId: e.id,
-                            })),
-                            skipDuplicates: true,
-                        })
-                    }
-
-                    const examJustFullyCompleted =
-                        passCounted &&
-                        aggregation.passedCount >= exam.minimumPassedCount &&
-                        aggregation.passedCount - 1 < exam.minimumPassedCount
-
-                    if (examJustFullyCompleted) {
-                        await unlockTopicsAfterExamCompletion(tx, {
-                            userId: ctx.session.user.id,
-                            topicId: exam.topicId,
-                        })
-                    }
-
-                    return { completionId: completion.id }
-                })
-            )
-
-            if (error) {
-                console.error(error)
-                throw new TRPCError({
-                    code: 'INTERNAL_SERVER_ERROR',
-                    message: 'Internal server error',
-                    cause: error,
-                })
-            }
-
-            if (result === null)
-                throw new TRPCError({
-                    code: 'INTERNAL_SERVER_ERROR',
-                    message: 'Internal server error',
-                    cause: error,
-                })
-
-            return result
-        }),
+      return result
+    }),
 })

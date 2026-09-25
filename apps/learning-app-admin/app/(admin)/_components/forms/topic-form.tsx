@@ -247,9 +247,7 @@ export function TopicForm({
                         }}
                         disabled={isPending}
                       />
-                      <Label htmlFor="isAlwaysUnlocked">
-                        Always unlocked
-                      </Label>
+                      <Label htmlFor="isAlwaysUnlocked">Always unlocked</Label>
                     </div>
                     <FieldError errors={[fieldState.error]} />
                   </>
@@ -272,9 +270,7 @@ export function TopicForm({
                       disabled={isPending || isAlwaysUnlocked}
                       aria-invalid={fieldState.invalid}
                     >
-                      <NativeSelectOption value="">
-                        None
-                      </NativeSelectOption>
+                      <NativeSelectOption value="">None</NativeSelectOption>
                       {parentTopics.map((topic) => (
                         <NativeSelectOption key={topic.id} value={topic.id}>
                           {topic.name}
@@ -285,7 +281,7 @@ export function TopicForm({
                   </>
                 )}
               />
-              <p className="text-muted-foreground mt-2 text-xs">
+              <p className="mt-2 text-xs text-muted-foreground">
                 Learners get this topic after they fully pass enough enabled
                 exams in the unlocker. Leave empty if it is always unlocked or
                 not yet attached.
@@ -305,7 +301,7 @@ export function TopicForm({
               <FieldError
                 errors={[formState.errors.minimumCompletedExamsToUnlock]}
               />
-              <p className="text-muted-foreground mt-2 text-xs">
+              <p className="mt-2 text-xs text-muted-foreground">
                 Required if this topic unlocks others. May be higher than the
                 current number of enabled exams.
               </p>
