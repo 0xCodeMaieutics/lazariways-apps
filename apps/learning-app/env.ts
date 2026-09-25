@@ -4,7 +4,6 @@ import { z } from "zod"
 export const env = createEnv({
   server: {
     DATABASE_URL: z.url(),
-    NARAKEET_API_KEY: z.string(),
     BUCKET_AUDIOS_PATH: z.string(),
     S3_REGION: z.string(),
     S3_ENDPOINT: z.url(),
@@ -15,7 +14,6 @@ export const env = createEnv({
   client: {},
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
-    NARAKEET_API_KEY: process.env.NARAKEET_API_KEY,
     BUCKET_AUDIOS_PATH: process.env.BUCKET_AUDIOS_PATH,
     S3_REGION: process.env.S3_REGION,
     S3_ENDPOINT: process.env.S3_ENDPOINT,
