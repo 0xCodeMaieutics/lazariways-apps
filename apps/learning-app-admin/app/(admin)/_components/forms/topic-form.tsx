@@ -209,26 +209,28 @@ export function TopicForm({
                 <FieldError errors={[formState.errors.order]} />
               </Field>
             </div>
-            <Field>
-              <Controller
-                name="enabled"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="enabled"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isPending}
-                      />
-                      <Label htmlFor="enabled">Enable topic</Label>
-                    </div>
-                    <FieldError errors={[fieldState.error]} />
-                  </>
-                )}
-              />
-            </Field>
+            {isEdit && (
+              <Field>
+                <Controller
+                  name="enabled"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="enabled"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={isPending}
+                        />
+                        <Label htmlFor="enabled">Enable topic</Label>
+                      </div>
+                      <FieldError errors={[fieldState.error]} />
+                    </>
+                  )}
+                />
+              </Field>
+            )}
             <Field>
               <Controller
                 name="isAlwaysUnlocked"
