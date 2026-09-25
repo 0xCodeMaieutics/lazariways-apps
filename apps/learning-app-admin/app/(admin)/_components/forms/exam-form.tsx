@@ -43,7 +43,7 @@ const examSchema = z
         minimumCorrectAnswerCount: z.number().int().min(1),
         minimumPassedCount: z.number().int().min(1),
         passCooldown: passCooldownSchema,
-        enable: z.boolean(),
+        enabled: z.boolean(),
         isAlwaysUnlocked: z.boolean(),
         unlockedByExamId: z.string(),
     })
@@ -93,7 +93,7 @@ export function ExamForm({
             minimumCorrectAnswerCount: 1,
             minimumPassedCount: 1,
             passCooldown: '04:00',
-            enable: false,
+            enabled: false,
             isAlwaysUnlocked: false,
             unlockedByExamId: '',
             ...defaultValues,
@@ -430,18 +430,18 @@ export function ExamForm({
                         </Field>
                         <Field>
                             <Controller
-                                name="enable"
+                                name="enabled"
                                 control={control}
                                 render={({ field, fieldState }) => (
                                     <>
                                         <div className="flex items-center gap-2">
                                             <Checkbox
-                                                id="enable"
+                                                id="enabled"
                                                 checked={field.value}
                                                 onCheckedChange={field.onChange}
                                                 disabled={isPending}
                                             />
-                                            <Label htmlFor="enable">
+                                            <Label htmlFor="enabled">
                                                 Enable exam
                                             </Label>
                                         </div>

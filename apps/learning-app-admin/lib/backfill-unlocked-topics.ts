@@ -25,7 +25,7 @@ export async function backfillUnlockedTopicsForUnlocker(
     }
 
     const enabledExams = await tx.exam.findMany({
-        where: { topicId: unlockerTopicId, enable: true },
+        where: { topicId: unlockerTopicId, enabled: true },
         select: { id: true, minimumPassedCount: true },
     })
 

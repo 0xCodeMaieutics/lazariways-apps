@@ -114,7 +114,7 @@ model Exam {
   id          String     @id @default(nanoid())
   title       String
   description String
-  enable           Boolean    @default(false)
+  enabled           Boolean    @default(false)
   isAlwaysUnlocked Boolean    @default(false)
   exercises        Exercise[]
 

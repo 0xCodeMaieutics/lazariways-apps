@@ -63,7 +63,7 @@ function SortableRow({
   exam: Exam
   topicId: string
   onNavigate: () => void
-  onToggleEnabled: (enable: boolean) => void
+  onToggleEnabled: (enabled: boolean) => void
   onToggleAlwaysUnlocked: () => void
   isTogglePending: boolean
   isAlwaysUnlockedPending: boolean
@@ -110,7 +110,7 @@ function SortableRow({
       <TableCell className="relative flex max-w-max gap-2">
         <Switch
           onClick={(e) => e.stopPropagation()}
-          checked={exam.enable}
+          checked={exam.enabled}
           onCheckedChange={onToggleEnabled}
         />
         {isTogglePending && (
@@ -186,14 +186,14 @@ export const AdminExams = ({
     variables,
   } = useMutation(
     trpc.admin.exams.updateExamEnabled.mutationOptions({
-      onSuccess: (_, { id, enable }) => {
+      onSuccess: (_, { id, enabled }) => {
         router.refresh()
         setExams((previousExams) =>
           previousExams.map((previousExam) => {
             if (id === previousExam.id) {
               return {
                 ...previousExam,
-                enable,
+                enabled,
               }
             }
             return { ...previousExam }
@@ -305,10 +305,10 @@ export const AdminExams = ({
                         `/topics/${topicId}/exams/${exam.id}/exercises`
                       )
                     }
-                    onToggleEnabled={(enable) =>
+                    onToggleEnabled={(enabled) =>
                       updateExamEnable({
                         id: exam.id,
-                        enable,
+                        enabled,
                       })
                     }
                     onToggleAlwaysUnlocked={() =>

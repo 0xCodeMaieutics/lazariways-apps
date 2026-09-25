@@ -144,7 +144,7 @@ export const insertLearningData = async ({
                     title: exam.title,
                     description: exam.description,
                     order: currentExamIndex,
-                    enable: true,
+                    enabled: true,
                     isAlwaysUnlocked: exam.isAlwaysUnlocked ?? false,
                     estimatedTimeInMinutes: exam.estimatedTimeInMinutes ?? null,
                     minimumPassedCount: exam.minimumPassedCount ?? 1,
@@ -264,7 +264,7 @@ export const insertLearningData = async ({
             minimumCompletedExamsToUnlock: true,
             unlocksTopics: { select: { id: true } },
             exams: {
-                where: { enable: true },
+                where: { enabled: true },
                 select: {
                     minimumPassedCount: true,
                     userExamAggregation: {

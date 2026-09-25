@@ -81,7 +81,7 @@ const examCreateSchema = z.object({
     minimumPassedCount: z.number().int().min(1).default(1),
     waitUntilPassAllowedInSeconds: z.number().int().min(0).default(14400),
     topicId: z.string().min(1, 'Topic is required'),
-    enable: z.boolean().default(false),
+    enabled: z.boolean().default(false),
     isAlwaysUnlocked: z.boolean().default(false),
     unlockedByExamId: z.string().min(1).nullable(),
 })
@@ -167,7 +167,7 @@ export const adminRouter = router({
                     where: { id },
                     select: {
                         topicId: true,
-                        enable: true,
+                        enabled: true,
                     },
                 })
 
@@ -208,7 +208,7 @@ export const adminRouter = router({
                     }
 
                     const isExamNewlyEnabled =
-                        data.enable === true && existingExam.enable === false
+                        data.enabled === true && existingExam.enabled === false
                     if (isExamNewlyEnabled) {
                         await backfillUnlockedTopicsForUnlocker(
                             tx,
@@ -223,13 +223,13 @@ export const adminRouter = router({
             .input(
                 z.object({
                     id: z.string(),
-                    enable: z.boolean(),
+                    enabled: z.boolean(),
                 })
             )
             .mutation(async ({ input }) => {
                 const existingExam = await prisma.exam.findUnique({
                     where: { id: input.id },
-                    select: { topicId: true, enable: true },
+                    select: { topicId: true, enabled: true },
                 })
 
                 if (!existingExam) {
@@ -242,11 +242,11 @@ export const adminRouter = router({
                 return prisma.$transaction(async (tx) => {
                     const exam = await tx.exam.update({
                         where: { id: input.id },
-                        data: { enable: input.enable },
+                        data: { enabled: input.enabled },
                     })
 
                     const isExamNewlyEnabled =
-                        input.enable === true && existingExam.enable === false
+                        input.enabled === true && existingExam.enabled === false
                     if (isExamNewlyEnabled) {
                         await backfillUnlockedTopicsForUnlocker(
                             tx,
