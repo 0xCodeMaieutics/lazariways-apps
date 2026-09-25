@@ -75,7 +75,7 @@ const examCreateSchema = z.object({
   minimumPassedCount: z.number().int().min(1).default(1),
   waitUntilPassAllowedInSeconds: z.number().int().min(0).default(14400),
   topicId: z.string().min(1, "Topic is required"),
-  enable: z.boolean().default(false),
+  enabled: z.boolean().default(false),
 })
 
 const examUpdateSchema = examCreateSchema.partial().extend({
@@ -136,7 +136,7 @@ export const adminRouter = router({
           minimumCorrectAnswerCount: input.minimumCorrectAnswerCount,
           minimumPassedCount: input.minimumPassedCount,
           waitUntilPassAllowedInSeconds: input.waitUntilPassAllowedInSeconds,
-          enable: input.enable,
+          enabled: input.enabled,
           topicId: input.topicId,
         },
       })

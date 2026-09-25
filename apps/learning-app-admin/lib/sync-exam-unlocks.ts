@@ -55,7 +55,7 @@ export async function syncExamUnlocks(
 
     if (unlockedByExamId !== null) {
         const unlocker = await tx.exam.findFirst({
-            where: { id: unlockedByExamId, topicId, enable: true },
+            where: { id: unlockedByExamId, topicId, enabled: true },
             select: { id: true },
         })
 

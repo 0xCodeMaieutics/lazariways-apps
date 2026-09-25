@@ -62,7 +62,7 @@ export default async function TopicExamsPage({
   const exams = await prisma.exam.findMany({
     where: {
       topicId,
-      enable: true,
+      enabled: true,
     },
     include: {
       userExamAggregation: {

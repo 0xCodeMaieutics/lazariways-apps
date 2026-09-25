@@ -25,7 +25,7 @@ export default async function EditExamPage({
             where: { id: topicId },
         }),
         prisma.exam.findMany({
-            where: { topicId, enable: true },
+            where: { topicId, enabled: true },
             orderBy: { order: 'asc' },
             select: {
                 id: true,
@@ -67,7 +67,7 @@ export default async function EditExamPage({
                     passCooldown: formatSecondsAsHoursMinutes(
                         exam.waitUntilPassAllowedInSeconds
                     ),
-                    enable: exam.enable,
+                    enabled: exam.enabled,
                     isAlwaysUnlocked: exam.isAlwaysUnlocked,
                     unlockedByExamId: exam.unlockedId ?? '',
                 }}

@@ -22,7 +22,7 @@ export default async function NewExamPage({
             select: { order: true },
         }),
         prisma.exam.findMany({
-            where: { topicId, enable: true },
+            where: { topicId, enabled: true },
             orderBy: { order: 'asc' },
             select: {
                 id: true,
