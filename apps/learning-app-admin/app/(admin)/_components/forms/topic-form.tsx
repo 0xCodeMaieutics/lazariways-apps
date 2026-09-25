@@ -289,25 +289,27 @@ export function TopicForm({
                 not yet attached.
               </p>
             </Field>
-            <Field>
-              <FieldLabel htmlFor="minimumCompletedExamsToUnlock">
-                Minimum completed exams to unlock others
-              </FieldLabel>
-              <Input
-                id="minimumCompletedExamsToUnlock"
-                type="number"
-                min={1}
-                disabled={isPending}
-                {...register("minimumCompletedExamsToUnlock")}
-              />
-              <FieldError
-                errors={[formState.errors.minimumCompletedExamsToUnlock]}
-              />
-              <p className="mt-2 text-xs text-muted-foreground">
-                Required if this topic unlocks others. May be higher than the
-                current number of enabled exams.
-              </p>
-            </Field>
+            {isEdit && (
+              <Field>
+                <FieldLabel htmlFor="minimumCompletedExamsToUnlock">
+                  Minimum completed exams to unlock others
+                </FieldLabel>
+                <Input
+                  id="minimumCompletedExamsToUnlock"
+                  type="number"
+                  min={1}
+                  disabled={isPending}
+                  {...register("minimumCompletedExamsToUnlock")}
+                />
+                <FieldError
+                  errors={[formState.errors.minimumCompletedExamsToUnlock]}
+                />
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Required if this topic unlocks others. May be higher than the
+                  current number of enabled exams.
+                </p>
+              </Field>
+            )}
           </FieldGroup>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex gap-2">
