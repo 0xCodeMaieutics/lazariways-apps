@@ -1,6 +1,9 @@
 const PHONE_NUMBER = "4915229204123"
+const SALES_PHONE_NUMBER = "491777053894"
 const WHATSAPP_MESSAGE =
   "Hallo, ich interessiere mich für Fachkräfte aus Georgien."
+const SALES_WHATSAPP_MESSAGE =
+  "Hallo David, ich interessiere mich für Fachkräfte aus Georgien."
 
 export const BENEFITS = [
   {
@@ -59,6 +62,18 @@ export const GALLERY = {
   title: "Galerie",
   description:
     "Ein Einblick in motivierte Fachkräfte aus Georgien, die in deutschen Unternehmen erfolgreich gearbeitet haben.",
+} as const
+
+export const SALES_CONTACT = {
+  name: "David Mohammadi",
+  role: "Vertrieb",
+  description:
+    "Ihr persönlicher Ansprechpartner für die Vermittlung von Fachkräften aus Georgien — von der ersten Anfrage bis zur passenden Besetzung.",
+  image: "/david-mohammadi.webp",
+  phone: "+49 177 7053894",
+  phoneUrl: `tel:+${SALES_PHONE_NUMBER}`,
+  email: "david@personalgeorgien.de",
+  whatsappUrl: `https://wa.me/${SALES_PHONE_NUMBER}?text=${encodeURIComponent(SALES_WHATSAPP_MESSAGE)}`,
 } as const
 
 export const SITE = {

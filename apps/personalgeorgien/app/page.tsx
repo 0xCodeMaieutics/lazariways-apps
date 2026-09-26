@@ -3,6 +3,7 @@ import { FooterCta } from "./components/footer-cta"
 import { Hero } from "./components/hero"
 import { HowItWorks } from "./components/how-it-works"
 import { PageShell } from "./components/page-shell"
+import { SalesContact } from "./components/sales-contact"
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero />
       <Benefits />
       <HowItWorks />
+      <SalesContact />
       <FooterCta />
     </PageShell>
   )
