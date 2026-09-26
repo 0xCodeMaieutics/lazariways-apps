@@ -17,7 +17,7 @@ export function Hero() {
           <p className="mt-4 max-w-xl text-base text-muted-foreground">
             {HERO.subline}
           </p>
-          <ContactButtons className="mt-6 lg:mt-8" iconOnlyOnMobile />
+          <ContactButtons className="mt-6 lg:mt-8" />
         </div>
       </div>
       <div className="w-full lg:h-full lg:min-h-0 lg:w-[40%]">
