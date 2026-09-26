@@ -6,9 +6,11 @@ import { WhatsappIcon } from "./whatsapp-icon"
 
 export function WhatsappButton({
   className,
+  href = SITE.whatsappUrl,
   iconOnlyOnMobile = false,
 }: {
   className?: string
+  href?: string
   iconOnlyOnMobile?: boolean
 }) {
   return (
@@ -21,7 +23,7 @@ export function WhatsappButton({
       )}
     >
       <a
-        href={SITE.whatsappUrl}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Per WhatsApp kontaktieren"
