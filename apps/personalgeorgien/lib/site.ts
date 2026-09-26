@@ -1,4 +1,4 @@
-const PHONE_NUMBER = "4917681376567"
+const PHONE_NUMBER = "4915229204123"
 const WHATSAPP_MESSAGE =
   "Hallo, ich interessiere mich für Fachkräfte aus Georgien."
 
@@ -69,7 +69,7 @@ export const SITE = {
   description:
     "Personalgeorgien vermittelt motivierte Fachkräfte aus Georgien an deutsche Arbeitgeber. Persönliche Betreuung und rechtssichere Vermittlung — jetzt per WhatsApp kontaktieren.",
   email: "info@personalgeorgien.de",
-  phone: "+49 176 81376567",
+  phone: "+49 1522 9204123",
   phoneUrl: `tel:+${PHONE_NUMBER}`,
   whatsappUrl: `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`,
 } as const
