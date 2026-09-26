@@ -45,7 +45,7 @@ export function ApplicationCard({
               {linkedUniversityName !== null ? (
                 <Badge
                   variant="secondary"
-                  className="max-w-[200px] min-w-0 justify-start md:max-w-none"
+                  className="max-w-[200px] min-w-0 justify-start"
                   title={linkedUniversityName}
                 >
                   <span className="min-w-0 truncate md:whitespace-normal">
