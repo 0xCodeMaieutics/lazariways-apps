@@ -12,7 +12,6 @@ export default function Home() {
       <Benefits />
       <HowItWorks />
       <SalesContact />
-      <FooterCta />
     </PageShell>
   )
 }
