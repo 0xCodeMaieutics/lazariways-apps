@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="de" className="antialiased">
+    <html lang="de" className="antialiased" data-scroll-behavior="smooth">
       <body className={manrope.className}>{children}</body>
     </html>
   )
