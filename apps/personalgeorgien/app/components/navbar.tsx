@@ -21,7 +21,7 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-4">
           <NavLink href="/galerie">{GALLERY.title}</NavLink>
           <Button asChild size="lg" className="h-9 px-3 sm:h-10 sm:px-4">
-            <Link href="/#vertrieb">Sales kontaktieren</Link>
+            <a href="/#vertrieb">Sales kontaktieren</a>
           </Button>
         </div>
       </div>
