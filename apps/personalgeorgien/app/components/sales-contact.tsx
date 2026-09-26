@@ -12,18 +12,24 @@ export function SalesContact() {
       id="vertrieb"
       className="border-t border-border px-6 py-16 lg:px-16 lg:py-24"
     >
-      <div className="mx-auto grid max-w-5xl items-center gap-10 lg:grid-cols-[18rem_1fr] lg:gap-16">
-        <Image
-          src={SALES_CONTACT.image}
-          alt={`Portrait von ${SALES_CONTACT.name}`}
-          width={647}
-          height={658}
-          loading="eager"
-          className="mx-auto w-full max-w-xs rounded-lg border border-border object-cover lg:max-w-none"
-          sizes="(max-width: 1024px) 320px, 288px"
-        />
-
-        <div>
+      <div className="mx-auto flex max-w-5xl flex-col items-center gap-10 lg:flex-row lg:gap-10">
+        <div
+          style={{
+            width: 184,
+            height: 250,
+          }}
+          className="relative mx-auto h-[320px] w-[236px] sm:h-[250px] sm:w-[184px]"
+        >
+          <Image
+            src={SALES_CONTACT.image}
+            alt={`Portrait von ${SALES_CONTACT.name}`}
+            fill
+            loading="eager"
+            className="mx-auto max-w-[200px] rounded-lg border border-border object-cover lg:max-w-none"
+            sizes="(max-width: 1024px) 320px, 288px"
+          />
+        </div>
+        <div className="flex-1">
           <p className="text-sm font-medium text-primary">
             {SALES_CONTACT.role}
           </p>
