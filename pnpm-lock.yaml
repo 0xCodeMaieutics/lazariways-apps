@@ -123,6 +123,9 @@ importers:
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@workspace/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
       lucide-react:
         specifier: ^1.17.0
         version: 1.17.0(react@19.2.4)
@@ -911,6 +914,19 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
+
+  packages/verification:
+    dependencies:
+      '@workspace/database':
+        specifier: workspace:*
+        version: link:../database
+    devDependencies:
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
 
 packages:
 

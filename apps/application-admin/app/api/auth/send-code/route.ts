@@ -1,10 +1,14 @@
-import { createAndSendVerificationCode } from "@/lib/verification"
+import { env } from "@/env"
+import { createAndSendVerificationCode } from "@workspace/verification"
 
 export const POST = async () => {
   try {
-    const result = await createAndSendVerificationCode()
+    const result = await createAndSendVerificationCode({
+      chatId: env.TELEGRAM_CHAT_ID,
+      token: env.TELEGRAM_BOT_TOKEN,
+    })
 
-    if (result.error === "cooldown") {
+    if (result.success === false) {
       return Response.json(
         { error: "Please wait before requesting another code." },
         { status: 429 }

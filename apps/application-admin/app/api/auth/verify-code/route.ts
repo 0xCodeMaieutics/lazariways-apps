@@ -4,7 +4,7 @@ import {
   ADMIN_SESSION_COOKIE,
   ADMIN_SESSION_MAX_AGE_SECONDS,
 } from "@/lib/constants"
-import { verifyCodeAndCreateSession } from "@/lib/verification"
+import { verifyCodeAndCreateSession } from "@workspace/verification"
 
 const verifyCodeSchema = z.object({
   code: z.string().min(1),
