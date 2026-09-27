@@ -1,16 +1,20 @@
 import crypto from "node:crypto"
 import prisma from "@workspace/database/client"
-import {
-  VERIFICATION_CODE_COOLDOWN_MINUTES,
-  VERIFICATION_CODE_EXPIRY_MINUTES,
-} from "./constants"
-import { sendTelegramMessage } from "./telegram"
+
+const VERIFICATION_CODE_EXPIRY_MINUTES = 10
+const VERIFICATION_CODE_COOLDOWN_MINUTES = 1
 
 function generateVerificationCode(): string {
   return crypto.randomInt(100000, 999999).toString()
 }
 
-export async function createAndSendVerificationCode() {
+export async function createAndSendVerificationCode({
+  chatId,
+  token,
+}: {
+  chatId: string
+  token: string
+}): Promise<{ success: true } | { success: false; errorType: "COOLDOWN" }> {
   const cooldownSince = new Date(
     Date.now() - VERIFICATION_CODE_COOLDOWN_MINUTES * 60 * 1000
   )
@@ -23,7 +27,7 @@ export async function createAndSendVerificationCode() {
   })
 
   if (recentCode !== null) {
-    return { error: "cooldown" as const }
+    return { success: false, errorType: "COOLDOWN" }
   }
 
   const now = new Date()
@@ -46,9 +50,11 @@ export async function createAndSendVerificationCode() {
     data: { code, expiresAt },
   })
 
-  await sendTelegramMessage(
-    `Admin login code: ${code}\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`
-  )
+  await sendTelegramMessage({
+    text: `Admin login code: ${code}\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`,
+    chatId,
+    token,
+  })
 
   return { success: true as const }
 }
@@ -84,4 +90,32 @@ export async function verifyCodeAndCreateSession(code: string) {
   ])
 
   return token
+}
+
+async function sendTelegramMessage({
+  text,
+  chatId,
+  token,
+}: {
+  text: string
+  token: string
+  chatId: string
+}) {
+  const body = new URLSearchParams({
+    chat_id: chatId,
+    text,
+  })
+
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  })
+
+  const json = (await res.json()) as { ok?: boolean; description?: string }
+
+  if (!res.ok || !json.ok) {
+    console.error("Telegram sendMessage failed:", json)
+    throw new Error(json.description ?? "Telegram API error")
+  }
 }
