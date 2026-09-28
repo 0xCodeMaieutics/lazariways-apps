@@ -295,6 +295,20 @@ const professionRandom = {
       "Einhaltung von Hygiene-, Sicherheits- und Qualitätsstandards",
     ],
   },
+  Service: {
+    title: "Service",
+    randomActivities: [
+      "Begrüßung und Betreuung von Gästen im Servicebereich",
+      "Aufnahme und Weitergabe von Bestellungen an Küche und Bar",
+      "Servieren von Speisen und Getränken nach Servicestandards",
+      "Beratung der Gäste zu Speisen, Getränken und Tagesangeboten",
+      "Eindecken und Nachbereiten der Tische vor und nach dem Service",
+      "Sicherstellung eines freundlichen und aufmerksamen Gästeservices",
+      "Unterstützung bei Reservierungen und dem Ablauf von Veranstaltungen",
+      "Kassieren und Abrechnen von Gästen am Ende des Besuchs",
+      "Zusammenarbeit mit Küche und Bar im laufenden Service",
+    ],
+  },
 } as const
 
 export type PersonalGeorgienProfession = keyof typeof professionRandom
