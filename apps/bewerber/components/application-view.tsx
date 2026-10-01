@@ -273,28 +273,6 @@ export function ApplicationView({ data }: ApplicationViewProps) {
           },
         ]}
       />
-
-      <ViewSection
-        title="Arbeitsbereich"
-        fields={[
-          {
-            label: "Branchen",
-            value: (
-              <ul className="flex flex-wrap gap-2">
-                {data.workSector.map((sector) => (
-                  <li
-                    key={sector}
-                    className="rounded-full bg-muted px-3 py-1 text-sm"
-                  >
-                    {sector}
-                  </li>
-                ))}
-              </ul>
-            ),
-            show: data.workSector.length > 0,
-          },
-        ]}
-      />
     </div>
   )
 }
