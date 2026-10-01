@@ -309,6 +309,20 @@ const professionRandom = {
       "Zusammenarbeit mit Küche und Bar im laufenden Service",
     ],
   },
+  Maurer: {
+    title: "Im Bereich Baustelle",
+    randomActivities: [
+      "Mauern von Wänden aus Ziegeln, Kalksandstein und Betonsteinen",
+      "Anmischen und Verarbeiten von Mörtel nach Vorgabe",
+      "Einbau von Stürzen sowie Fenster- und Türöffnungen",
+      "Verputzen und Verfugen von Mauerwerk",
+      "Lesen und Umsetzen von Bauplänen und Maßangaben",
+      "Vorbereitung, Transport und Lagerung von Baumaterialien",
+      "Zusammenarbeit mit anderen Gewerken auf der Baustelle",
+      "Reinigung und Sicherung des Arbeitsbereichs nach Abschluss der Arbeiten",
+      "Einhaltung von Arbeitsschutz- und Sicherheitsvorschriften auf der Baustelle",
+    ],
+  },
 } as const
 
 export type PersonalGeorgienProfession = keyof typeof professionRandom
