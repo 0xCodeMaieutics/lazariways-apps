@@ -23,6 +23,12 @@ const bodySchema = z.object({
       ...(typeof personalGeorgienProfessionOptions)[number][],
     ]
   ),
+  experienceDate: z
+    .string()
+    .regex(/^\d{4}-(0[1-9]|1[0-2])$/)
+    .optional(),
+  experienceOngoing: z.boolean().optional(),
+  activities: z.array(z.string().trim().min(1).max(300)).max(20).optional(),
 })
 
 export const POST = async (
@@ -72,6 +78,9 @@ export const POST = async (
       applicationId: id,
       bewerberAppUrl: env.BEWERBER_APP_URL,
       profession: parsed.data.profession,
+      experienceDate: parsed.data.experienceDate,
+      experienceOngoing: parsed.data.experienceOngoing,
+      activities: parsed.data.activities,
     })
   } catch (error) {
     console.error("GENERATE_PERSONAL_GEORGIEN_PDF_ERROR", error)

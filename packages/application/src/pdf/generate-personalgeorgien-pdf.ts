@@ -385,11 +385,28 @@ const formatExperiencePeriod = (from: Date, ongoing: boolean) => {
   return ongoing ? `seit ${monthYear}` : monthYear
 }
 
+const formatOverrideExperiencePeriod = (
+  yearMonth: string | undefined,
+  ongoing: boolean
+) => {
+  if (yearMonth === undefined) return null
+
+  const match = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(yearMonth.trim())
+  if (!match) return null
+
+  const [, year, month] = match
+  const monthYear = `${month}/${year}`
+  return ongoing ? `seit ${monthYear}` : monthYear
+}
+
 export const generatePersonalGeorgienPdf = async (
   applicationFormData: ApplicationFormData & {
     applicationId: string
     bewerberAppUrl: string
     profession: PersonalGeorgienProfession
+    experienceDate?: string
+    experienceOngoing?: boolean
+    activities?: readonly string[]
   }
 ) => {
   const [pdfBytes, fontBytes, flagBytes] = await Promise.all([
@@ -620,15 +637,26 @@ export const generatePersonalGeorgienPdf = async (
     `${applicationFormData.applicationId}-${applicationFormData.profession}`
   )
   const activityCount = 3 + Math.floor(experienceRandom() * 3)
-  const activities = pickRandomSubset(
-    professionData.randomActivities,
-    activityCount,
-    experienceRandom
-  )
+  const overrideActivities = applicationFormData.activities
+    ?.map((activity) => activity.trim())
+    .filter((activity) => activity.length > 0)
+  const activities =
+    overrideActivities !== undefined && overrideActivities.length > 0
+      ? overrideActivities
+      : pickRandomSubset(
+          professionData.randomActivities,
+          activityCount,
+          experienceRandom
+        )
   const { from, ongoing } = generateExperiencePeriod(
     applicationFormData.birthDate,
     applicationFormData.applicationId
   )
+  const periodLabel =
+    formatOverrideExperiencePeriod(
+      applicationFormData.experienceDate,
+      applicationFormData.experienceOngoing ?? true
+    ) ?? formatExperiencePeriod(from, ongoing)
   const experienceLocation = joinNonEmpty(
     [applicationFormData.city, applicationFormData.country],
     ", "
@@ -636,7 +664,7 @@ export const generatePersonalGeorgienPdf = async (
   const pe = layout.praktischeErfahrung
   let experienceY = pe.startY
 
-  firstPage.drawText(formatExperiencePeriod(from, ongoing), {
+  firstPage.drawText(periodLabel, {
     x: pe.dateX,
     y: experienceY,
     size: layout.fieldSize,
