@@ -1,0 +1,24 @@
+{
+  "name": "sales-extension-backend",
+  "scripts": {
+    "start": "node out/app.js",
+    "build": "node scripts/build.mjs",
+    "dev": "concurrently \"node scripts/build.mjs --watch\" \"node --watch out/app.js\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@workspace/database": "workspace:*",
+    "@workspace/verification": "workspace:*",
+    "express": "^5.2.1",
+    "openai": "^6.9.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.3",
+    "concurrently": "^10.0.5",
+    "dotenv": "^17.4.2",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}
