@@ -17,7 +17,7 @@ services:
   seaweedfs:
     image: chrislusf/seaweedfs
     ports:
-      - 9000:8333
+      - 9002:8333
     environment:
       AWS_ACCESS_KEY_ID: minioadmin
       AWS_SECRET_ACCESS_KEY: minioadmin
