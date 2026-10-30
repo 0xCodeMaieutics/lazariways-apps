@@ -1,34 +1,52 @@
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
 import { Button } from "@workspace/ui/components/button"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 
 import { ApplicationCard } from "@/components/application-card"
+import { ApplicationFiltersBar } from "@/components/application-filters"
 import { RefreshButton } from "@/components/refresh-button"
 import { env } from "@/env"
+import {
+  buildApplicationsHref,
+  buildApplicationWhere,
+  hasActiveApplicationFilters,
+  parseApplicationFilters,
+  type ApplicationFilterSearchParams,
+} from "@/lib/application-filters"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { APPLICATIONS_PER_PAGE } from "@/lib/constants"
-import { groupBySubmittedAt } from "@/lib/format-submitted-at-group"
+import {
+  formatSubmittedAtTime,
+  getSubmittedAtGroupRange,
+  groupBySubmittedAt,
+} from "@/lib/format-submitted-at-group"
 
 interface ApplicationsPageProps {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<ApplicationFilterSearchParams & { page?: string }>
 }
 
 export default async function ApplicationsPage({ searchParams }: ApplicationsPageProps) {
   await requireAdminSessionForPage("/applications")
 
-  const { page: pageParam } = await searchParams
-  const page = Math.max(1, Number(pageParam ?? "1") || 1)
+  const params = await searchParams
+  const filters = parseApplicationFilters(params)
+  const isFiltered = hasActiveApplicationFilters(filters)
+  const where = buildApplicationWhere(filters)
+
+  const page = Math.max(1, Number(params.page ?? "1") || 1)
   const skip = (page - 1) * APPLICATIONS_PER_PAGE
 
   const [applications, totalCount] = await Promise.all([
     prisma.application.findMany({
+      where,
       skip,
       take: APPLICATIONS_PER_PAGE,
       orderBy: { submittedAt: "desc" },
       include: { linkedUniversity: true },
     }),
-    prisma.application.count(),
+    prisma.application.count({ where }),
   ])
 
   const totalPages = Math.max(1, Math.ceil(totalCount / APPLICATIONS_PER_PAGE))
@@ -50,25 +68,71 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
     ({ application }) => application.submittedAt
   )
 
+  // Only the first and last day on a page can continue onto a neighbouring page.
+  const edgeGroupKeys = [...new Set([applicationGroups[0]?.key, applicationGroups.at(-1)?.key])].filter(
+    (key): key is string => key !== undefined
+  )
+  const edgeGroupCounts = new Map(
+    await Promise.all(
+      edgeGroupKeys.map(async (key) => {
+        const { start, end } = getSubmittedAtGroupRange(key)
+        const count = await prisma.application.count({
+          where: { AND: [where, { submittedAt: { gte: start, lt: end } }] },
+        })
+        return [key, count] as const
+      })
+    )
+  )
+
   return (
-    <main className="mx-auto w-full max-w-lg px-4 py-6 md:max-w-5xl md:px-6">
-      <header className="mb-6">
+    <main className="mx-auto w-full max-w-lg px-4 py-6 md:max-w-6xl md:px-6">
+      <header className="mb-5 space-y-4">
         <div className="flex items-start justify-between gap-4">
-          <p className="mt-1 text-sm text-muted-foreground">
-            სულ {totalCount} · გვერდი {currentPage} / {totalPages}
-          </p>
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight md:text-2xl">განაცხადები</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {isFiltered ? `${totalCount} ნაპოვნი` : `სულ ${totalCount} განაცხადი`}
+              {isFiltered ? (
+                <>
+                  {" · "}
+                  <Link href="/applications" className="text-foreground underline underline-offset-4">
+                    ფილტრების გასუფთავება
+                  </Link>
+                </>
+              ) : null}
+            </p>
+          </div>
           <RefreshButton label="განახლება" />
         </div>
+        <ApplicationFiltersBar filters={filters} />
       </header>
 
       {applicationGroups.length === 0 ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">No applications yet.</p>
+        <div className="rounded-xl border border-dashed border-border px-6 py-12 text-center">
+          <p className="font-medium">{isFiltered ? "ვერაფერი მოიძებნა" : "განაცხადები ჯერ არ არის"}</p>
+          {isFiltered ? (
+            <p className="mt-1 text-sm text-muted-foreground">
+              სცადეთ სხვა სახელი ან{" "}
+              <Link href="/applications" className="text-foreground underline underline-offset-4">
+                გაასუფთავეთ ფილტრები
+              </Link>
+              .
+            </p>
+          ) : null}
+        </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           {applicationGroups.map((group) => (
-            <section key={group.key} className="space-y-3">
-              <h2 className="text-sm text-muted-foreground">{group.label}</h2>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <section key={group.key} aria-labelledby={`day-${group.key}`}>
+              <div className="sticky top-0 z-10 -mx-4 flex items-baseline justify-between gap-4 border-b border-border bg-background/95 px-4 py-2 backdrop-blur md:-mx-6 md:mb-3 md:px-6">
+                <h2 id={`day-${group.key}`} className="text-sm font-semibold">
+                  {group.label}
+                </h2>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {edgeGroupCounts.get(group.key) ?? group.items.length} განაცხადი
+                </span>
+              </div>
+              <div className="divide-y divide-border md:grid md:grid-cols-3 md:gap-3 md:divide-y-0 lg:grid-cols-4">
                 {group.items.map(({ application, fotoUrl }) => (
                   <ApplicationCard
                     key={application.id}
@@ -79,6 +143,7 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
                     germanLevel={application.germanLevel}
                     fotoUrl={fotoUrl}
                     instagram={application.instagram}
+                    submittedTime={formatSubmittedAtTime(application.submittedAt)}
                   />
                 ))}
               </div>
@@ -88,22 +153,31 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
       )}
 
       {totalPages > 1 ? (
-        <div className="mt-8 flex items-center justify-between gap-4">
+        <nav aria-label="გვერდები" className="mt-8 flex items-center justify-between gap-4">
           {currentPage > 1 ? (
-            <Button variant="outline" asChild>
-              <Link href={`/applications?page=${currentPage - 1}`}>Previous</Link>
+            <Button variant="outline" size="lg" asChild>
+              <Link href={buildApplicationsHref(filters, currentPage - 1)}>
+                <ChevronLeft />
+                წინა
+              </Link>
             </Button>
           ) : (
             <span />
           )}
+          <span className="text-sm text-muted-foreground tabular-nums">
+            გვერდი {currentPage} / {totalPages}
+          </span>
           {currentPage < totalPages ? (
-            <Button variant="outline" asChild>
-              <Link href={`/applications?page=${currentPage + 1}`}>Next</Link>
+            <Button variant="outline" size="lg" asChild>
+              <Link href={buildApplicationsHref(filters, currentPage + 1)}>
+                შემდეგი
+                <ChevronRight />
+              </Link>
             </Button>
           ) : (
             <span />
           )}
-        </div>
+        </nav>
       ) : null}
     </main>
   )

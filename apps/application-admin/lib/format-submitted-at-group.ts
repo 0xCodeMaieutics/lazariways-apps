@@ -1,4 +1,7 @@
 const TBILISI_TIME_ZONE = "Asia/Tbilisi"
+// Georgia has no daylight saving time.
+const TBILISI_UTC_OFFSET_MS = 4 * 60 * 60 * 1000
+const DAY_MS = 24 * 60 * 60 * 1000
 
 interface TbilisiDateParts {
   year: number
@@ -43,6 +46,22 @@ function getDaysAgoInTbilisi(date: Date, now: Date): number {
 export function getSubmittedAtGroupKey(date: Date): string {
   const { year, month, day } = getTbilisiDateParts(date)
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+}
+
+export function getSubmittedAtGroupRange(key: string): { start: Date; end: Date } {
+  const [year, month, day] = key.split("-").map(Number)
+  const start = Date.UTC(year, month - 1, day) - TBILISI_UTC_OFFSET_MS
+
+  return { start: new Date(start), end: new Date(start + DAY_MS) }
+}
+
+export function formatSubmittedAtTime(date: Date): string {
+  return new Intl.DateTimeFormat("ka-GE", {
+    timeZone: TBILISI_TIME_ZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(date)
 }
 
 export function formatSubmittedAtGroupLabel(date: Date, now: Date = new Date()): string {
