@@ -1,5 +1,6 @@
-import esbuild from "esbuild"
 import { readFile } from "node:fs/promises"
+
+import esbuild from "esbuild"
 
 // Prisma's generated client reads import.meta.url. esbuild's default CJS
 // bundle leaves that empty, so fileURLToPath throws on startup.
@@ -11,7 +12,7 @@ const prismaImportMeta = {
       return {
         contents: source.replace(
           "globalThis['__dirname'] = path.dirname(fileURLToPath(import.meta.url))",
-          "globalThis['__dirname'] = __dirname",
+          "globalThis['__dirname'] = __dirname"
         ),
         loader: "ts",
       }

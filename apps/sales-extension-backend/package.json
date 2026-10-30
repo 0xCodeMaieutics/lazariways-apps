@@ -19,6 +19,6 @@
     "concurrently": "^10.0.5",
     "dotenv": "^17.4.2",
     "esbuild": "^0.28.2",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3"
   }
 }

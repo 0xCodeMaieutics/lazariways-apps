@@ -1,17 +1,10 @@
 import "dotenv/config"
-import express, {
-  type Express,
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express"
 import prisma from "@workspace/database/client"
-import { env } from "./env"
-import {
-  createAndSendVerificationCode,
-  verifyCodeAndCreateSession,
-} from "@workspace/verification"
+import { createAndSendVerificationCode, verifyCodeAndCreateSession } from "@workspace/verification"
+import express, { type Express, type NextFunction, type Request, type Response } from "express"
+
 import { extractCompanyFromHtml, type ExtractedCompany } from "./ai"
+import { env } from "./env"
 
 const app: Express = express()
 app.use(express.json())
@@ -53,34 +46,31 @@ type LoginCodeVerificationResponse =
       token: string
     }
 
-app.post(
-  "/login/request-code",
-  async (req: Request, res: Response<LoginRequestCodeResponse>) => {
-    try {
-      const result = await createAndSendVerificationCode({
-        chatId: env.TELEGRAM_CHAT_ID,
-        token: env.TELEGRAM_BOT_TOKEN,
-      })
-      if (result.success === false)
-        return res
-          .json({
-            error: "Bad request",
-            success: false,
-          })
-          .sendStatus(400)
-      return res.send({
-        success: true,
-      })
-    } catch (error) {
+app.post("/login/request-code", async (req: Request, res: Response<LoginRequestCodeResponse>) => {
+  try {
+    const result = await createAndSendVerificationCode({
+      chatId: env.TELEGRAM_CHAT_ID,
+      token: env.TELEGRAM_BOT_TOKEN,
+    })
+    if (result.success === false)
       return res
-        .send({
-          error: "Internal server error",
+        .json({
+          error: "Bad request",
           success: false,
         })
-        .sendStatus(500)
-    }
+        .sendStatus(400)
+    return res.send({
+      success: true,
+    })
+  } catch {
+    return res
+      .send({
+        error: "Internal server error",
+        success: false,
+      })
+      .sendStatus(500)
   }
-)
+})
 
 app.post(
   "/login/verfication",
@@ -110,7 +100,7 @@ app.post(
         success: true,
         token: token,
       })
-    } catch (error) {
+    } catch {
       return res
         .send({
           error: "Internal server error",
@@ -129,8 +119,7 @@ app.post(
     next: NextFunction
   ) => {
     const authorization = req.headers.authorization ?? null
-    if (authorization === null)
-      return res.json({ success: false, error: "401" }).sendStatus(401)
+    if (authorization === null) return res.json({ success: false, error: "401" }).sendStatus(401)
     const [, token] = authorization.split(" ")
     if (token === undefined || token.length === 0)
       return res.json({ success: false, error: "401" }).sendStatus(401)
@@ -139,8 +128,7 @@ app.post(
       const session = await prisma.adminSession.findUnique({
         where: { token },
       })
-      if (session === null)
-        return res.json({ success: false, error: "401" }).sendStatus(401)
+      if (session === null) return res.json({ success: false, error: "401" }).sendStatus(401)
       return next()
     } catch {
       return res
@@ -151,10 +139,7 @@ app.post(
         .sendStatus(500)
     }
   },
-  async (
-    req: Request<{}, AbstractInfoResponse, AbstractInfoBody>,
-    res: Response<AbstractInfoResponse>
-  ) => {
+  async (req: Request<{}, AbstractInfoResponse, AbstractInfoBody>, res: Response<AbstractInfoResponse>) => {
     const { input = null } = req.body
     if (input === null) {
       return res
@@ -175,7 +160,7 @@ app.post(
         ).company,
         success: true,
       })
-    } catch (error) {
+    } catch {
       return res
         .send({
           success: false,
