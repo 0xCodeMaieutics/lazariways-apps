@@ -1,44 +1,26 @@
 "use client"
 
+import { useMutation } from "@tanstack/react-query"
+import type { inferRouterInputs } from "@trpc/server"
+import type { UserExamAggregation } from "@workspace/database/browser"
+import { type Exercise, ExerciseType } from "@workspace/database/browser"
+import { type Exam } from "@workspace/database/browser"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import {
-  type Exercise,
-  ExerciseType,
-  UserExamAggregation,
-} from "@workspace/database/browser"
-import { ProgressBar } from "@/components/ui/progress-bar"
-import { cn } from "@/lib/utils"
-import type { AppRouter } from "@/lib/trpc/router"
-import { useTRPC } from "@/lib/trpc/react"
 import { Volume2, ChevronRight, X } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import {
-  ComponentProps,
-  createContext,
-  PropsWithChildren,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useEffectEvent,
-  useRef,
-  useState,
-} from "react"
-import { useCountdown } from "@/utils/useCountdown"
-import { type Exam } from "@workspace/database/browser"
-import { useExamLogic } from "@/utils/use-exam-logic"
-import { useMutation } from "@tanstack/react-query"
-import type { inferRouterInputs } from "@trpc/server"
+import type { ComponentProps, PropsWithChildren, ReactNode } from "react"
+import { createContext, useCallback, useContext, useEffect, useEffectEvent, useRef, useState } from "react"
 
-function ExamTimer({
-  hasPassed,
-  countdownTarget,
-}: {
-  hasPassed: boolean
-  countdownTarget: Date | null
-}) {
+import { ProgressBar } from "@/components/ui/progress-bar"
+import { useTRPC } from "@/lib/trpc/react"
+import type { AppRouter } from "@/lib/trpc/router"
+import { cn } from "@/lib/utils"
+import { useExamLogic } from "@/utils/use-exam-logic"
+import { useCountdown } from "@/utils/useCountdown"
+
+function ExamTimer({ hasPassed, countdownTarget }: { hasPassed: boolean; countdownTarget: Date | null }) {
   const { isComplete } = useCountdown(countdownTarget)
 
   if (!hasPassed && isComplete && countdownTarget !== null) {
@@ -49,11 +31,7 @@ function ExamTimer({
     !hasPassed &&
     !isComplete &&
     countdownTarget && (
-      <span
-        className={cn(
-          "text-xxs min-w-14 text-center font-semibold text-destructive"
-        )}
-      >
+      <span className={cn("text-xxs min-w-14 text-center font-semibold text-destructive")}>
         არ ჩაგეთვლება
       </span>
     )
@@ -103,9 +81,7 @@ export function Exam({
   const completeExamMutation = useMutation(
     trpc.exam.completeExam.mutationOptions({
       onSuccess: (result) => {
-        router.push(
-          `/topics/${topicId}/exams/${exam.id}/completions/${result.completionId}`
-        )
+        router.push(`/topics/${topicId}/exams/${exam.id}/completions/${result.completionId}`)
       },
     })
   )
@@ -127,9 +103,7 @@ export function Exam({
 
   const type = currentExercise.type
 
-  const isChooseExercise =
-    type === ExerciseType.CHOOSE_FROM_AUDIO ||
-    type === ExerciseType.CHOOSE_FROM_TEXT
+  const isChooseExercise = type === ExerciseType.CHOOSE_FROM_AUDIO || type === ExerciseType.CHOOSE_FROM_TEXT
 
   const isInputExercise =
     type === ExerciseType.INPUT_FROM_AUDIO ||
@@ -152,11 +126,7 @@ export function Exam({
         isChooseExercise,
       }}
     >
-      <ExamTraining
-        userCompletions={userCompletions}
-        exercises={exercises}
-        exam={exam}
-      />
+      <ExamTraining userCompletions={userCompletions} exercises={exercises} exam={exam} />
     </context.Provider>
   )
 }
@@ -181,9 +151,7 @@ function ExamTraining({
   } = useContext(context)
 
   const { examId } = useParams<{ examId: string }>()
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
-    null
-  )
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null)
   const [isOptionRevealed, setIsOptionRevealed] = useState(false)
   const [isInputCorrect, setIsInputCorrect] = useState<boolean | null>(null)
   const [input, setInput] = useState("")
@@ -211,8 +179,7 @@ function ExamTraining({
 
   const currentExercise = exercises[currentExerciseIndex]
 
-  const userExamAggregation =
-    userCompletions.find((userExam) => userExam.examId === exam.id) ?? null
+  const userExamAggregation = userCompletions.find((userExam) => userExam.examId === exam.id) ?? null
 
   const { countdownTarget, hasExamPassed } = useExamLogic({
     exam,
@@ -232,8 +199,7 @@ function ExamTraining({
 
   const handleKeyDown = useEffectEvent((e: KeyboardEvent) => {
     if (currentExercise === undefined) return
-    if (["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(e.key) === false)
-      return
+    if (["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(e.key) === false) return
 
     if (
       (
@@ -244,36 +210,25 @@ function ExamTraining({
         ] as ExerciseType[]
       ).includes(currentExercise.type)
     ) {
-      const optionElements = (
-        optionRefs.current.filter(Boolean) as HTMLButtonElement[]
-      ).filter((element) => !element.disabled)
+      const optionElements = (optionRefs.current.filter(Boolean) as HTMLButtonElement[]).filter(
+        (element) => !element.disabled
+      )
 
       if (optionElements.length !== 0) {
         if (["ArrowDown", "ArrowUp"].includes(e.key)) {
-          const currentOptionElementIndex = optionElements.findIndex(
-            (el) => el === document.activeElement
-          )
+          const currentOptionElementIndex = optionElements.findIndex((el) => el === document.activeElement)
           let nextIndex: number | null = null
           if (e.key === "ArrowDown") {
             nextIndex =
-              currentOptionElementIndex < optionElements.length - 1
-                ? currentOptionElementIndex + 1
-                : 0
+              currentOptionElementIndex < optionElements.length - 1 ? currentOptionElementIndex + 1 : 0
           } else if (e.key === "ArrowUp") {
             nextIndex =
-              currentOptionElementIndex > 0
-                ? currentOptionElementIndex - 1
-                : optionElements.length - 1
+              currentOptionElementIndex > 0 ? currentOptionElementIndex - 1 : optionElements.length - 1
           }
-          if (
-            nextIndex !== null &&
-            optionElements[nextIndex] !== document.activeElement
-          )
+          if (nextIndex !== null && optionElements[nextIndex] !== document.activeElement)
             optionElements[nextIndex]?.focus()
         } else if (e.key === "Escape")
-          optionElements
-            .find((optionElement) => optionElement === document.activeElement)
-            ?.blur()
+          optionElements.find((optionElement) => optionElement === document.activeElement)?.blur()
       }
 
       if (continueButtonRef.current?.disabled === false && e.key === "Enter")
@@ -289,13 +244,8 @@ function ExamTraining({
     ) {
       if (continueButtonRef.current?.disabled === false && e.key === "Enter")
         continueButtonRef.current?.click()
-      else if (e.key === "ArrowUp" || e.key === "ArrowDown")
-        inputRef.current?.focus()
-      else if (
-        inputRef.current === document.activeElement &&
-        e.key === "Escape"
-      )
-        inputRef.current?.blur()
+      else if (e.key === "ArrowUp" || e.key === "ArrowDown") inputRef.current?.focus()
+      else if (inputRef.current === document.activeElement && e.key === "Escape") inputRef.current?.blur()
     }
   })
 
@@ -316,15 +266,8 @@ function ExamTraining({
     <div className="flex h-dvh flex-col">
       <div className="flex flex-1 flex-col gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
-          <ProgressBar
-            value={currentExerciseIndex}
-            max={exercises.length - 1}
-            className="flex-1"
-          />
-          <ExamTimer
-            countdownTarget={countdownTarget}
-            hasPassed={hasExamPassed}
-          />
+          <ProgressBar value={currentExerciseIndex} max={exercises.length - 1} className="flex-1" />
+          <ExamTimer countdownTarget={countdownTarget} hasPassed={hasExamPassed} />
           <Button asChild variant={"ghost"} size={"icon"}>
             <Link href={`/topics/${exam.topicId}/exams`}>
               <X className="size-6" />
@@ -333,9 +276,9 @@ function ExamTraining({
         </div>
         <span className="text-2xl font-medium">{currentExercise.prompt}</span>
         <div className="flex-1 space-y-16">
-          {(type === ExerciseType.CHOOSE_FROM_AUDIO ||
-            type === ExerciseType.INPUT_FROM_AUDIO) && (
+          {(type === ExerciseType.CHOOSE_FROM_AUDIO || type === ExerciseType.INPUT_FROM_AUDIO) && (
             <>
+              {/* oxlint-disable-next-line jsx-a11y/media-has-caption -- captions would reveal the answer to the listening exercise */}
               <audio
                 ref={audioRef}
                 src={currentExercise.audioUrl ?? undefined}
@@ -350,9 +293,7 @@ function ExamTraining({
               />
               <button
                 onClick={playAudio}
-                disabled={
-                  isAudioPlaying || currentExercise.audioUrl === undefined
-                }
+                disabled={isAudioPlaying || currentExercise.audioUrl === undefined}
                 className={cn(
                   "group mx-auto flex size-24 items-center justify-center rounded-2xl bg-gray-600 transition-transform",
                   isAudioPlaying && "opacity-70"
@@ -392,13 +333,10 @@ function ExamTraining({
                             selectedOptionIndex === index && isOptionCorrect,
                           "border-red-300 bg-red-300/20 text-red-300":
                             selectedOptionIndex === index && !isOptionCorrect,
-                          "opacity-70":
-                            selectedOptionIndex !== index &&
-                            selectedOptionIndex !== null,
+                          "opacity-70": selectedOptionIndex !== index && selectedOptionIndex !== null,
                         }
                       : {
-                          "border-primary bg-primary/10":
-                            selectedOptionIndex === index,
+                          "border-primary bg-primary/10": selectedOptionIndex === index,
                         }
                   )}
                 >
@@ -451,9 +389,7 @@ function ExamTraining({
           {isOptionRevealed ? (
             <div className="flex items-center gap-2.5">
               {isLastExercise ? "ნახე შედეგები" : "გაგრძელება"}
-              {isLastExercise && (
-                <ChevronRight className="animate-bounce-left" />
-              )}
+              {isLastExercise && <ChevronRight className="animate-bounce-left" />}
             </div>
           ) : (
             "შემოწმება"
@@ -470,8 +406,7 @@ function ExamTraining({
           isCorrect={isInputCorrect ?? false}
           onContinue={() => {
             if (isInputCorrect === null) {
-              const isAnswerCorrect =
-                currentExercise.correctInputs.includes(input)
+              const isAnswerCorrect = currentExercise.correctInputs.includes(input)
               setIsInputCorrect(isAnswerCorrect)
               if (isAnswerCorrect) increaseCorrectCount()
             } else {

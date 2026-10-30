@@ -11,12 +11,8 @@ export function Hero() {
         <div>
           <p className="text-sm font-medium text-primary">{HERO.badge}</p>
           <AnimatedHeroTitle className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-4xl xl:text-5xl" />
-          <p className="mt-4 max-w-xl text-lg text-muted-foreground sm:text-xl">
-            {SITE.slogan}
-          </p>
-          <p className="mt-4 max-w-xl text-base text-muted-foreground">
-            {HERO.subline}
-          </p>
+          <p className="mt-4 max-w-xl text-lg text-muted-foreground sm:text-xl">{SITE.slogan}</p>
+          <p className="mt-4 max-w-xl text-base text-muted-foreground">{HERO.subline}</p>
           <ContactButtons className="mt-6 lg:mt-8" />
         </div>
       </div>

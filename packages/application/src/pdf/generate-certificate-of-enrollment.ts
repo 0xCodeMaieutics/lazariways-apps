@@ -57,20 +57,14 @@ const formatStandardPeriodYears = (years: number | undefined) => {
   return String(years)
 }
 
-const setOptionalTextField = (
-  form: PDFForm,
-  fieldName: string,
-  value: string | undefined
-) => {
+const setOptionalTextField = (form: PDFForm, fieldName: string, value: string | undefined) => {
   const trimmed = typeof value === "string" ? value.trim() : ""
   if (trimmed.length === 0) return
 
   form.getTextField(fieldName).setText(trimmed)
 }
 
-export const generateCertificateOfEnrollmentPdf = async (
-  input: CertificateOfEnrollmentInput
-) => {
+export const generateCertificateOfEnrollmentPdf = async (input: CertificateOfEnrollmentInput) => {
   const pdfTemplateBytes = await fetch(PDF_URL).then((res) => res.arrayBuffer())
   const pdfDoc = await PDFDocument.load(pdfTemplateBytes)
   const form = pdfDoc.getForm()
@@ -88,45 +82,19 @@ export const generateCertificateOfEnrollmentPdf = async (
 
   setOptionalTextField(form, "txtfPersonVorname", student.firstName)
   setOptionalTextField(form, "txtfPersonNachname", student.lastName)
-  setOptionalTextField(
-    form,
-    "datePersonGebDatum",
-    formatCertificateDate(student.birthDate)
-  )
+  setOptionalTextField(form, "datePersonGebDatum", formatCertificateDate(student.birthDate))
   setOptionalTextField(form, "txtfPersonNationalitaet", student.nationality)
 
   setOptionalTextField(form, "txtfStudiumFach", courseOfStudy.subject)
-  setOptionalTextField(
-    form,
-    "txtfStudiumDauer",
-    formatStandardPeriodYears(courseOfStudy.standardPeriodYears)
-  )
-  setOptionalTextField(
-    form,
-    "dateStudiumSeit",
-    formatCertificateDate(courseOfStudy.enrolledSince)
-  )
-  setOptionalTextField(
-    form,
-    "dateStudiumEnde",
-    formatCertificateDate(courseOfStudy.expectedEnd)
-  )
+  setOptionalTextField(form, "txtfStudiumDauer", formatStandardPeriodYears(courseOfStudy.standardPeriodYears))
+  setOptionalTextField(form, "dateStudiumSeit", formatCertificateDate(courseOfStudy.enrolledSince))
+  setOptionalTextField(form, "dateStudiumEnde", formatCertificateDate(courseOfStudy.expectedEnd))
 
-  setOptionalTextField(
-    form,
-    "dateStudiumFerienVon",
-    formatCertificateDate(vacationJob.semesterBreakFrom)
-  )
-  setOptionalTextField(
-    form,
-    "dateStudiumFerienBis",
-    formatCertificateDate(vacationJob.semesterBreakTo)
-  )
+  setOptionalTextField(form, "dateStudiumFerienVon", formatCertificateDate(vacationJob.semesterBreakFrom))
+  setOptionalTextField(form, "dateStudiumFerienBis", formatCertificateDate(vacationJob.semesterBreakTo))
 
   if (vacationJob.studiesContinueAfterBreak !== undefined) {
-    form
-      .getRadioGroup("rbtnStudiumFortsetzung")
-      .select(vacationJob.studiesContinueAfterBreak ? "yes" : "no")
+    form.getRadioGroup("rbtnStudiumFortsetzung").select(vacationJob.studiesContinueAfterBreak ? "yes" : "no")
   }
 
   form.flatten()

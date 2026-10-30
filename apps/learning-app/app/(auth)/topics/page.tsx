@@ -1,10 +1,12 @@
+import type { TopicType } from "@workspace/database/browser"
+import { prisma } from "@workspace/database/client"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
+
 import { auth } from "@/lib/auth.server"
 import { isTopicUnlockedForUser } from "@/lib/topic-access"
-import { prisma } from "@workspace/database/client"
-import { redirect } from "next/navigation"
+
 import { TopicsHub } from "./page.client"
-import { headers } from "next/headers"
-import { TopicType } from "@workspace/database/browser"
 
 export default async function TopicsPage() {
   const user = await auth.api.getSession({

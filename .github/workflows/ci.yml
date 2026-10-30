@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  checks:
+    name: ${{ matrix.check.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check:
+          - { name: Lint, script: lint }
+          - { name: Format, script: format:check }
+          - { name: Typecheck, script: typecheck }
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        if: matrix.check.script == 'typecheck'
+        run: pnpm --filter @workspace/database generate
+        env:
+          # prisma.config.ts requires a URL; generate never connects to it.
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+
+      - run: pnpm ${{ matrix.check.script }}

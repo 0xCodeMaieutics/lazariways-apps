@@ -1,10 +1,5 @@
 "use client"
 
-import React from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { LayoutDashboard } from "lucide-react"
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,14 +10,16 @@ import {
 } from "@workspace/ui/components/breadcrumb"
 import { Separator } from "@workspace/ui/components/separator"
 import { cn } from "@workspace/ui/lib/utils"
+import { LayoutDashboard } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import React from "react"
 
 function isNanoidLike(segment: string): boolean {
   return /^[A-Za-z0-9_-]{10,}$/.test(segment)
 }
 
-function buildBreadcrumbs(
-  pathname: string
-): { href: string; label: string; isLast: boolean }[] {
+function buildBreadcrumbs(pathname: string): { href: string; label: string; isLast: boolean }[] {
   const segments = pathname.split("/").filter(Boolean)
 
   if (segments.length === 0) {
@@ -34,14 +31,8 @@ function buildBreadcrumbs(
   const examsIdx = segments.indexOf("exams")
   const exercisesIdx = segments.indexOf("exercises")
 
-  const topicId =
-    topicIdx >= 0 && topicIdx + 1 < segments.length
-      ? segments[topicIdx + 1]
-      : null
-  const examId =
-    examsIdx >= 0 && isNanoidLike(segments[examsIdx + 1] ?? "")
-      ? segments[examsIdx + 1]
-      : null
+  const topicId = topicIdx >= 0 && topicIdx + 1 < segments.length ? segments[topicIdx + 1] : null
+  const examId = examsIdx >= 0 && isNanoidLike(segments[examsIdx + 1] ?? "") ? segments[examsIdx + 1] : null
 
   items.push({ href: "/topics", label: "Topics", isLast: false })
 
@@ -88,9 +79,7 @@ export function AdminNav() {
             href="/topics"
             className={cn(
               "text-sm font-medium transition-colors hover:text-primary",
-              pathname.startsWith("/topics")
-                ? "text-primary"
-                : "text-muted-foreground"
+              pathname.startsWith("/topics") ? "text-primary" : "text-muted-foreground"
             )}
           >
             Programs

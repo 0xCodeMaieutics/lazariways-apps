@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-
 import { cn } from "@workspace/ui/lib/utils"
+import { useEffect, useState } from "react"
 
 import { HERO_TITLE } from "../../lib/site"
 

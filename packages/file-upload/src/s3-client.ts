@@ -1,11 +1,8 @@
 import * as crypto from "node:crypto"
 import { createReadStream } from "node:fs"
 import { performance } from "node:perf_hooks"
-import {
-  DeleteObjectCommand,
-  GetObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3"
+
+import { DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { Upload } from "@aws-sdk/lib-storage"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import z from "zod"
@@ -26,9 +23,7 @@ export const getS3Client = () => {
     })
 
   if (!parsed.success) {
-    throw new Error(
-      `S3 Client configuration error: ${JSON.stringify(parsed.error.flatten())}`
-    )
+    throw new Error(`S3 Client configuration error: ${JSON.stringify(parsed.error.flatten())}`)
   }
 
   return new S3Client({
@@ -78,10 +73,7 @@ function resolveUploadContentType({
 }): string {
   const resolvedFilename = filename ?? fileKey.split("/").pop() ?? fileKey
 
-  return (
-    resolveImageMimeType(declaredType, resolvedFilename) ??
-    "application/octet-stream"
-  )
+  return resolveImageMimeType(declaredType, resolvedFilename) ?? "application/octet-stream"
 }
 
 export async function uploadToStorage({
@@ -102,10 +94,10 @@ export async function uploadToStorage({
   const startChecksumTime = performance.now()
   const sha1Checksum = calculateSha1Checksum(file)
   const endChecksumTime = performance.now()
-  console.log(
-    `Calculating SHA1 checksum took ${(endChecksumTime - startChecksumTime).toFixed(3)} ms`,
-    { Bucket: bucket, Key: fileKey }
-  )
+  console.log(`Calculating SHA1 checksum took ${(endChecksumTime - startChecksumTime).toFixed(3)} ms`, {
+    Bucket: bucket,
+    Key: fileKey,
+  })
 
   const uploadStartTime = performance.now()
 
@@ -134,14 +126,11 @@ export async function uploadToStorage({
   })
   await upload.done()
   const uploadEndTime = performance.now()
-  console.log(
-    `File upload took ${(uploadEndTime - uploadStartTime).toFixed(3)} ms`,
-    {
-      Bucket: bucket,
-      Key: fileKey,
-      ChecksumSHA1: sha1Checksum,
-    }
-  )
+  console.log(`File upload took ${(uploadEndTime - uploadStartTime).toFixed(3)} ms`, {
+    Bucket: bucket,
+    Key: fileKey,
+    ChecksumSHA1: sha1Checksum,
+  })
   return { uploadCompletedAt: new Date() }
 }
 
@@ -161,10 +150,10 @@ export async function uploadFilePathToStorage({
   const startChecksumTime = performance.now()
   const sha1Checksum = await sha1ChecksumForFile(filePath)
   const endChecksumTime = performance.now()
-  console.debug(
-    `Calculating SHA1 checksum took ${(endChecksumTime - startChecksumTime).toFixed(3)} ms`,
-    { Bucket: bucket, Key: fileKey }
-  )
+  console.debug(`Calculating SHA1 checksum took ${(endChecksumTime - startChecksumTime).toFixed(3)} ms`, {
+    Bucket: bucket,
+    Key: fileKey,
+  })
 
   const fileStream = createReadStream(filePath)
   const streamErrorPromise = new Promise<never>((_, reject) => {
@@ -193,14 +182,11 @@ export async function uploadFilePathToStorage({
   await Promise.race([upload.done(), streamErrorPromise])
 
   const uploadEndTime = performance.now()
-  console.debug(
-    `File upload took ${(uploadEndTime - uploadStartTime).toFixed(3)} ms`,
-    {
-      Bucket: bucket,
-      Key: fileKey,
-      ChecksumSHA1: sha1Checksum,
-    }
-  )
+  console.debug(`File upload took ${(uploadEndTime - uploadStartTime).toFixed(3)} ms`, {
+    Bucket: bucket,
+    Key: fileKey,
+    ChecksumSHA1: sha1Checksum,
+  })
   return { uploadCompletedAt: new Date() }
 }
 
@@ -220,13 +206,7 @@ function calculateSha1Checksum(data: Uint8Array) {
   return hash.digest("base64")
 }
 
-export async function deleteFileFromStorage({
-  bucket,
-  fileKey,
-}: {
-  bucket: string
-  fileKey: string
-}) {
+export async function deleteFileFromStorage({ bucket, fileKey }: { bucket: string; fileKey: string }) {
   await getS3Client().send(
     new DeleteObjectCommand({
       Bucket: bucket,
@@ -235,13 +215,7 @@ export async function deleteFileFromStorage({
   )
 }
 
-export async function downloadFileFromStorage({
-  bucket,
-  fileKey,
-}: {
-  bucket: string
-  fileKey: string
-}) {
+export async function downloadFileFromStorage({ bucket, fileKey }: { bucket: string; fileKey: string }) {
   const downloadStartTime = performance.now()
 
   const response = await getS3Client().send(
@@ -252,13 +226,10 @@ export async function downloadFileFromStorage({
   )
 
   const downloadEndTime = performance.now()
-  console.debug(
-    `File download took ${(downloadEndTime - downloadStartTime).toFixed(3)} ms`,
-    {
-      Bucket: bucket,
-      Key: fileKey,
-    }
-  )
+  console.debug(`File download took ${(downloadEndTime - downloadStartTime).toFixed(3)} ms`, {
+    Bucket: bucket,
+    Key: fileKey,
+  })
 
   return {
     body: response.Body,
@@ -309,9 +280,7 @@ export async function putObjects({
     throw new Error("Keys and bodies must have the same length")
   }
   if (contentTypes.length > 0 && contentTypes.length !== keys.length) {
-    throw new Error(
-      "ContentTypes must be empty or have the same length as keys"
-    )
+    throw new Error("ContentTypes must be empty or have the same length as keys")
   }
 
   await Promise.all(
@@ -333,9 +302,7 @@ export type DetectedImageFormat = "png" | "jpeg"
 
 export type ResolvedImageMimeType = "image/png" | "image/jpeg"
 
-function normalizeImageMimeType(
-  mimeType: string
-): ResolvedImageMimeType | null {
+function normalizeImageMimeType(mimeType: string): ResolvedImageMimeType | null {
   const normalized = mimeType.trim().toLowerCase()
   if (normalized === "image/png") return "image/png"
   if (normalized === "image/jpeg" || normalized === "image/jpg") {
@@ -344,9 +311,7 @@ function normalizeImageMimeType(
   return null
 }
 
-function imageMimeTypeFromFilename(
-  filename: string
-): ResolvedImageMimeType | null {
+function imageMimeTypeFromFilename(filename: string): ResolvedImageMimeType | null {
   const ext = filename.split(".").pop()?.toLowerCase()
   if (ext === "png") return "image/png"
   if (ext === "jpg" || ext === "jpeg") return "image/jpeg"

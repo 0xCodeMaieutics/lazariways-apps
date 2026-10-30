@@ -1,10 +1,12 @@
-import { env } from "@/env"
-import { NextRequest } from "next/server"
-import { uploadFileToStorage } from "@workspace/file-upload/s3-client"
 import crypto from "crypto"
-import { profileFormSchema, type ProfileFormData } from "@/utils/profile-schema"
+
 import prisma from "@workspace/database/client"
+import { uploadFileToStorage } from "@workspace/file-upload/s3-client"
+import type { NextRequest } from "next/server"
+
+import { env } from "@/env"
 import { sendPhotoToTelegram } from "@/lib/telegram"
+import { profileFormSchema, type ProfileFormData } from "@/utils/profile-schema"
 
 export const POST = async (request: NextRequest) => {
   const formData = await request.formData()
@@ -19,10 +21,7 @@ export const POST = async (request: NextRequest) => {
   const firstName = sanitizeFilenamePart(parsed.data.firstName)
   const lastName = sanitizeFilenamePart(parsed.data.lastName)
 
-  const base = `${lastName}-${firstName}-${crypto.randomUUID()}`.replace(
-    /^-+|-+$/g,
-    ""
-  )
+  const base = `${lastName}-${firstName}-${crypto.randomUUID()}`.replace(/^-+|-+$/g, "")
   const filename = sanitizeFilenamePart(parsed.data.foto.name) || "foto.jpg"
   const fotoKey = `profiles/${base}/foto/${Date.now()}-${filename}`
 
@@ -48,8 +47,7 @@ export const POST = async (request: NextRequest) => {
 
   const prefix = process.env.NODE_ENV === "development" ? "TEST - " : ""
 
-  const caption =
-    `${prefix}Profile 🎉 ${parsed.data.firstName.trim()} ${parsed.data.lastName.trim()}`.trim()
+  const caption = `${prefix}Profile 🎉 ${parsed.data.firstName.trim()} ${parsed.data.lastName.trim()}`.trim()
 
   try {
     await sendPhotoToTelegram(parsed.data.foto, filename, caption)
@@ -136,10 +134,7 @@ function formBoolean(formData: FormData, key: string): boolean {
   return formString(formData, key) === "true"
 }
 
-function formRequiredBool(
-  formData: FormData,
-  key: string
-): boolean | undefined {
+function formRequiredBool(formData: FormData, key: string): boolean | undefined {
   const v = formData.get(key)
   if (v === null || v === "") return undefined
   if (v === "true") return true

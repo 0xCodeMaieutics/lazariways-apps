@@ -1,7 +1,8 @@
 import { createLearningAppAuth } from "@workspace/learning-app-auth"
+
+import { UserRole } from "../../../prisma/generated/enums"
 import { prisma } from "../../client"
 import { insertLearningData } from "./learning-seed"
-import { UserRole } from "../../../prisma/generated/enums"
 
 const DEV_EMAIL = "dev@lazaryways.ge"
 const DEV_PASSWORD = "!Dev$LazaryIsAwesome"

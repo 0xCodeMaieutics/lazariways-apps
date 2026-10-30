@@ -1,21 +1,20 @@
-import Link from "next/link"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { Button } from "@workspace/ui/components/button"
+import Link from "next/link"
+
 import { ApplicationCard } from "@/components/application-card"
 import { RefreshButton } from "@/components/refresh-button"
 import { env } from "@/env"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { APPLICATIONS_PER_PAGE } from "@/lib/constants"
 import { groupBySubmittedAt } from "@/lib/format-submitted-at-group"
-import { Button } from "@workspace/ui/components/button"
 
 interface ApplicationsPageProps {
   searchParams: Promise<{ page?: string }>
 }
 
-export default async function ApplicationsPage({
-  searchParams,
-}: ApplicationsPageProps) {
+export default async function ApplicationsPage({ searchParams }: ApplicationsPageProps) {
   await requireAdminSessionForPage("/applications")
 
   const { page: pageParam } = await searchParams
@@ -63,9 +62,7 @@ export default async function ApplicationsPage({
       </header>
 
       {applicationGroups.length === 0 ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">
-          No applications yet.
-        </p>
+        <p className="py-12 text-center text-sm text-muted-foreground">No applications yet.</p>
       ) : (
         <div className="space-y-6">
           {applicationGroups.map((group) => (
@@ -78,9 +75,7 @@ export default async function ApplicationsPage({
                     id={application.id}
                     firstName={application.firstName}
                     lastName={application.lastName}
-                    linkedUniversityName={
-                      application.linkedUniversity?.name ?? null
-                    }
+                    linkedUniversityName={application.linkedUniversity?.name ?? null}
                     germanLevel={application.germanLevel}
                     fotoUrl={fotoUrl}
                     instagram={application.instagram}
@@ -96,9 +91,7 @@ export default async function ApplicationsPage({
         <div className="mt-8 flex items-center justify-between gap-4">
           {currentPage > 1 ? (
             <Button variant="outline" asChild>
-              <Link href={`/applications?page=${currentPage - 1}`}>
-                Previous
-              </Link>
+              <Link href={`/applications?page=${currentPage - 1}`}>Previous</Link>
             </Button>
           ) : (
             <span />

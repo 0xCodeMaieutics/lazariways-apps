@@ -1,11 +1,9 @@
-import { cn } from "@/lib/utils"
-import { ClassValue } from "clsx"
-import { PropsWithChildren } from "react"
+import type { ClassValue } from "clsx"
+import type { PropsWithChildren } from "react"
 
-export function Banner({
-  children,
-  className,
-}: PropsWithChildren<{ className?: ClassValue }>) {
+import { cn } from "@/lib/utils"
+
+export function Banner({ children, className }: PropsWithChildren<{ className?: ClassValue }>) {
   return (
     <div
       className={cn(

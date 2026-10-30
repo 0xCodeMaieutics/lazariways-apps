@@ -1,16 +1,14 @@
 "use client"
 
-import { useState } from "react"
-import { Copy, Check } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
+import { Copy, Check } from "lucide-react"
+import { useState } from "react"
 
 interface CopyApplicationLinkButtonProps {
   applicationLink: string
 }
 
-export function CopyApplicationLinkButton({
-  applicationLink,
-}: CopyApplicationLinkButtonProps) {
+export function CopyApplicationLinkButton({ applicationLink }: CopyApplicationLinkButtonProps) {
   const [copied, setCopied] = useState(false)
 
   async function copyLink() {
@@ -24,12 +22,7 @@ export function CopyApplicationLinkButton({
   }
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      className="w-full"
-      onClick={copyLink}
-    >
+    <Button type="button" variant="outline" className="w-full" onClick={copyLink}>
       {copied ? (
         <>
           <Check />

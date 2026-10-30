@@ -1,4 +1,5 @@
 import prisma from "@workspace/database/client"
+
 import { TopicsList } from "./page.client"
 
 export default async function AdminTopics() {

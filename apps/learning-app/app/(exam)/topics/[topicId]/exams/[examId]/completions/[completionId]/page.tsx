@@ -1,7 +1,9 @@
-import { auth } from "@/lib/auth.server"
 import { prisma } from "@workspace/database/client"
-import { notFound, redirect } from "next/navigation"
 import { headers } from "next/headers"
+import { notFound, redirect } from "next/navigation"
+
+import { auth } from "@/lib/auth.server"
+
 import { ExamResult } from "./page.client"
 
 export default async function ExamCompletionPage({
@@ -33,11 +35,7 @@ export default async function ExamCompletionPage({
     },
   })
 
-  if (
-    !completion ||
-    completion.userId !== session.user.id ||
-    completion.examId !== examId
-  ) {
+  if (!completion || completion.userId !== session.user.id || completion.examId !== examId) {
     notFound()
   }
 
@@ -73,8 +71,7 @@ export default async function ExamCompletionPage({
         topicId: completion.exam.topicId,
         minimumCorrectAnswerCount: completion.exam.minimumCorrectAnswerCount,
         minimumPassedCount: completion.exam.minimumPassedCount,
-        waitUntilPassAllowedInSeconds:
-          completion.exam.waitUntilPassAllowedInSeconds,
+        waitUntilPassAllowedInSeconds: completion.exam.waitUntilPassAllowedInSeconds,
         exerciseCount,
       }}
       aggregation={aggregation}

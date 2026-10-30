@@ -1,32 +1,20 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm, useWatch } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import { z } from "zod"
 import { useMutation } from "@tanstack/react-query"
-import { useTRPC } from "@/lib/trpc/react"
 import { Button } from "@workspace/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Checkbox } from "@workspace/ui/components/checkbox"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@workspace/ui/components/native-select"
+import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Controller, useForm, useWatch } from "react-hook-form"
+import { z } from "zod"
+
+import { useTRPC } from "@/lib/trpc/react"
 import { parseHoursMinutesToSeconds } from "@/utils/format-duration"
 
 const TEXTAREA_CLASSNAME =
@@ -105,9 +93,7 @@ export function ExamForm({
     },
   })
 
-  const selectableUnlockableExams = unlockableExams.filter(
-    (exam) => exam.id !== examId
-  )
+  const selectableUnlockableExams = unlockableExams.filter((exam) => exam.id !== examId)
 
   const createMutation = useMutation(
     trpc.admin.exams.create.mutationOptions({
@@ -136,10 +122,7 @@ export function ExamForm({
           ? data.estimatedTimeInMinutes
           : undefined,
       waitUntilPassAllowedInSeconds: parseHoursMinutesToSeconds(passCooldown),
-      unlockedByExamId:
-        data.isAlwaysUnlocked || unlockedByExamId === ""
-          ? null
-          : unlockedByExamId,
+      unlockedByExamId: data.isAlwaysUnlocked || unlockedByExamId === "" ? null : unlockedByExamId,
       topicId,
     }
     if (isEdit) {
@@ -163,20 +146,11 @@ export function ExamForm({
         <CardTitle>{isEdit ? "Edit exam" : "Create exam"}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          noValidate
-          className="space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="title">Title</FieldLabel>
-              <Input
-                id="title"
-                placeholder="Exam title"
-                disabled={isPending}
-                {...register("title")}
-              />
+              <Input id="title" placeholder="Exam title" disabled={isPending} {...register("title")} />
               <FieldError errors={[formState.errors.title]} />
             </Field>
             <Field>
@@ -192,9 +166,7 @@ export function ExamForm({
               <FieldError errors={[formState.errors.description]} />
             </Field>
             <Field>
-              <FieldLabel htmlFor="estimatedTimeInMinutes">
-                Estimated time (minutes)
-              </FieldLabel>
+              <FieldLabel htmlFor="estimatedTimeInMinutes">Estimated time (minutes)</FieldLabel>
               <Controller
                 name="estimatedTimeInMinutes"
                 control={control}
@@ -214,9 +186,7 @@ export function ExamForm({
                           return
                         }
                         const parsed = Number(raw)
-                        field.onChange(
-                          Number.isFinite(parsed) ? parsed : undefined
-                        )
+                        field.onChange(Number.isFinite(parsed) ? parsed : undefined)
                       }}
                       onBlur={field.onBlur}
                       name={field.name}
@@ -230,9 +200,7 @@ export function ExamForm({
             </Field>
             <div className="grid gap-6 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="minimumCorrectAnswerCount">
-                  Minimum correct answers
-                </FieldLabel>
+                <FieldLabel htmlFor="minimumCorrectAnswerCount">Minimum correct answers</FieldLabel>
                 <Controller
                   name="minimumCorrectAnswerCount"
                   control={control}
@@ -264,9 +232,7 @@ export function ExamForm({
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="minimumPassedCount">
-                  Minimum passed count
-                </FieldLabel>
+                <FieldLabel htmlFor="minimumPassedCount">Minimum passed count</FieldLabel>
                 <Controller
                   name="minimumPassedCount"
                   control={control}
@@ -299,9 +265,7 @@ export function ExamForm({
               </Field>
             </div>
             <Field>
-              <FieldLabel htmlFor="passCooldown">
-                Pass cooldown (HH:MM)
-              </FieldLabel>
+              <FieldLabel htmlFor="passCooldown">Pass cooldown (HH:MM)</FieldLabel>
               <Input
                 id="passCooldown"
                 placeholder="04:00"
@@ -332,8 +296,8 @@ export function ExamForm({
                       <Label htmlFor="isAlwaysUnlocked">Always unlocked</Label>
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Learners who can open the topic can take this exam without
-                      an Unlocked exam grant. Cannot have an unlocker.
+                      Learners who can open the topic can take this exam without an Unlocked exam grant.
+                      Cannot have an unlocker.
                     </p>
                     <FieldError errors={[fieldState.error]} />
                   </>
@@ -369,8 +333,8 @@ export function ExamForm({
                 )}
               />
               <p className="mt-2 text-xs text-muted-foreground">
-                Learners unlock this exam after fully passing the selected exam.
-                Leave empty if it is always unlocked or not yet attached.
+                Learners unlock this exam after fully passing the selected exam. Leave empty if it is always
+                unlocked or not yet attached.
               </p>
             </Field>
             <Field>
@@ -394,11 +358,7 @@ export function ExamForm({
               />
             </Field>
           </FieldGroup>
-          {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
+          {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
           <div className="flex gap-2">
             <Button type="submit" disabled={isPending}>
               {isPending ? (

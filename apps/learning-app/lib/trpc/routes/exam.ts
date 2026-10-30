@@ -1,38 +1,38 @@
+import { TRPCError } from "@trpc/server"
+import { prisma } from "@workspace/database/client"
+import { z } from "zod"
+
 import { isExamUnlockedForUser } from "@/lib/exam-access"
 import { tryCatchAsync } from "@/lib/try-catch"
 import { unlockTopicsAfterExamCompletion } from "@/lib/unlock-topics-after-exam"
+
 import { authedProcedure, router } from "../server"
-import { prisma } from "@workspace/database/client"
-import { TRPCError } from "@trpc/server"
-import { z } from "zod"
 
 export const examRouter = router({
-  getExam: authedProcedure
-    .input(z.object({ examId: z.string().min(1) }))
-    .query(async ({ input }) => {
-      const [error, exam] = await tryCatchAsync(() =>
-        prisma.exam.findUnique({
-          where: { id: input.examId },
-        })
-      )
+  getExam: authedProcedure.input(z.object({ examId: z.string().min(1) })).query(async ({ input }) => {
+    const [error, exam] = await tryCatchAsync(() =>
+      prisma.exam.findUnique({
+        where: { id: input.examId },
+      })
+    )
 
-      if (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch exam",
-          cause: error,
-        })
-      }
+    if (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch exam",
+        cause: error,
+      })
+    }
 
-      if (!exam) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Exam not found",
-        })
-      }
+    if (!exam) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Exam not found",
+      })
+    }
 
-      return exam
-    }),
+    return exam
+  }),
   getExamCompletion: authedProcedure
     .input(z.object({ examId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
@@ -114,9 +114,7 @@ export const examRouter = router({
       const isUnlocked = isExamUnlockedForUser({
         isAlwaysUnlocked: exam.isAlwaysUnlocked,
         examId: exam.id,
-        unlockedExamIds: new Set(
-          unlockedExam === null ? [] : [unlockedExam.examId]
-        ),
+        unlockedExamIds: new Set(unlockedExam === null ? [] : [unlockedExam.examId]),
       })
 
       if (!isUnlocked) {
@@ -142,8 +140,7 @@ export const examRouter = router({
       const lastPassedAt = existing?.lastPassedAt ?? null
       const waitElapsed =
         lastPassedAt === null ||
-        now.getTime() - lastPassedAt.getTime() >=
-          exam.waitUntilPassAllowedInSeconds * 1000
+        now.getTime() - lastPassedAt.getTime() >= exam.waitUntilPassAllowedInSeconds * 1000
       const passCounted = hasPassed && waitElapsed
 
       const [error, result] = await tryCatchAsync(() =>

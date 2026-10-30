@@ -8,13 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 
 export type ImageCropperProps = {
   base64Image: string
@@ -23,12 +17,7 @@ export type ImageCropperProps = {
   onDismiss?: () => void
 }
 
-export function ImageCropper({
-  base64Image,
-  originalFile,
-  onCropComplete,
-  onDismiss,
-}: ImageCropperProps) {
+export function ImageCropper({ base64Image, originalFile, onCropComplete, onDismiss }: ImageCropperProps) {
   const [open, setOpen] = useState(true)
   const viewportRef = useRef<HTMLDivElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
@@ -130,12 +119,7 @@ export function ImageCropper({
     try {
       const mime = mimeFromDataUrl(base64Image, originalFile.type)
       const fileName = croppedFileName(originalFile.name, mime)
-      const croppedFile = await cropViewportToSquareFile(
-        img,
-        viewport,
-        mime,
-        fileName
-      )
+      const croppedFile = await cropViewportToSquareFile(img, viewport, mime, fileName)
 
       onCropComplete(croppedFile.croppedFile)
       setOpen(false)
@@ -144,13 +128,7 @@ export function ImageCropper({
     } finally {
       setIsCropping(false)
     }
-  }, [
-    base64Image,
-    isCropping,
-    onCropComplete,
-    originalFile.name,
-    originalFile.type,
-  ])
+  }, [base64Image, isCropping, onCropComplete, originalFile.name, originalFile.type])
 
   return (
     <Dialog open={open}>
@@ -159,9 +137,7 @@ export function ImageCropper({
           <DialogTitle>ფოტოს მორგება</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            გადაიტანეთ ფოტო ზემოთ ან ქვემოთ — კადრი კვადრატულია
-          </p>
+          <p className="text-sm text-muted-foreground">გადაიტანეთ ფოტო ზემოთ ან ქვემოთ — კადრი კვადრატულია</p>
           <div
             ref={viewportRef}
             role="presentation"
@@ -215,8 +191,7 @@ function mimeFromDataUrl(dataUrl: string, fallback: string): string {
 }
 
 function croppedFileName(originalName: string, mime: string): string {
-  const ext =
-    mime === "image/png" ? "png" : mime === "image/webp" ? "webp" : "jpg"
+  const ext = mime === "image/png" ? "png" : mime === "image/webp" ? "webp" : "jpg"
   const dot = originalName.lastIndexOf(".")
   const base = dot > 0 ? originalName.slice(0, dot) : originalName
   return `${base}-cropped.${ext}`
@@ -247,18 +222,13 @@ function cropViewportToSquareFile(
     return Promise.reject(new Error("Image not decoded"))
   }
 
-  const sx =
-    ((ix1 - imageBoundary.left) / imageBoundary.width) * imgNaturalWidth
-  const sy =
-    ((iy1 - imageBoundary.top) / imageBoundary.height) * imgNaturalHeight
+  const sx = ((ix1 - imageBoundary.left) / imageBoundary.width) * imgNaturalWidth
+  const sy = ((iy1 - imageBoundary.top) / imageBoundary.height) * imgNaturalHeight
   const sw = (iw / imageBoundary.width) * imgNaturalWidth
   const sh = (ih / imageBoundary.height) * imgNaturalHeight
 
   const W = Math.round(viewportBoundary.width)
-  const dpr = Math.min(
-    typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
-    2
-  )
+  const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2)
   const canvas = document.createElement("canvas")
   canvas.width = Math.round(W * dpr)
   canvas.height = Math.round(W * dpr)

@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { FolderX } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
+import { FolderX } from "lucide-react"
+import Link from "next/link"
 
 export default function NotFound() {
   return (

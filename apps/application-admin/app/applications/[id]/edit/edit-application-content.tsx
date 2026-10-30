@@ -1,10 +1,11 @@
 "use client"
 
-import { useRef, useState, useTransition } from "react"
-import { Loader2, Pencil } from "lucide-react"
 import type { AdminApplicationEditData } from "@workspace/application/schema"
 import { Button } from "@workspace/ui/components/button"
 import { ImageCropper } from "@workspace/ui/components/image-cropper"
+import { Loader2, Pencil } from "lucide-react"
+import { useRef, useState, useTransition } from "react"
+
 import { ApplicationEditForm } from "./page.client"
 
 export type UniversityOption = {
@@ -53,13 +54,10 @@ export function EditApplicationContent({
       body.append("foto", cropped)
 
       try {
-        const response = await fetch(
-          `/api/applications/${applicationId}/foto`,
-          {
-            method: "POST",
-            body,
-          }
-        )
+        const response = await fetch(`/api/applications/${applicationId}/foto`, {
+          method: "POST",
+          body,
+        })
 
         if (!response.ok) {
           setError("ფოტოს ატვირთვა ვერ მოხერხდა. სცადეთ ხელახლა.")
@@ -153,12 +151,8 @@ export function EditApplicationContent({
             }}
           />
         </div>
-        {error !== null ? (
-          <p className="text-sm text-destructive">{error}</p>
-        ) : null}
-        {isUploading ? (
-          <p className="text-sm text-muted-foreground">იტვირთება...</p>
-        ) : null}
+        {error !== null ? <p className="text-sm text-destructive">{error}</p> : null}
+        {isUploading ? <p className="text-sm text-muted-foreground">იტვირთება...</p> : null}
       </div>
       {cropSource !== null && selectedFile !== null ? (
         <ImageCropper

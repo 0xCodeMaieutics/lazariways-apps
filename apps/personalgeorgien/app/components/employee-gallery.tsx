@@ -4,20 +4,13 @@ import type { EmployeeImage } from "../../lib/employees"
 
 export function EmployeeGallery({ images }: { images: EmployeeImage[] }) {
   if (images.length === 0) {
-    return (
-      <p className="text-muted-foreground">
-        Derzeit sind keine Bilder verfügbar.
-      </p>
-    )
+    return <p className="text-muted-foreground">Derzeit sind keine Bilder verfügbar.</p>
   }
 
   return (
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:gap-6">
       {images.map((image) => (
-        <li
-          key={image.src}
-          className="overflow-hidden rounded-lg border border-border bg-muted/30"
-        >
+        <li key={image.src} className="overflow-hidden rounded-lg border border-border bg-muted/30">
           <Image
             src={image.src}
             alt={image.alt}

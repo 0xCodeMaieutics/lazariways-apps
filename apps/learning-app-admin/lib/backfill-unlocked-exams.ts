@@ -1,8 +1,6 @@
-import prisma from "@workspace/database/client"
+import type prisma from "@workspace/database/client"
 
-type TransactionClient = Parameters<
-  Parameters<typeof prisma.$transaction>[0]
->[0]
+type TransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
 
 export async function backfillUnlockedExamsForUnlocker(
   tx: TransactionClient,

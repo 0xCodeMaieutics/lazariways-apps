@@ -1,15 +1,13 @@
-import { adminApplicationEditSchema } from "@workspace/application/schema"
 import { applicationToPrismaData } from "@workspace/application/prisma"
+import { adminApplicationEditSchema } from "@workspace/application/schema"
 import prisma from "@workspace/database/client"
 import { deleteFileFromStorage } from "@workspace/file-upload/s3-client"
-import { requireAdminSessionForApi } from "@/lib/auth"
+
 import { env } from "@/env"
+import { requireAdminSessionForApi } from "@/lib/auth"
 import { normalizeAdminEditInput } from "@/lib/normalize-edit-input"
 
-export const DELETE = async (
-  _request: Request,
-  context: { params: Promise<{ id: string }> }
-) => {
+export const DELETE = async (_request: Request, context: { params: Promise<{ id: string }> }) => {
   const authResult = await requireAdminSessionForApi()
   if (authResult instanceof Response) {
     return authResult
@@ -42,19 +40,14 @@ export const DELETE = async (
   return Response.json({ success: true })
 }
 
-export const PUT = async (
-  request: Request,
-  context: { params: Promise<{ id: string }> }
-) => {
+export const PUT = async (request: Request, context: { params: Promise<{ id: string }> }) => {
   const authResult = await requireAdminSessionForApi()
   if (authResult instanceof Response) {
     return authResult
   }
 
   const { id } = await context.params
-  const parsed = adminApplicationEditSchema.safeParse(
-    normalizeAdminEditInput(await request.json())
-  )
+  const parsed = adminApplicationEditSchema.safeParse(normalizeAdminEditInput(await request.json()))
 
   if (!parsed.success) {
     console.error("ZOD_VALIDATION_FAILED", parsed.error)

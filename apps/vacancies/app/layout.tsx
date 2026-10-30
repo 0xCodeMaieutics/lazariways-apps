@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Manrope } from "next/font/google"
+
 import "@workspace/ui/globals.css"
 import "./globals.css"
 

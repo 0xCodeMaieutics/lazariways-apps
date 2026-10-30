@@ -1,5 +1,6 @@
-import { env } from "@/env"
 import { createAndSendVerificationCode } from "@workspace/verification"
+
+import { env } from "@/env"
 
 export const POST = async () => {
   try {
@@ -9,10 +10,7 @@ export const POST = async () => {
     })
 
     if (result.success === false) {
-      return Response.json(
-        { error: "Please wait before requesting another code." },
-        { status: 429 }
-      )
+      return Response.json({ error: "Please wait before requesting another code." }, { status: 429 })
     }
 
     return Response.json({ success: true })

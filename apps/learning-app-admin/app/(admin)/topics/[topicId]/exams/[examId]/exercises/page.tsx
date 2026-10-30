@@ -1,8 +1,9 @@
 import prisma from "@workspace/database/client"
-import { notFound } from "next/navigation"
+import { Button } from "@workspace/ui/components/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"
-import { Button } from "@workspace/ui/components/button"
+import { notFound } from "next/navigation"
+
 import { ExamExercisesTable } from "./page.client"
 
 export default async function ExamDetailPage({
@@ -36,14 +37,10 @@ export default async function ExamDetailPage({
       <div className="px-6 py-8">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold">{exam.title}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {exam.description}
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{exam.description}</p>
         </div>
         <div className="flex flex-col items-center justify-center gap-4 px-6 py-16 text-center">
-          <p className="text-lg text-muted-foreground">
-            No exercises in this exam yet.
-          </p>
+          <p className="text-lg text-muted-foreground">No exercises in this exam yet.</p>
           <p className="max-w-md text-sm text-muted-foreground">
             Create an exercise to add learning content for this exam.
           </p>
@@ -66,9 +63,7 @@ export default async function ExamDetailPage({
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">{exam.title}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {exam.description}
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{exam.description}</p>
         </div>
         <div className="flex gap-2">
           <Button asChild>
@@ -83,11 +78,7 @@ export default async function ExamDetailPage({
         </div>
       </div>
       <div className="rounded-lg border">
-        <ExamExercisesTable
-          exercises={exam.exercises}
-          topicId={topicId}
-          examId={examId}
-        />
+        <ExamExercisesTable exercises={exam.exercises} topicId={topicId} examId={examId} />
       </div>
     </div>
   )

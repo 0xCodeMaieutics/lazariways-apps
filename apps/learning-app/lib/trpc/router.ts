@@ -1,7 +1,7 @@
-import { router } from "./server"
-import { loginRouter } from "./routes/login"
 import { examRouter } from "./routes/exam"
+import { loginRouter } from "./routes/login"
 import { userRouter } from "./routes/user"
+import { router } from "./server"
 
 export const appRouter = router({
   login: loginRouter,

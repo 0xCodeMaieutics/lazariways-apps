@@ -12,8 +12,7 @@ export function calculateAge(birthDate: Date): number {
   let age = today.getFullYear() - birthDate.getFullYear()
   const hasNotHadBirthdayThisYear =
     today.getMonth() < birthDate.getMonth() ||
-    (today.getMonth() === birthDate.getMonth() &&
-      today.getDate() < birthDate.getDate())
+    (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
 
   if (hasNotHadBirthdayThisYear) {
     age -= 1
@@ -26,10 +25,6 @@ export function formatAgeLabel(birthDate: Date): string {
   return `${calculateAge(birthDate)} Jahre`
 }
 
-export function formatLanguages(
-  languages: { language: string; level: string }[]
-): string {
-  return languages
-    .map((entry) => `${entry.language} (${entry.level})`)
-    .join(", ")
+export function formatLanguages(languages: { language: string; level: string }[]): string {
+  return languages.map((entry) => `${entry.language} (${entry.level})`).join(", ")
 }

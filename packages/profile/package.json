@@ -1,8 +1,8 @@
 {
   "name": "@workspace/profile",
   "version": "1.0.0",
-  "type": "module",
   "private": true,
+  "type": "module",
   "exports": {
     "./schema": "./src/profile-schema.ts",
     "./prisma": "./src/profile-prisma.ts"

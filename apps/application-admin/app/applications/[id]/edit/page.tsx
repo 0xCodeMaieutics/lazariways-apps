@@ -1,10 +1,12 @@
-import { notFound } from "next/navigation"
 import { prismaToAdminEditData } from "@workspace/application/prisma"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { notFound } from "next/navigation"
+
 import { BackLink } from "@/components/back-link"
-import { requireAdminSessionForPage } from "@/lib/auth"
 import { env } from "@/env"
+import { requireAdminSessionForPage } from "@/lib/auth"
+
 import { EditApplicationContent } from "./edit-application-content"
 
 interface EditPageProps {
@@ -45,9 +47,7 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
           <h1 className="text-2xl font-semibold tracking-tight">
             {application.firstName} {application.lastName}
           </h1>
-          <p className="text-sm text-muted-foreground">
-            განაცხადის რედაქტირება
-          </p>
+          <p className="text-sm text-muted-foreground">განაცხადის რედაქტირება</p>
         </div>
       </header>
 

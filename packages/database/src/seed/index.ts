@@ -1,20 +1,14 @@
 import "dotenv/config"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+
 import { uploadFilePathToStorage } from "@workspace/file-upload/s3-client"
-import {
-  Gender,
-  GermanLevel,
-  DesiredSalary,
-  type Prisma,
-} from "../../prisma/generated/client"
+
+import { Gender, GermanLevel, DesiredSalary, type Prisma } from "../../prisma/generated/client"
 import { prisma } from "../client"
 import { learningAppSeed } from "./learning-app"
 
-const SEED_FOTO_PATH = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "foto.jpeg"
-)
+const SEED_FOTO_PATH = join(dirname(fileURLToPath(import.meta.url)), "foto.jpeg")
 
 const SEED_FOTO_S3_KEY = "applications/seed/foto/foto.jpeg"
 const SEED_APPLICATION_COUNT = 100
@@ -65,10 +59,7 @@ function seedEmail(firstName: string, lastName: string): string {
   return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`
 }
 
-type SeedApplicationTemplate = Omit<
-  Prisma.ApplicationCreateInput,
-  "id" | "fotoS3Key" | "submittedAt"
->
+type SeedApplicationTemplate = Omit<Prisma.ApplicationCreateInput, "id" | "fotoS3Key" | "submittedAt">
 function seedLanguagesFromApplication(template: SeedApplicationTemplate) {
   const languages: { language: string; level: GermanLevel }[] = []
 
@@ -77,10 +68,7 @@ function seedLanguagesFromApplication(template: SeedApplicationTemplate) {
     level: template.germanLevel ?? GermanLevel.A1,
   })
 
-  if (
-    template.otherLanguages !== undefined &&
-    template.otherLanguages !== null
-  ) {
+  if (template.otherLanguages !== undefined && template.otherLanguages !== null) {
     for (const language of template.otherLanguages
       .split(",")
       .map((entry) => entry.trim())
@@ -284,11 +272,7 @@ const SEED_UNIVERSITIES = [
 
 type SeedUniversityAssignment = Pick<
   Prisma.ApplicationUncheckedCreateInput,
-  | "university"
-  | "universityId"
-  | "studySubject"
-  | "semesterBreakFrom"
-  | "semesterBreakTo"
+  "university" | "universityId" | "studySubject" | "semesterBreakFrom" | "semesterBreakTo"
 >
 
 function seedUniversityAssignment(index: number): SeedUniversityAssignment {
@@ -328,8 +312,7 @@ function seedUniversityAssignment(index: number): SeedUniversityAssignment {
 const SEED_APPLICATIONS: Prisma.ApplicationUncheckedCreateInput[] = Array.from(
   { length: SEED_APPLICATION_COUNT },
   (_, index) => {
-    const template =
-      SEED_APPLICATION_TEMPLATES[index % SEED_APPLICATION_TEMPLATES.length]!
+    const template = SEED_APPLICATION_TEMPLATES[index % SEED_APPLICATION_TEMPLATES.length]!
 
     return {
       ...template,
@@ -341,10 +324,7 @@ const SEED_APPLICATIONS: Prisma.ApplicationUncheckedCreateInput[] = Array.from(
   }
 )
 
-type SeedProfile = Omit<
-  Prisma.ProfileCreateInput,
-  "languages" | "fotoS3Key" | "createdAt"
-> & {
+type SeedProfile = Omit<Prisma.ProfileCreateInput, "languages" | "fotoS3Key" | "createdAt"> & {
   id: string
   createdAt: Date
   fotoS3Key: string
@@ -365,8 +345,7 @@ const SEED_INQUIRY_TEMPLATES = [
     contactPersonName: "Thomas Müller",
     email: "thomas.mueller@hotel-bavaria.de",
     phone: "+49 89 1234567",
-    message:
-      "Wir suchen Verstärkung für unsere Sommersaison in der Küche und im Service.",
+    message: "Wir suchen Verstärkung für unsere Sommersaison in der Küche und im Service.",
   },
   {
     companyName: "Frische Feld AG",
@@ -401,8 +380,7 @@ const SEED_INQUIRY_TEMPLATES = [
     contactPersonName: "Laura Becker",
     email: "laura.becker@systemgastro.de",
     phone: null,
-    message:
-      "Wir planen eine neue Filiale und benötigen mehrere Mitarbeitende.",
+    message: "Wir planen eine neue Filiale und benötigen mehrere Mitarbeitende.",
   },
 ] satisfies SeedInquiryTemplate[]
 
@@ -412,46 +390,36 @@ type SeedInquiry = SeedInquiryTemplate & {
   applicationId: string
 }
 
-const SEED_INQUIRIES: SeedInquiry[] = Array.from(
-  { length: SEED_INQUIRY_COUNT },
-  (_, index) => {
-    const template =
-      SEED_INQUIRY_TEMPLATES[index % SEED_INQUIRY_TEMPLATES.length]!
+const SEED_INQUIRIES: SeedInquiry[] = Array.from({ length: SEED_INQUIRY_COUNT }, (_, index) => {
+  const template = SEED_INQUIRY_TEMPLATES[index % SEED_INQUIRY_TEMPLATES.length]!
 
-    return {
-      ...template,
-      id: seedInquiryId(index),
-      submittedAt: daysAgo((index % 14) + 1),
-      applicationId: seedApplicationId(index % SEED_APPLICATION_COUNT),
-    }
+  return {
+    ...template,
+    id: seedInquiryId(index),
+    submittedAt: daysAgo((index % 14) + 1),
+    applicationId: seedApplicationId(index % SEED_APPLICATION_COUNT),
   }
-)
+})
 
-const SEED_PROFILES: SeedProfile[] = Array.from(
-  { length: SEED_PROFILE_COUNT },
-  (_, index) => {
-    const template =
-      SEED_APPLICATION_TEMPLATES[index % SEED_APPLICATION_TEMPLATES.length]!
+const SEED_PROFILES: SeedProfile[] = Array.from({ length: SEED_PROFILE_COUNT }, (_, index) => {
+  const template = SEED_APPLICATION_TEMPLATES[index % SEED_APPLICATION_TEMPLATES.length]!
 
-    return {
-      id: seedProfileId(index),
-      createdAt: daysAgo((index % 30) + 1),
-      fotoS3Key: SEED_FOTO_S3_KEY,
-      firstName: template.firstName,
-      lastName: template.lastName,
-      gender: template.gender,
-      birthDate: template.birthDate,
-      email: template.email ?? seedEmail(template.firstName, template.lastName),
-      phone: template.phone ?? null,
-      isStudent: index % 2 === 0,
-      workSector: template.workSector,
-      desiredSalary:
-        DESIRED_SALARIES[index % DESIRED_SALARIES.length] ??
-        DesiredSalary.EURO_10_12,
-      languageEntries: seedLanguagesFromApplication(template),
-    }
+  return {
+    id: seedProfileId(index),
+    createdAt: daysAgo((index % 30) + 1),
+    fotoS3Key: SEED_FOTO_S3_KEY,
+    firstName: template.firstName,
+    lastName: template.lastName,
+    gender: template.gender,
+    birthDate: template.birthDate,
+    email: template.email ?? seedEmail(template.firstName, template.lastName),
+    phone: template.phone ?? null,
+    isStudent: index % 2 === 0,
+    workSector: template.workSector,
+    desiredSalary: DESIRED_SALARIES[index % DESIRED_SALARIES.length] ?? DesiredSalary.EURO_10_12,
+    languageEntries: seedLanguagesFromApplication(template),
   }
-)
+})
 
 ;(async () => {
   try {

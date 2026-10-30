@@ -1,6 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+
 import { z } from "zod"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -45,14 +46,9 @@ function extractTemplateParameters(templateContent: string): string[] {
   return [...parameters]
 }
 
-function readTemplateParams(
-  paramsFilePath: string
-): Record<string, unknown> | undefined {
+function readTemplateParams(paramsFilePath: string): Record<string, unknown> | undefined {
   try {
-    return JSON.parse(readFileSync(paramsFilePath, "utf8")) as Record<
-      string,
-      unknown
-    >
+    return JSON.parse(readFileSync(paramsFilePath, "utf8")) as Record<string, unknown>
   } catch {
     return undefined
   }
@@ -69,9 +65,7 @@ function buildGeneratedTemplatePath(templateName: string): string {
 
 function readCompanies(): z.infer<typeof companySchema>[] {
   try {
-    const parsed = companiesSchema.safeParse(
-      JSON.parse(readFileSync(companiesPath, "utf8"))
-    )
+    const parsed = companiesSchema.safeParse(JSON.parse(readFileSync(companiesPath, "utf8")))
 
     if (!parsed.success) {
       console.error(`Invalid companies.json: ${companiesPath}`)
@@ -92,16 +86,12 @@ function readCompanies(): z.infer<typeof companySchema>[] {
 function readSentEmails(): string[] {
   const companies = readCompanies()
 
-  return companies.flatMap((company) =>
-    company.email === null ? [] : [company.email]
-  )
+  return companies.flatMap((company) => (company.email === null ? [] : [company.email]))
 }
 
 function trackSentEmail(email: string) {
   const normalizedEmail = email.toLowerCase()
-  const alreadyTracked = readSentEmails().some(
-    (sentEmail) => sentEmail.toLowerCase() === normalizedEmail
-  )
+  const alreadyTracked = readSentEmails().some((sentEmail) => sentEmail.toLowerCase() === normalizedEmail)
 
   if (alreadyTracked) {
     console.warn("Email already in the database")
@@ -116,12 +106,8 @@ function printUsage() {
   console.error("  --template=<template-folder-name> \\")
   console.error("  [--email=<email>]")
   console.error("")
-  console.error(
-    "Each template folder must contain template.html and params.json."
-  )
-  console.error(
-    "Output is written to <template-folder>/generated/<timestamp>-<template-name>.html"
-  )
+  console.error("Each template folder must contain template.html and params.json.")
+  console.error("Output is written to <template-folder>/generated/<timestamp>-<template-name>.html")
 }
 
 function main() {

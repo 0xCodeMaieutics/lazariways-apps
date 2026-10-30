@@ -1,20 +1,13 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
+import { Button } from "@workspace/ui/components/button"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
-import { Button } from "@workspace/ui/components/button"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import {
-  universityCreateSchema,
-  type UniversityCreateData,
-} from "@/lib/university-schema"
+
+import { universityCreateSchema, type UniversityCreateData } from "@/lib/university-schema"
 
 const defaultValues: UniversityCreateData = {
   name: "",
@@ -89,14 +82,8 @@ export function UniversityCreateForm() {
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="name">Name</FieldLabel>
-          <Input
-            id="name"
-            {...register("name")}
-            aria-invalid={errors.name !== undefined}
-          />
-          {errors.name !== undefined ? (
-            <FieldError errors={[errors.name]} />
-          ) : null}
+          <Input id="name" {...register("name")} aria-invalid={errors.name !== undefined} />
+          {errors.name !== undefined ? <FieldError errors={[errors.name]} /> : null}
         </Field>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -135,15 +122,8 @@ export function UniversityCreateForm() {
 
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input
-            id="email"
-            type="email"
-            {...register("email")}
-            aria-invalid={errors.email !== undefined}
-          />
-          {errors.email !== undefined ? (
-            <FieldError errors={[errors.email]} />
-          ) : null}
+          <Input id="email" type="email" {...register("email")} aria-invalid={errors.email !== undefined} />
+          {errors.email !== undefined ? <FieldError errors={[errors.email]} /> : null}
         </Field>
 
         <Field>
@@ -155,9 +135,7 @@ export function UniversityCreateForm() {
             {...register("website")}
             aria-invalid={errors.website !== undefined}
           />
-          {errors.website !== undefined ? (
-            <FieldError errors={[errors.website]} />
-          ) : null}
+          {errors.website !== undefined ? <FieldError errors={[errors.website]} /> : null}
         </Field>
       </FieldGroup>
 
@@ -168,9 +146,7 @@ export function UniversityCreateForm() {
       {successMessage !== null ? (
         <p className="text-center text-sm text-green-700">{successMessage}</p>
       ) : null}
-      {errorMessage !== null ? (
-        <p className="text-center text-sm text-destructive">{errorMessage}</p>
-      ) : null}
+      {errorMessage !== null ? <p className="text-center text-sm text-destructive">{errorMessage}</p> : null}
     </form>
   )
 }

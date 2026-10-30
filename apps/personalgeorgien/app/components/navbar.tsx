@@ -1,6 +1,5 @@
-import Link from "next/link"
-
 import { Button } from "@workspace/ui/components/button"
+import Link from "next/link"
 
 import { GALLERY } from "../../lib/site"
 import { NavLink } from "./nav-link"
@@ -21,7 +20,7 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-4">
           <NavLink href="/galerie">{GALLERY.title}</NavLink>
           <Button asChild size="lg" className="h-9 px-3 sm:h-10 sm:px-4">
-            <a href="/#vertrieb">Sales kontaktieren</a>
+            <Link href="/#vertrieb">Sales kontaktieren</Link>
           </Button>
         </div>
       </div>

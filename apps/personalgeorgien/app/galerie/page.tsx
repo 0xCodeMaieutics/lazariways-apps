@@ -16,12 +16,8 @@ export default function GaleriePage() {
   return (
     <PageShell mainClassName="px-6 py-10 lg:px-16">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          {GALLERY.title}
-        </h1>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          {GALLERY.description}
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">{GALLERY.title}</h1>
+        <p className="mt-4 max-w-2xl text-muted-foreground">{GALLERY.description}</p>
         <div className="mt-10">
           <EmployeeGallery images={images} />
         </div>

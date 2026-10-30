@@ -1,9 +1,7 @@
-import {
-  adminEditDataToApplicationFormData,
-  prismaToAdminEditData,
-} from "@workspace/application/prisma"
 import { generateBewerberChecklistPdf } from "@workspace/application/pdf"
+import { adminEditDataToApplicationFormData, prismaToAdminEditData } from "@workspace/application/prisma"
 import prisma from "@workspace/database/client"
+
 import { requireAdminSessionForApi } from "@/lib/auth"
 import { downloadFotoAsFile } from "@/lib/foto"
 
@@ -11,10 +9,7 @@ function sanitizeFilenamePart(value: string): string {
   return value.replace(/[^a-zA-Z0-9._-]+/g, "-").slice(0, 60)
 }
 
-export const POST = async (
-  _request: Request,
-  context: { params: Promise<{ id: string }> }
-) => {
+export const POST = async (_request: Request, context: { params: Promise<{ id: string }> }) => {
   const authResult = await requireAdminSessionForApi()
   if (authResult instanceof Response) {
     return authResult
@@ -38,10 +33,7 @@ export const POST = async (
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 
-  const applicationFormData = adminEditDataToApplicationFormData(
-    prismaToAdminEditData(existing),
-    fotoFile
-  )
+  const applicationFormData = adminEditDataToApplicationFormData(prismaToAdminEditData(existing), fotoFile)
   const pdfFormData =
     existing.linkedUniversity !== null
       ? {

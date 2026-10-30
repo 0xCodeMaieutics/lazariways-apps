@@ -25,9 +25,7 @@ export function normalizeUniversityInput(body: unknown): unknown {
   return record
 }
 
-export function optionalUniversityString(
-  value: string | undefined
-): string | null {
+export function optionalUniversityString(value: string | undefined): string | null {
   if (value === undefined || value.trim() === "") {
     return null
   }

@@ -2,10 +2,7 @@ import { z } from "zod"
 
 export const applicationInquiryFormSchema = z.object({
   companyName: z.string().trim().min(1, "Bitte geben Sie den Firmennamen an."),
-  contactPersonName: z
-    .string()
-    .trim()
-    .min(1, "Bitte geben Sie den Namen der zuständigen Person an."),
+  contactPersonName: z.string().trim().min(1, "Bitte geben Sie den Namen der zuständigen Person an."),
   email: z
     .string()
     .trim()
@@ -15,9 +12,7 @@ export const applicationInquiryFormSchema = z.object({
   message: z.string().trim(),
 })
 
-export type ApplicationInquiryFormData = z.infer<
-  typeof applicationInquiryFormSchema
->
+export type ApplicationInquiryFormData = z.infer<typeof applicationInquiryFormSchema>
 
 export const emptyApplicationInquiryForm: ApplicationInquiryFormData = {
   companyName: "",

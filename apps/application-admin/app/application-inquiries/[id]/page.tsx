@@ -1,11 +1,12 @@
-import Link from "next/link"
-import { notFound } from "next/navigation"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { Button } from "@workspace/ui/components/button"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+
 import { BackLink } from "@/components/back-link"
 import { env } from "@/env"
 import { requireAdminSessionForPage } from "@/lib/auth"
-import { Button } from "@workspace/ui/components/button"
 
 interface ApplicationInquiryDetailPageProps {
   params: Promise<{ id: string }>
@@ -19,13 +20,7 @@ function formatSubmittedAt(date: Date): string {
   }).format(date)
 }
 
-function DetailField({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
+function DetailField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
       <p className="text-sm text-muted-foreground">{label}</p>
@@ -34,9 +29,7 @@ function DetailField({
   )
 }
 
-export default async function ApplicationInquiryDetailPage({
-  params,
-}: ApplicationInquiryDetailPageProps) {
+export default async function ApplicationInquiryDetailPage({ params }: ApplicationInquiryDetailPageProps) {
   const { id } = await params
   await requireAdminSessionForPage(`/application-inquiries/${id}`)
 
@@ -71,9 +64,7 @@ export default async function ApplicationInquiryDetailPage({
       <header className="mb-6 space-y-4">
         <BackLink href="/application-inquiries" label="Application Inquiries" />
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {inquiry.companyName}
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{inquiry.companyName}</h1>
           <p className="text-sm text-muted-foreground">Application inquiry</p>
         </div>
       </header>
@@ -81,27 +72,17 @@ export default async function ApplicationInquiryDetailPage({
       <section className="space-y-4">
         <h2 className="font-medium">Inquiry</h2>
         <div className="space-y-4 rounded-xl border border-border p-4">
-          <DetailField label="Submitted">
-            {formatSubmittedAt(inquiry.submittedAt)}
-          </DetailField>
+          <DetailField label="Submitted">{formatSubmittedAt(inquiry.submittedAt)}</DetailField>
           <DetailField label="Company">{inquiry.companyName}</DetailField>
-          <DetailField label="Contact person">
-            {inquiry.contactPersonName}
-          </DetailField>
+          <DetailField label="Contact person">{inquiry.contactPersonName}</DetailField>
           <DetailField label="Email">
-            <a
-              href={`mailto:${inquiry.email}`}
-              className="text-primary hover:underline"
-            >
+            <a href={`mailto:${inquiry.email}`} className="text-primary hover:underline">
               {inquiry.email}
             </a>
           </DetailField>
           <DetailField label="Phone">
             {inquiry.phone !== null ? (
-              <a
-                href={`tel:${inquiry.phone}`}
-                className="text-primary hover:underline"
-              >
+              <a href={`tel:${inquiry.phone}`} className="text-primary hover:underline">
                 {inquiry.phone}
               </a>
             ) : (
@@ -133,9 +114,7 @@ export default async function ApplicationInquiryDetailPage({
             {application.firstName} {application.lastName}
           </DetailField>
           <Button variant="outline" className="w-full" asChild>
-            <Link href={`/applications/${application.id}/edit`}>
-              View application
-            </Link>
+            <Link href={`/applications/${application.id}/edit`}>View application</Link>
           </Button>
         </div>
       </section>

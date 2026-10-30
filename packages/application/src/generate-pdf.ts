@@ -1,12 +1,12 @@
 import { readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+
 import type { ApplicationFormData } from "./application-schema.js"
 import { generatePersonalGeorgienPdf } from "./pdf.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, "../../..")
-const publicAssetsDir = path.join(repoRoot, "apps/application/public")
 const applicationSrcFolder = path.join(repoRoot, "packages/application/src")
 
 const testApplicationFormData = {
@@ -42,28 +42,17 @@ const testApplicationFormData = {
   workSector: ["Hotel/Gaststätte", "Systemgastronomie"],
 } satisfies Omit<ApplicationFormData, "foto">
 
-async function fileFromPath(
-  filePath: string,
-  fileName: string,
-  type: string
-): Promise<File> {
+async function fileFromPath(filePath: string, fileName: string, type: string): Promise<File> {
   const buffer = await readFile(filePath)
   return new File([buffer], fileName, { type })
 }
 
 void (async function () {
-  const [foto, croppedFoto] = await Promise.all([
-    fileFromPath(
-      path.join(publicAssetsDir, "android-chrome-192x192.png"),
-      "foto.png",
-      "image/png"
-    ),
-    fileFromPath(
-      path.join(applicationSrcFolder, "1780997500017-IMG_2319-cropped.jpg"),
-      "foto.jpg",
-      "image/jpg"
-    ),
-  ])
+  const croppedFoto = await fileFromPath(
+    path.join(applicationSrcFolder, "1780997500017-IMG_2319-cropped.jpg"),
+    "foto.jpg",
+    "image/jpg"
+  )
 
   const pdfBytes = await generatePersonalGeorgienPdf({
     ...testApplicationFormData,

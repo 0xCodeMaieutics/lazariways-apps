@@ -1,13 +1,8 @@
-import prisma from "@workspace/database/client"
+import type prisma from "@workspace/database/client"
 
-type TransactionClient = Parameters<
-  Parameters<typeof prisma.$transaction>[0]
->[0]
+type TransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
 
-export async function backfillUnlockedTopicsForUnlocker(
-  tx: TransactionClient,
-  unlockerTopicId: string
-) {
+export async function backfillUnlockedTopicsForUnlocker(tx: TransactionClient, unlockerTopicId: string) {
   const topic = await tx.topic.findUnique({
     where: { id: unlockerTopicId },
     select: {
@@ -16,11 +11,7 @@ export async function backfillUnlockedTopicsForUnlocker(
     },
   })
 
-  if (
-    topic === null ||
-    topic.minimumCompletedExamsToUnlock === null ||
-    topic.unlocksTopics.length === 0
-  ) {
+  if (topic === null || topic.minimumCompletedExamsToUnlock === null || topic.unlocksTopics.length === 0) {
     return
   }
 
@@ -40,25 +31,14 @@ export async function backfillUnlockedTopicsForUnlocker(
     select: { userId: true, examId: true, passedCount: true },
   })
 
-  const minimumPassedCountByExamId = new Map(
-    enabledExams.map((exam) => [exam.id, exam.minimumPassedCount])
-  )
+  const minimumPassedCountByExamId = new Map(enabledExams.map((exam) => [exam.id, exam.minimumPassedCount]))
   const completedEnabledExamCountByUserId = new Map<string, number>()
 
   for (const aggregation of aggregations) {
-    const minimumPassedCount = minimumPassedCountByExamId.get(
-      aggregation.examId
-    )
-    if (
-      minimumPassedCount !== undefined &&
-      aggregation.passedCount >= minimumPassedCount
-    ) {
-      const previousCount =
-        completedEnabledExamCountByUserId.get(aggregation.userId) ?? 0
-      completedEnabledExamCountByUserId.set(
-        aggregation.userId,
-        previousCount + 1
-      )
+    const minimumPassedCount = minimumPassedCountByExamId.get(aggregation.examId)
+    if (minimumPassedCount !== undefined && aggregation.passedCount >= minimumPassedCount) {
+      const previousCount = completedEnabledExamCountByUserId.get(aggregation.userId) ?? 0
+      completedEnabledExamCountByUserId.set(aggregation.userId, previousCount + 1)
     }
   }
 

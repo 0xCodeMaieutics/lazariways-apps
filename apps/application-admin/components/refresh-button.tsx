@@ -1,10 +1,10 @@
 "use client"
 
-import { useTransition } from "react"
-import { useRouter } from "next/navigation"
-import { RefreshCw } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import { RefreshCw } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useTransition } from "react"
 
 interface RefreshButtonProps {
   label?: string
@@ -21,13 +21,7 @@ export function RefreshButton({ label = "Refresh" }: RefreshButtonProps) {
   }
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      size="sm"
-      onClick={refresh}
-      disabled={isRefreshing}
-    >
+    <Button type="button" variant="outline" size="sm" onClick={refresh} disabled={isRefreshing}>
       <RefreshCw className={cn(isRefreshing && "animate-spin")} />
       {isRefreshing ? `${label}…` : label}
     </Button>

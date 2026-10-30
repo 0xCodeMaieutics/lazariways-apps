@@ -1,33 +1,20 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm, useWatch } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import { z } from "zod"
 import { useMutation } from "@tanstack/react-query"
-import { useTRPC } from "@/lib/trpc/react"
 import { Button } from "@workspace/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Checkbox } from "@workspace/ui/components/checkbox"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@workspace/ui/components/native-select"
+import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
 import { Loader2, Volume2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Controller, useForm, useWatch } from "react-hook-form"
+import { z } from "zod"
+
+import { useTRPC } from "@/lib/trpc/react"
 
 const TEXTAREA_CLASSNAME =
   "min-h-24 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
@@ -86,15 +73,11 @@ const exerciseSchema = z
     if (needsOptions && correctIndices.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message:
-          "Enter at least one correct option index (0-based, comma-separated)",
+        message: "Enter at least one correct option index (0-based, comma-separated)",
         path: ["correctOptionIndexText"],
       })
     }
-    if (
-      needsOptions &&
-      correctIndices.some((i) => i < 0 || i >= options.length)
-    ) {
+    if (needsOptions && correctIndices.some((i) => i < 0 || i >= options.length)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `Correct option indices must be between 0 and ${options.length - 1}`,
@@ -159,8 +142,7 @@ export function ExerciseForm({
   const watchedType = useWatch({ control, name: "type" })
   const watchedText = useWatch({ control, name: "text" })
 
-  const needsAudio =
-    watchedType === "CHOOSE_FROM_AUDIO" || watchedType === "INPUT_FROM_AUDIO"
+  const needsAudio = watchedType === "CHOOSE_FROM_AUDIO" || watchedType === "INPUT_FROM_AUDIO"
   const needsOptions =
     watchedType === "CHOOSE_FROM_AUDIO" ||
     watchedType === "CHOOSE_FROM_TEXT" ||
@@ -262,11 +244,7 @@ export function ExerciseForm({
         <CardTitle>{isEdit ? "Edit exercise" : "Create exercise"}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          noValidate
-          className="space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="type">Type</FieldLabel>
@@ -297,12 +275,7 @@ export function ExerciseForm({
             </Field>
             <Field>
               <FieldLabel htmlFor="prompt">Prompt</FieldLabel>
-              <Input
-                id="prompt"
-                placeholder="e.g. რა გესმის?"
-                disabled={isPending}
-                {...register("prompt")}
-              />
+              <Input id="prompt" placeholder="e.g. რა გესმის?" disabled={isPending} {...register("prompt")} />
               <FieldError errors={[formState.errors.prompt]} />
             </Field>
             <Field>
@@ -314,20 +287,13 @@ export function ExerciseForm({
                 {...register("text")}
               />
               <FieldDescription>
-                Used for text-based types (CHOOSE_FROM_TEXT, INPUT_FROM_TEXT,
-                etc.)
+                Used for text-based types (CHOOSE_FROM_TEXT, INPUT_FROM_TEXT, etc.)
               </FieldDescription>
               <FieldError errors={[formState.errors.text]} />
             </Field>
             <Field>
               <FieldLabel htmlFor="order">Order</FieldLabel>
-              <Input
-                id="order"
-                type="number"
-                min={0}
-                disabled={isPending}
-                {...register("order")}
-              />
+              <Input id="order" type="number" min={0} disabled={isPending} {...register("order")} />
               <FieldError errors={[formState.errors.order]} />
             </Field>
             {needsAudio ? (
@@ -345,10 +311,7 @@ export function ExerciseForm({
                       type="button"
                       variant="secondary"
                       disabled={
-                        isPending ||
-                        generateAudioMutation.isPending ||
-                        !watchedText?.trim() ||
-                        !exerciseId
+                        isPending || generateAudioMutation.isPending || !watchedText?.trim() || !exerciseId
                       }
                       onClick={handleGenerateAudio}
                     >
@@ -366,9 +329,7 @@ export function ExerciseForm({
                     </Button>
                   </div>
                   {generateAudioMutation.error ? (
-                    <FieldError>
-                      {generateAudioMutation.error.message}
-                    </FieldError>
+                    <FieldError>{generateAudioMutation.error.message}</FieldError>
                   ) : null}
                   <FieldError errors={[formState.errors.audioUrl]} />
                 </Field>
@@ -387,9 +348,7 @@ export function ExerciseForm({
             {needsOptions ? (
               <>
                 <Field>
-                  <FieldLabel htmlFor="optionsText">
-                    Options (one per line)
-                  </FieldLabel>
+                  <FieldLabel htmlFor="optionsText">Options (one per line)</FieldLabel>
                   <textarea
                     id="optionsText"
                     rows={5}
@@ -410,9 +369,7 @@ export function ExerciseForm({
                     disabled={isPending}
                     {...register("correctOptionIndexText")}
                   />
-                  <FieldError
-                    errors={[formState.errors.correctOptionIndexText]}
-                  />
+                  <FieldError errors={[formState.errors.correctOptionIndexText]} />
                 </Field>
                 <Field className="rounded-lg border p-4">
                   <Controller
@@ -421,10 +378,7 @@ export function ExerciseForm({
                     render={({ field, fieldState }) => (
                       <>
                         <div className="flex items-center justify-between gap-4">
-                          <Label
-                            htmlFor="allowsMultipleCorrectOptions"
-                            className="text-base"
-                          >
+                          <Label htmlFor="allowsMultipleCorrectOptions" className="text-base">
                             Allow multiple correct options
                           </Label>
                           <Checkbox
@@ -443,9 +397,7 @@ export function ExerciseForm({
             ) : null}
             {needsCorrectInputs ? (
               <Field>
-                <FieldLabel htmlFor="correctInputsText">
-                  Correct inputs (one per line)
-                </FieldLabel>
+                <FieldLabel htmlFor="correctInputsText">Correct inputs (one per line)</FieldLabel>
                 <textarea
                   id="correctInputsText"
                   rows={4}
@@ -458,11 +410,7 @@ export function ExerciseForm({
               </Field>
             ) : null}
           </FieldGroup>
-          {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
+          {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
           <div className="flex gap-2">
             <Button type="submit" disabled={isPending}>
               {isPending ? (
@@ -476,12 +424,7 @@ export function ExerciseForm({
                 "Create exercise"
               )}
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push(backUrl)}
-              disabled={isPending}
-            >
+            <Button type="button" variant="outline" onClick={() => router.push(backUrl)} disabled={isPending}>
               Cancel
             </Button>
           </div>

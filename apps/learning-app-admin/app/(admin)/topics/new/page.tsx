@@ -1,8 +1,9 @@
-import Link from "next/link"
+import prisma from "@workspace/database/client"
 import { Button } from "@workspace/ui/components/button"
 import { ChevronLeft } from "lucide-react"
+import Link from "next/link"
+
 import { CreateTopicForm } from "./page.client"
-import prisma from "@workspace/database/client"
 
 export default async function NewTopicPage() {
   const [lastTopic, parentTopics] = await Promise.all([
@@ -26,10 +27,7 @@ export default async function NewTopicPage() {
           </Link>
         </Button>
       </div>
-      <CreateTopicForm
-        parentTopics={parentTopics}
-        defaultValues={{ order: (lastTopic?.order ?? -1) + 1 }}
-      />
+      <CreateTopicForm parentTopics={parentTopics} defaultValues={{ order: (lastTopic?.order ?? -1) + 1 }} />
     </div>
   )
 }

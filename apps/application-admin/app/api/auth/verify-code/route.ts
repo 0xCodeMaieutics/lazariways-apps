@@ -1,10 +1,8 @@
+import { verifyCodeAndCreateSession } from "@workspace/verification"
 import { cookies } from "next/headers"
 import { z } from "zod"
-import {
-  ADMIN_SESSION_COOKIE,
-  ADMIN_SESSION_MAX_AGE_SECONDS,
-} from "@/lib/constants"
-import { verifyCodeAndCreateSession } from "@workspace/verification"
+
+import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE_SECONDS } from "@/lib/constants"
 
 const verifyCodeSchema = z.object({
   code: z.string().min(1),

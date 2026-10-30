@@ -16,10 +16,7 @@ export const workSectorOptions = [
   "Industrielle Produktion",
 ] as const
 
-export const workSectorLabels: Record<
-  (typeof workSectorOptions)[number],
-  string
-> = {
+export const workSectorLabels: Record<(typeof workSectorOptions)[number], string> = {
   "Hotel/Gaststätte": "სასტუმრო / რესტორანი",
   Systemgastronomie: "სწრაფი კვების ქსელი",
   Landwirtschaft: "სოფლის მეურნეობა",
@@ -29,16 +26,9 @@ export const workSectorLabels: Record<
 
 export const defaultWorkSectors = [...workSectorOptions]
 
-export const desiredSalaryOptions = [
-  "EURO_10_12",
-  "EURO_12_14",
-  "EURO_15_PLUS",
-] as const
+export const desiredSalaryOptions = ["EURO_10_12", "EURO_12_14", "EURO_15_PLUS"] as const
 
-export const desiredSalaryLabels: Record<
-  (typeof desiredSalaryOptions)[number],
-  string
-> = {
+export const desiredSalaryLabels: Record<(typeof desiredSalaryOptions)[number], string> = {
   EURO_10_12: "10-12 euro",
   EURO_12_14: "12-14 euro",
   EURO_15_PLUS: "15+ euro",
@@ -53,9 +43,9 @@ const profileLanguageSchema = z.object({
   }),
 })
 
-export const defaultProfileLanguages = [
-  { language: "", level: "A1" },
-] satisfies z.infer<typeof profileLanguageSchema>[]
+export const defaultProfileLanguages = [{ language: "", level: "A1" }] satisfies z.infer<
+  typeof profileLanguageSchema
+>[]
 
 export const profileFormSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
@@ -70,9 +60,7 @@ export const profileFormSchema = z.object({
     .refine(
       (val) =>
         val.trim() === "" ||
-        /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/.test(
-          val.trim()
-        ),
+        /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/.test(val.trim()),
       "არასწორი ტელეფონის ნომრის ფორმატი"
     )
     .optional(),
@@ -83,21 +71,14 @@ export const profileFormSchema = z.object({
     .instanceof(File, {
       message: "გთხოვთ ატვირთოტ თქვენი ფოტო",
     })
-    .refine(
-      (file) => ["image/png", "image/jpeg", "image/jpg"].includes(file.type),
-      {
-        message: "მხოლოდ PNG და JPEG ფაილებია დაშვებული",
-      }
-    ),
-  workSector: z
-    .array(z.enum(workSectorOptions))
-    .min(1, "სასურველი სამუშაო სფერო სავალდებულოა"),
+    .refine((file) => ["image/png", "image/jpeg", "image/jpg"].includes(file.type), {
+      message: "მხოლოდ PNG და JPEG ფაილებია დაშვებული",
+    }),
+  workSector: z.array(z.enum(workSectorOptions)).min(1, "სასურველი სამუშაო სფერო სავალდებულოა"),
   desiredSalary: z.enum(desiredSalaryOptions, {
     message: "სასურველი ანაზღაურება სავალდებულოა",
   }),
-  languages: z
-    .array(profileLanguageSchema)
-    .min(1, "მინიმუმ ერთი ენა სავალდებულოა"),
+  languages: z.array(profileLanguageSchema).min(1, "მინიმუმ ერთი ენა სავალდებულოა"),
   acceptPrivacyPolicy: z.boolean().refine((value) => value === true, {
     message: "კონფიდენციალურობის პოლიტიკის დადასტურება სავალდებულოა",
   }),

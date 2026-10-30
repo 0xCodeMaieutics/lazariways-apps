@@ -1,15 +1,10 @@
 "use client"
 
-import { Topic } from "@workspace/database/browser"
+import type { Topic } from "@workspace/database/browser"
+
 import { TopicForm } from "../../../_components/forms/topic-form"
 
-export function EditTopicForm({
-  topics,
-  currentTopic,
-}: {
-  topics: Topic[]
-  currentTopic: Topic
-}) {
+export function EditTopicForm({ topics, currentTopic }: { topics: Topic[]; currentTopic: Topic }) {
   return (
     <TopicForm
       topicId={currentTopic.id}
@@ -24,8 +19,7 @@ export function EditTopicForm({
         enabled: currentTopic.enabled,
         isAlwaysUnlocked: currentTopic.isAlwaysUnlocked,
         unlockedByTopicId: currentTopic.unlockedId ?? "",
-        minimumCompletedExamsToUnlock:
-          currentTopic.minimumCompletedExamsToUnlock ?? "",
+        minimumCompletedExamsToUnlock: currentTopic.minimumCompletedExamsToUnlock ?? "",
       }}
     />
   )

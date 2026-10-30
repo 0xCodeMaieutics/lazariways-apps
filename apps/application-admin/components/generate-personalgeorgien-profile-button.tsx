@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import {
   personalGeorgienProfessionOptions,
   type PersonalGeorgienProfession,
@@ -15,15 +14,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { cn } from "@workspace/ui/lib/utils"
+import { useState } from "react"
 
 interface GeneratePersonalgeorgienProfileButtonProps {
   applicationId: string
@@ -41,9 +36,7 @@ function getDownloadFilename(contentDisposition: string | null): string | null {
 export function GeneratePersonalgeorgienProfileButton({
   applicationId,
 }: GeneratePersonalgeorgienProfileButtonProps) {
-  const [profession, setProfession] = useState<PersonalGeorgienProfession>(
-    "Restaurant & Bar Staff"
-  )
+  const [profession, setProfession] = useState<PersonalGeorgienProfession>("Restaurant & Bar Staff")
   const [isOptionsDialogOpen, setIsOptionsDialogOpen] = useState(false)
   const [experienceDate, setExperienceDate] = useState("")
   const [experienceOngoing, setExperienceOngoing] = useState(true)
@@ -77,14 +70,11 @@ export function GeneratePersonalgeorgienProfileButton({
     }
 
     try {
-      const response = await fetch(
-        `/api/applications/${applicationId}/personalgeorgien-pdf`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        }
-      )
+      const response = await fetch(`/api/applications/${applicationId}/personalgeorgien-pdf`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
 
       if (!response.ok) {
         setErrorMessage("PDF-ის გენერირება ვერ მოხერხდა. სცადეთ თავიდან.")
@@ -93,8 +83,7 @@ export function GeneratePersonalgeorgienProfileButton({
 
       const blob = await response.blob()
       const downloadFilename =
-        getDownloadFilename(response.headers.get("Content-Disposition")) ??
-        "personalgeorgien.pdf"
+        getDownloadFilename(response.headers.get("Content-Disposition")) ?? "personalgeorgien.pdf"
       const objectUrl = URL.createObjectURL(blob)
       const anchor = document.createElement("a")
       anchor.href = objectUrl
@@ -115,9 +104,7 @@ export function GeneratePersonalgeorgienProfileButton({
         <select
           value={profession}
           disabled={isGenerating}
-          onChange={(event) =>
-            setProfession(event.target.value as PersonalGeorgienProfession)
-          }
+          onChange={(event) => setProfession(event.target.value as PersonalGeorgienProfession)}
           aria-label="Personalgeorgien profession"
           className={cn(
             "h-9 min-w-0 flex-1 rounded-lg border border-input bg-background px-2.5 text-sm transition-colors outline-none",
@@ -139,9 +126,7 @@ export function GeneratePersonalgeorgienProfileButton({
           onClick={() => setIsOptionsDialogOpen(true)}
         >
           <span className="min-w-0 truncate">
-            {isGenerating
-              ? "მუშავდება…"
-              : "Personalgeorgien პროფილის გენერირება"}
+            {isGenerating ? "მუშავდება…" : "Personalgeorgien პროფილის გენერირება"}
           </span>
         </Button>
       </div>
@@ -158,15 +143,12 @@ export function GeneratePersonalgeorgienProfileButton({
           <DialogHeader>
             <DialogTitle>Personalgeorgien პროფილი</DialogTitle>
             <DialogDescription>
-              თარიღი და აქტივობები არასავალდებულოა. ცარიელი ველი შემთხვევით
-              მნიშვნელობას იყენებს.
+              თარიღი და აქტივობები არასავალდებულოა. ცარიელი ველი შემთხვევით მნიშვნელობას იყენებს.
             </DialogDescription>
           </DialogHeader>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="personalgeorgien-experience-date">
-                თარიღი
-              </FieldLabel>
+              <FieldLabel htmlFor="personalgeorgien-experience-date">თარიღი</FieldLabel>
               <Input
                 id="personalgeorgien-experience-date"
                 type="month"
@@ -174,27 +156,19 @@ export function GeneratePersonalgeorgienProfileButton({
                 disabled={isGenerating}
                 onChange={(event) => setExperienceDate(event.target.value)}
               />
-              <FieldDescription>
-                თვე და წელი. შევსებისას ჩაანაცვლებს შემთხვევით თარიღს.
-              </FieldDescription>
+              <FieldDescription>თვე და წელი. შევსებისას ჩაანაცვლებს შემთხვევით თარიღს.</FieldDescription>
             </Field>
             <div className="flex items-center gap-2">
               <Checkbox
                 id="personalgeorgien-experience-ongoing"
                 checked={experienceOngoing}
                 disabled={isGenerating || experienceDate === ""}
-                onCheckedChange={(value) =>
-                  setExperienceOngoing(value === true)
-                }
+                onCheckedChange={(value) => setExperienceOngoing(value === true)}
               />
-              <Label htmlFor="personalgeorgien-experience-ongoing">
-                მიმდინარე (seit)
-              </Label>
+              <Label htmlFor="personalgeorgien-experience-ongoing">მიმდინარე (seit)</Label>
             </div>
             <Field>
-              <FieldLabel htmlFor="personalgeorgien-activities">
-                აქტივობები
-              </FieldLabel>
+              <FieldLabel htmlFor="personalgeorgien-activities">აქტივობები</FieldLabel>
               <textarea
                 id="personalgeorgien-activities"
                 value={activitiesText}
@@ -207,13 +181,9 @@ export function GeneratePersonalgeorgienProfileButton({
                   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                 )}
               />
-              <FieldDescription>
-                შევსებისას ჩაანაცვლებს შემთხვევით აქტივობებს.
-              </FieldDescription>
+              <FieldDescription>შევსებისას ჩაანაცვლებს შემთხვევით აქტივობებს.</FieldDescription>
             </Field>
-            {errorMessage !== "" ? (
-              <p className="text-sm text-destructive">{errorMessage}</p>
-            ) : null}
+            {errorMessage !== "" ? <p className="text-sm text-destructive">{errorMessage}</p> : null}
           </FieldGroup>
           <DialogFooter>
             <Button
@@ -224,11 +194,7 @@ export function GeneratePersonalgeorgienProfileButton({
             >
               გაუქმება
             </Button>
-            <Button
-              type="button"
-              disabled={isGenerating}
-              onClick={generateProfile}
-            >
+            <Button type="button" disabled={isGenerating} onClick={generateProfile}>
               {isGenerating ? "მუშავდება…" : "გენერირება"}
             </Button>
           </DialogFooter>

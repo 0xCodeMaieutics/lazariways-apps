@@ -1,18 +1,13 @@
-import { adminProfileEditSchema } from "@workspace/profile/schema"
-import {
-  profileLanguagesToPrismaCreate,
-  profileToPrismaData,
-} from "@workspace/profile/prisma"
 import prisma from "@workspace/database/client"
 import { deleteFileFromStorage } from "@workspace/file-upload/s3-client"
-import { requireAdminSessionForApi } from "@/lib/auth"
+import { profileLanguagesToPrismaCreate, profileToPrismaData } from "@workspace/profile/prisma"
+import { adminProfileEditSchema } from "@workspace/profile/schema"
+
 import { env } from "@/env"
+import { requireAdminSessionForApi } from "@/lib/auth"
 import { normalizeProfileAdminEditInput } from "@/lib/normalize-profile-edit-input"
 
-export const DELETE = async (
-  _request: Request,
-  context: { params: Promise<{ id: string }> }
-) => {
+export const DELETE = async (_request: Request, context: { params: Promise<{ id: string }> }) => {
   const authResult = await requireAdminSessionForApi()
   if (authResult instanceof Response) {
     return authResult
@@ -45,19 +40,14 @@ export const DELETE = async (
   return Response.json({ success: true })
 }
 
-export const PUT = async (
-  request: Request,
-  context: { params: Promise<{ id: string }> }
-) => {
+export const PUT = async (request: Request, context: { params: Promise<{ id: string }> }) => {
   const authResult = await requireAdminSessionForApi()
   if (authResult instanceof Response) {
     return authResult
   }
 
   const { id } = await context.params
-  const parsed = adminProfileEditSchema.safeParse(
-    normalizeProfileAdminEditInput(await request.json())
-  )
+  const parsed = adminProfileEditSchema.safeParse(normalizeProfileAdminEditInput(await request.json()))
 
   if (!parsed.success) {
     console.error("ZOD_VALIDATION_FAILED", parsed.error)
@@ -78,12 +68,10 @@ export const PUT = async (
       })
       await tx.profileLanguage.deleteMany({ where: { profileId: id } })
       await tx.profileLanguage.createMany({
-        data: profileLanguagesToPrismaCreate(parsed.data.languages).map(
-          (entry) => ({
-            ...entry,
-            profileId: id,
-          })
-        ),
+        data: profileLanguagesToPrismaCreate(parsed.data.languages).map((entry) => ({
+          ...entry,
+          profileId: id,
+        })),
       })
     })
   } catch (error) {

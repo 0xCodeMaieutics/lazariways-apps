@@ -1,14 +1,16 @@
-import { z } from "zod"
 import { TRPCError } from "@trpc/server"
-import { adminProcedure, router } from "../server"
 import { TopicType } from "@workspace/database/browser"
 import prisma from "@workspace/database/client"
-import { syncExamUnlocks } from "@/lib/sync-exam-unlocks"
-import { validateAndApplyTopicUnlock } from "@/lib/sync-topic-unlock"
+import { uploadToStorage } from "@workspace/file-upload/s3-client"
+import { z } from "zod"
+
+import { env } from "@/env"
 import { backfillUnlockedTopicsForUnlocker } from "@/lib/backfill-unlocked-topics"
 import { generateAudio } from "@/lib/narakeet"
-import { uploadToStorage } from "@workspace/file-upload/s3-client"
-import { env } from "@/env"
+import { syncExamUnlocks } from "@/lib/sync-exam-unlocks"
+import { validateAndApplyTopicUnlock } from "@/lib/sync-topic-unlock"
+
+import { adminProcedure, router } from "../server"
 
 const EXERCISE_TYPES = [
   "CHOOSE_FROM_AUDIO",
@@ -57,11 +59,7 @@ const exerciseCreateSchema = exerciseBaseSchema.superRefine((data, ctx) => {
       path: ["correctOptionIndex"],
     })
   }
-  if (
-    needsCorrectInputs &&
-    (data.correctInputs.length === 0 ||
-      data.correctInputs.every((s) => !s.trim()))
-  ) {
+  if (needsCorrectInputs && (data.correctInputs.length === 0 || data.correctInputs.every((s) => !s.trim()))) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: "At least one correct input is required for this exercise type",
@@ -135,80 +133,75 @@ export const adminRouter = router({
       }),
   },
   exams: {
-    create: adminProcedure
-      .input(examCreateSchema)
-      .mutation(async ({ input }) => {
-        const { unlockedByExamId, isAlwaysUnlocked, ...examData } = input
+    create: adminProcedure.input(examCreateSchema).mutation(async ({ input }) => {
+      const { unlockedByExamId, isAlwaysUnlocked, ...examData } = input
 
-        return prisma.$transaction(async (tx) => {
-          const exam = await tx.exam.create({
-            data: examData,
-          })
-
-          await syncExamUnlocks(tx, {
-            examId: exam.id,
-            topicId: input.topicId,
-            isAlwaysUnlocked,
-            unlockedByExamId,
-          })
-
-          return exam
+      return prisma.$transaction(async (tx) => {
+        const exam = await tx.exam.create({
+          data: examData,
         })
-      }),
-    update: adminProcedure
-      .input(examUpdateSchema)
-      .mutation(async ({ input }) => {
-        const { id, unlockedByExamId, topicId, ...data } = input
 
-        const existingExam = await prisma.exam.findUnique({
+        await syncExamUnlocks(tx, {
+          examId: exam.id,
+          topicId: input.topicId,
+          isAlwaysUnlocked,
+          unlockedByExamId,
+        })
+
+        return exam
+      })
+    }),
+    update: adminProcedure.input(examUpdateSchema).mutation(async ({ input }) => {
+      const { id, unlockedByExamId, topicId, ...data } = input
+
+      const existingExam = await prisma.exam.findUnique({
+        where: { id },
+        select: {
+          topicId: true,
+          enabled: true,
+        },
+      })
+
+      if (!existingExam) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Exam not found",
+        })
+      }
+
+      const resolvedTopicId = topicId ?? existingExam.topicId
+
+      return prisma.$transaction(async (tx) => {
+        const exam = await tx.exam.update({
           where: { id },
-          select: {
-            topicId: true,
-            enabled: true,
+          data: {
+            ...data,
+            ...(topicId !== undefined && { topicId }),
           },
         })
 
-        if (!existingExam) {
+        if (unlockedByExamId !== undefined) {
+          await syncExamUnlocks(tx, {
+            examId: id,
+            topicId: resolvedTopicId,
+            isAlwaysUnlocked: exam.isAlwaysUnlocked,
+            unlockedByExamId,
+          })
+        } else if (exam.isAlwaysUnlocked && exam.unlockedId !== null) {
           throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Exam not found",
+            code: "BAD_REQUEST",
+            message: "An always unlocked exam cannot have an unlocker",
           })
         }
 
-        const resolvedTopicId = topicId ?? existingExam.topicId
+        const isExamNewlyEnabled = data.enabled === true && existingExam.enabled === false
+        if (isExamNewlyEnabled) {
+          await backfillUnlockedTopicsForUnlocker(tx, resolvedTopicId)
+        }
 
-        return prisma.$transaction(async (tx) => {
-          const exam = await tx.exam.update({
-            where: { id },
-            data: {
-              ...data,
-              ...(topicId !== undefined && { topicId }),
-            },
-          })
-
-          if (unlockedByExamId !== undefined) {
-            await syncExamUnlocks(tx, {
-              examId: id,
-              topicId: resolvedTopicId,
-              isAlwaysUnlocked: exam.isAlwaysUnlocked,
-              unlockedByExamId,
-            })
-          } else if (exam.isAlwaysUnlocked && exam.unlockedId !== null) {
-            throw new TRPCError({
-              code: "BAD_REQUEST",
-              message: "An always unlocked exam cannot have an unlocker",
-            })
-          }
-
-          const isExamNewlyEnabled =
-            data.enabled === true && existingExam.enabled === false
-          if (isExamNewlyEnabled) {
-            await backfillUnlockedTopicsForUnlocker(tx, resolvedTopicId)
-          }
-
-          return exam
-        })
-      }),
+        return exam
+      })
+    }),
     updateExamEnabled: adminProcedure
       .input(
         z.object({
@@ -235,8 +228,7 @@ export const adminRouter = router({
             data: { enabled: input.enabled },
           })
 
-          const isExamNewlyEnabled =
-            input.enabled === true && existingExam.enabled === false
+          const isExamNewlyEnabled = input.enabled === true && existingExam.enabled === false
           if (isExamNewlyEnabled) {
             await backfillUnlockedTopicsForUnlocker(tx, existingExam.topicId)
           }
@@ -276,13 +268,11 @@ export const adminRouter = router({
           data: { isAlwaysUnlocked: input.isAlwaysUnlocked },
         })
       }),
-    delete: adminProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) =>
-        prisma.exam.delete({
-          where: { id: input.id },
-        })
-      ),
+    delete: adminProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) =>
+      prisma.exam.delete({
+        where: { id: input.id },
+      })
+    ),
     reorder: adminProcedure
       .input(z.array(z.object({ id: z.string(), order: z.number().int() })))
       .mutation(async ({ input }) => {
@@ -297,26 +287,23 @@ export const adminRouter = router({
       }),
   },
   exercises: {
-    create: adminProcedure
-      .input(exerciseCreateSchema)
-      .mutation(async ({ input }) =>
-        prisma.exercise.create({
-          data: {
-            examId: input.examId,
-            type: input.type,
-            prompt: input.prompt || null,
-            text: input.text || null,
-            order: input.order,
-            audioUrl: input.audioUrl || null,
-            slowAudioUrl: input.slowAudioUrl || null,
-            options: input.options,
-            correctOptionIndex: input.correctOptionIndex,
-            allowsMultipleCorrectOptions:
-              input.allowsMultipleCorrectOptions ?? false,
-            correctInputs: input.correctInputs.filter((s) => s.trim()),
-          },
-        })
-      ),
+    create: adminProcedure.input(exerciseCreateSchema).mutation(async ({ input }) =>
+      prisma.exercise.create({
+        data: {
+          examId: input.examId,
+          type: input.type,
+          prompt: input.prompt || null,
+          text: input.text || null,
+          order: input.order,
+          audioUrl: input.audioUrl || null,
+          slowAudioUrl: input.slowAudioUrl || null,
+          options: input.options,
+          correctOptionIndex: input.correctOptionIndex,
+          allowsMultipleCorrectOptions: input.allowsMultipleCorrectOptions ?? false,
+          correctInputs: input.correctInputs.filter((s) => s.trim()),
+        },
+      })
+    ),
     update: adminProcedure
       .input(
         exerciseBaseSchema.partial().extend({
@@ -359,13 +346,11 @@ export const adminRouter = router({
           },
         })
       }),
-    delete: adminProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) =>
-        prisma.exercise.delete({
-          where: { id: input.id },
-        })
-      ),
+    delete: adminProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) =>
+      prisma.exercise.delete({
+        where: { id: input.id },
+      })
+    ),
     reorder: adminProcedure
       .input(z.array(z.object({ id: z.string(), order: z.number().int() })))
       .mutation(async ({ input }) => {
@@ -409,39 +394,32 @@ export const adminRouter = router({
           )
         )
       }),
-    createNewTopic: adminProcedure
-      .input(topicWriteSchema)
-      .mutation(async ({ input }) => {
-        const {
-          unlockedByTopicId,
-          isAlwaysUnlocked,
-          minimumCompletedExamsToUnlock,
-          ...topicData
-        } = input
+    createNewTopic: adminProcedure.input(topicWriteSchema).mutation(async ({ input }) => {
+      const { unlockedByTopicId, isAlwaysUnlocked, minimumCompletedExamsToUnlock, ...topicData } = input
 
-        return prisma.$transaction(async (tx) => {
-          const topic = await tx.topic.create({
-            data: topicData,
-          })
-
-          await validateAndApplyTopicUnlock(tx, {
-            topicId: topic.id,
-            isAlwaysUnlocked,
-            unlockedByTopicId,
-            minimumCompletedExamsToUnlock,
-          })
-
-          if (unlockedByTopicId !== null) {
-            await backfillUnlockedTopicsForUnlocker(tx, unlockedByTopicId)
-          }
-
-          await backfillUnlockedTopicsForUnlocker(tx, topic.id)
-
-          return tx.topic.findUniqueOrThrow({
-            where: { id: topic.id },
-          })
+      return prisma.$transaction(async (tx) => {
+        const topic = await tx.topic.create({
+          data: topicData,
         })
-      }),
+
+        await validateAndApplyTopicUnlock(tx, {
+          topicId: topic.id,
+          isAlwaysUnlocked,
+          unlockedByTopicId,
+          minimumCompletedExamsToUnlock,
+        })
+
+        if (unlockedByTopicId !== null) {
+          await backfillUnlockedTopicsForUnlocker(tx, unlockedByTopicId)
+        }
+
+        await backfillUnlockedTopicsForUnlocker(tx, topic.id)
+
+        return tx.topic.findUniqueOrThrow({
+          where: { id: topic.id },
+        })
+      })
+    }),
     update: adminProcedure
       .input(
         topicWriteSchema.extend({
@@ -449,13 +427,7 @@ export const adminRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const {
-          id,
-          unlockedByTopicId,
-          isAlwaysUnlocked,
-          minimumCompletedExamsToUnlock,
-          ...topicData
-        } = input
+        const { id, unlockedByTopicId, isAlwaysUnlocked, minimumCompletedExamsToUnlock, ...topicData } = input
 
         const existing = await prisma.topic.findUnique({
           where: { id },

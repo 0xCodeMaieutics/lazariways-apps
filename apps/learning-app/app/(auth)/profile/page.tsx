@@ -1,10 +1,12 @@
-import { auth } from "@/lib/auth.server"
 import { prisma } from "@workspace/database/client"
-import { redirect } from "next/navigation"
-import { headers } from "next/headers"
-import { ProfileClient } from "./page.client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
+
 import { env } from "@/env"
+import { auth } from "@/lib/auth.server"
+
+import { ProfileClient } from "./page.client"
 
 const XP_PER_ATTEMPT = 10
 const XP_PER_PASS = 25
@@ -18,9 +20,7 @@ function getClassification(xp: number): "bronze" | "silver" | "gold" {
 function calculateStreakDays(completionDates: Date[]): number {
   if (completionDates.length === 0) return 0
 
-  const uniqueDays = [
-    ...new Set(completionDates.map((d) => d.toISOString().split("T")[0])),
-  ].sort()
+  const uniqueDays = [...new Set(completionDates.map((d) => d.toISOString().split("T")[0]))].sort()
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -28,9 +28,7 @@ function calculateStreakDays(completionDates: Date[]): number {
   const yesterday = new Date(today)
   yesterday.setDate(yesterday.getDate() - 1)
 
-  const mostRecentDay = new Date(
-    uniqueDays[uniqueDays.length - 1] + "T00:00:00"
-  )
+  const mostRecentDay = new Date(uniqueDays[uniqueDays.length - 1] + "T00:00:00")
   if (mostRecentDay < yesterday) return 0
 
   let streak = 1
@@ -70,10 +68,7 @@ export default async function ProfilePage() {
 
   if (dbUser === null) redirect("/login")
 
-  const totalAttempts = aggregations.reduce(
-    (sum, a) => sum + a.attemptedCount,
-    0
-  )
+  const totalAttempts = aggregations.reduce((sum, a) => sum + a.attemptedCount, 0)
   const totalPassed = aggregations.reduce((sum, a) => sum + a.passedCount, 0)
   const totalXP = totalAttempts * XP_PER_ATTEMPT + totalPassed * XP_PER_PASS
   const classification = getClassification(totalXP)

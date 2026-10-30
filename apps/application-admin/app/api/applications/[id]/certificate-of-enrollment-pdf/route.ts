@@ -1,5 +1,6 @@
 import { generateCertificateOfEnrollmentPdf } from "@workspace/application/pdf"
 import prisma from "@workspace/database/client"
+
 import { requireAdminSessionForApi } from "@/lib/auth"
 
 function sanitizeFilenamePart(value: string): string {
@@ -17,10 +18,7 @@ function formatIsoDate(date: Date | null | undefined): string | undefined {
   return `${year}-${month}-${day}`
 }
 
-export const POST = async (
-  _request: Request,
-  context: { params: Promise<{ id: string }> }
-) => {
+export const POST = async (_request: Request, context: { params: Promise<{ id: string }> }) => {
   const authResult = await requireAdminSessionForApi()
   if (authResult instanceof Response) {
     return authResult
@@ -37,10 +35,7 @@ export const POST = async (
   }
 
   if (existing.linkedUniversity === null) {
-    return Response.json(
-      { error: "University needs to be linked" },
-      { status: 400 }
-    )
+    return Response.json({ error: "University needs to be linked" }, { status: 400 })
   }
 
   const linkedUniversity = existing.linkedUniversity
@@ -73,8 +68,7 @@ export const POST = async (
       vacationJob: {
         semesterBreakFrom: formatIsoDate(existing.semesterBreakFrom),
         semesterBreakTo: formatIsoDate(existing.semesterBreakTo),
-        studiesContinueAfterBreak:
-          existing.studiesContinueAfterSemesterBreak ?? undefined,
+        studiesContinueAfterBreak: existing.studiesContinueAfterSemesterBreak ?? undefined,
       },
     })
   } catch (error) {

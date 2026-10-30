@@ -1,6 +1,4 @@
-export async function tryCatchAsync<T extends () => Promise<any>>(
-  fn: T
-): Promise<[Error | null, Awaited<ReturnType<T>> | null]> {
+export async function tryCatchAsync<R>(fn: () => Promise<R>): Promise<[Error | null, R | null]> {
   try {
     const result = await fn()
     return [null, result]

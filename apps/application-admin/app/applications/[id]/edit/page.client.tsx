@@ -1,9 +1,6 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm, useWatch, type Control } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import { startTransition, useState, useTransition, type ReactNode } from "react"
 import {
   adminApplicationEditSchema,
   type AdminApplicationEditData,
@@ -32,19 +29,18 @@ import {
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@workspace/ui/components/radio-group"
+import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
+import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
 import { SafariInputDate } from "@workspace/ui/components/safari-date-component"
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@workspace/ui/components/native-select"
 import { toast } from "@workspace/ui/components/sonner"
+import { useRouter } from "next/navigation"
+import { startTransition, useState, useTransition, type ReactNode } from "react"
+import { Controller, useForm, useWatch, type Control } from "react-hook-form"
+
 import { ApplicationPdfButtons } from "@/components/application-pdf-buttons"
 import { CopyApplicationLinkButton } from "@/components/copy-application-link-button"
 import { InstagramLink } from "@/components/instagram-link"
+
 import type { UniversityOption } from "./edit-application-content"
 
 const UNIVERSITY_NOT_IN_LIST = "__not_in_list__"
@@ -67,8 +63,7 @@ const sections = [
 
 type SectionId = (typeof sections)[number]["id"]
 
-const sectionTitle = (id: SectionId) =>
-  sections.find((section) => section.id === id)?.title ?? ""
+const sectionTitle = (id: SectionId) => sections.find((section) => section.id === id)?.title ?? ""
 
 interface ApplicationEditFormProps {
   applicationId: string
@@ -79,11 +74,7 @@ interface ApplicationEditFormProps {
 
 function FormSection({ id, children }: { id: SectionId; children: ReactNode }) {
   return (
-    <section
-      id={id}
-      aria-labelledby={`${id}-heading`}
-      className="scroll-mt-16 space-y-4"
-    >
+    <section id={id} aria-labelledby={`${id}-heading`} className="scroll-mt-16 space-y-4">
       <h2 id={`${id}-heading`} className="text-lg font-semibold">
         {sectionTitle(id)}
       </h2>
@@ -101,12 +92,7 @@ function SectionNavigation() {
       <ul className="flex w-max gap-2">
         {sections.map((section) => (
           <li key={section.id}>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full"
-              asChild
-            >
+            <Button variant="outline" size="sm" className="rounded-full" asChild>
               <a href={`#${section.id}`}>{section.title}</a>
             </Button>
           </li>
@@ -170,13 +156,7 @@ function BooleanRadioField({
         control={control}
         render={({ field }) => (
           <RadioGroup
-            value={
-              field.value === true
-                ? "true"
-                : field.value === false
-                  ? "false"
-                  : ""
-            }
+            value={field.value === true ? "true" : field.value === false ? "false" : ""}
             onValueChange={(value) => field.onChange(value === "true")}
             className="flex gap-4"
           >
@@ -208,9 +188,7 @@ export function ApplicationEditForm({
   const [isDeleting, startDeleteTransition] = useTransition()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [showCustomUniversity, setShowCustomUniversity] = useState(
-    () =>
-      !defaultValues.universityId &&
-      (defaultValues.university?.trim() ?? "") !== ""
+    () => !defaultValues.universityId && (defaultValues.university?.trim() ?? "") !== ""
   )
 
   const form = useForm<AdminApplicationEditData>({
@@ -287,9 +265,7 @@ export function ApplicationEditForm({
   })
   const universityId = useWatch({ control, name: "universityId" })
 
-  const universitySelectValue = showCustomUniversity
-    ? UNIVERSITY_NOT_IN_LIST
-    : (universityId ?? "")
+  const universitySelectValue = showCustomUniversity ? UNIVERSITY_NOT_IN_LIST : (universityId ?? "")
 
   const onUniversitySelectChange = (value: string) => {
     if (value === UNIVERSITY_NOT_IN_LIST) {
@@ -337,11 +313,7 @@ export function ApplicationEditForm({
             name="gender"
             control={control}
             render={({ field }) => (
-              <RadioGroup
-                value={field.value}
-                onValueChange={field.onChange}
-                className="flex gap-4"
-              >
+              <RadioGroup value={field.value} onValueChange={field.onChange} className="flex gap-4">
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="M" id="gender-m" />
                   <Label htmlFor="gender-m">მამრობითი</Label>
@@ -355,11 +327,7 @@ export function ApplicationEditForm({
           />
           <FieldError errors={[formState.errors.gender]} />
         </FieldSet>
-        <DateField
-          name="birthDate"
-          label="დაბადების თარიღი"
-          control={control}
-        />
+        <DateField name="birthDate" label="დაბადების თარიღი" control={control} />
         <Field>
           <FieldLabel htmlFor="birthPlace">დაბადების ადგილი</FieldLabel>
           <Input id="birthPlace" {...register("birthPlace")} />
@@ -380,11 +348,7 @@ export function ApplicationEditForm({
         </Field>
         <Field>
           <FieldLabel htmlFor="postalCode">საფოსტო ინდექსი</FieldLabel>
-          <Input
-            id="postalCode"
-            inputMode="numeric"
-            {...register("postalCode")}
-          />
+          <Input id="postalCode" inputMode="numeric" {...register("postalCode")} />
           <FieldError errors={[formState.errors.postalCode]} />
         </Field>
         <Field>
@@ -424,9 +388,7 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.instagram]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="taxId">
-            საგადასახადო იდენტიფიკაციის ნომერი
-          </FieldLabel>
+          <FieldLabel htmlFor="taxId">საგადასახადო იდენტიფიკაციის ნომერი</FieldLabel>
           <Input id="taxId" {...register("taxId")} />
           <FieldError errors={[formState.errors.taxId]} />
         </Field>
@@ -442,9 +404,7 @@ export function ApplicationEditForm({
             onChange={(event) => onUniversitySelectChange(event.target.value)}
             aria-invalid={!!formState.errors.universityId}
           >
-            <NativeSelectOption value="">
-              აირჩიეთ უნივერსიტეტი
-            </NativeSelectOption>
+            <NativeSelectOption value="">აირჩიეთ უნივერსიტეტი</NativeSelectOption>
             {universities.map((university) => (
               <NativeSelectOption key={university.id} value={university.id}>
                 {university.name}
@@ -469,9 +429,7 @@ export function ApplicationEditForm({
           <FieldError errors={[formState.errors.studySubject]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="standardStudyPeriodYears">
-            რეგულირებული სწავლის პერიოდი (წლებში)
-          </FieldLabel>
+          <FieldLabel htmlFor="standardStudyPeriodYears">რეგულირებული სწავლის პერიოდი (წლებში)</FieldLabel>
           <Controller
             name="standardStudyPeriodYears"
             control={control}
@@ -503,26 +461,10 @@ export function ApplicationEditForm({
             )}
           />
         </Field>
-        <DateField
-          name="enrolledSince"
-          label="სწავლის დაწყების თარიღი"
-          control={control}
-        />
-        <DateField
-          name="expectedStudyEnd"
-          label="სწავლის დასრულების მოსალოდნელი თარიღი"
-          control={control}
-        />
-        <DateField
-          name="semesterBreakFrom"
-          label="არდადეგების დასაწყისი"
-          control={control}
-        />
-        <DateField
-          name="semesterBreakTo"
-          label="არდადეგების დასასრული"
-          control={control}
-        />
+        <DateField name="enrolledSince" label="სწავლის დაწყების თარიღი" control={control} />
+        <DateField name="expectedStudyEnd" label="სწავლის დასრულების მოსალოდნელი თარიღი" control={control} />
+        <DateField name="semesterBreakFrom" label="არდადეგების დასაწყისი" control={control} />
+        <DateField name="semesterBreakTo" label="არდადეგების დასასრული" control={control} />
         <BooleanRadioField
           name="studiesContinueAfterSemesterBreak"
           label="სწავლა გაგრძელდება არდადეგების შემდეგ?"
@@ -539,9 +481,7 @@ export function ApplicationEditForm({
             render={({ field }) => (
               <RadioGroup
                 value={field.value ?? ""}
-                onValueChange={(value) =>
-                  field.onChange(value === "" ? undefined : value)
-                }
+                onValueChange={(value) => field.onChange(value === "" ? undefined : value)}
                 className="flex flex-wrap gap-3"
               >
                 {(["A1", "A2", "B1", "B2", "C1"] as const).map((level) => (
@@ -555,30 +495,14 @@ export function ApplicationEditForm({
           />
         </FieldSet>
         <Field>
-          <FieldLabel htmlFor="otherLanguages">
-            სხვა ენების ცოდნა / ენის დონე
-          </FieldLabel>
+          <FieldLabel htmlFor="otherLanguages">სხვა ენების ცოდნა / ენის დონე</FieldLabel>
           <Input id="otherLanguages" {...register("otherLanguages")} />
         </Field>
-        <BooleanRadioField
-          name="driverLicense"
-          label="მართვის მოწმობა"
-          control={control}
-        />
-        <BooleanRadioField
-          name="canRideBike"
-          label="შეგიძლიათ ველოსიპედის ტარება?"
-          control={control}
-        />
-        <BooleanRadioField
-          name="shiftWork"
-          label="მზადყოფნა ცვლებში მუშაობისთვის"
-          control={control}
-        />
+        <BooleanRadioField name="driverLicense" label="მართვის მოწმობა" control={control} />
+        <BooleanRadioField name="canRideBike" label="შეგიძლიათ ველოსიპედის ტარება?" control={control} />
+        <BooleanRadioField name="shiftWork" label="მზადყოფნა ცვლებში მუშაობისთვის" control={control} />
         <Field>
-          <FieldLabel htmlFor="healthRestrictions">
-            ჯანმრთელობის შეზღუდვები თუ არის
-          </FieldLabel>
+          <FieldLabel htmlFor="healthRestrictions">ჯანმრთელობის შეზღუდვები თუ არის</FieldLabel>
           <Input id="healthRestrictions" {...register("healthRestrictions")} />
         </Field>
         <Field>
@@ -608,9 +532,7 @@ export function ApplicationEditForm({
                           if (value === true) {
                             field.onChange([...current, size])
                           } else {
-                            field.onChange(
-                              current.filter((item) => item !== size)
-                            )
+                            field.onChange(current.filter((item) => item !== size))
                           }
                         }}
                       />
@@ -634,45 +556,23 @@ export function ApplicationEditForm({
           <>
             <Field>
               <FieldLabel htmlFor="previousStayPlace">სად</FieldLabel>
-              <Input
-                id="previousStayPlace"
-                {...register("previousStayPlace")}
-              />
+              <Input id="previousStayPlace" {...register("previousStayPlace")} />
             </Field>
-            <DateField
-              name="previousStayPeriodFrom"
-              label="პერიოდის დასაწყისი"
-              control={control}
-            />
-            <DateField
-              name="previousStayPeriodTo"
-              label="პერიოდის დასასრული"
-              control={control}
-            />
+            <DateField name="previousStayPeriodFrom" label="პერიოდის დასაწყისი" control={control} />
+            <DateField name="previousStayPeriodTo" label="პერიოდის დასასრული" control={control} />
           </>
         ) : null}
       </FormSection>
 
       <FormSection id="emergency">
         <Field>
-          <FieldLabel htmlFor="emergencyContactName">
-            საგანგებო საკონტაქტო პირი
-          </FieldLabel>
-          <Input
-            id="emergencyContactName"
-            {...register("emergencyContactName")}
-          />
+          <FieldLabel htmlFor="emergencyContactName">საგანგებო საკონტაქტო პირი</FieldLabel>
+          <Input id="emergencyContactName" {...register("emergencyContactName")} />
           <FieldError errors={[formState.errors.emergencyContactName]} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="emergencyPhone">
-            საგანგებო ტელეფონის ნომერი
-          </FieldLabel>
-          <Input
-            id="emergencyPhone"
-            type="tel"
-            {...register("emergencyPhone")}
-          />
+          <FieldLabel htmlFor="emergencyPhone">საგანგებო ტელეფონის ნომერი</FieldLabel>
+          <Input id="emergencyPhone" type="tel" {...register("emergencyPhone")} />
           <FieldError errors={[formState.errors.emergencyPhone]} />
         </Field>
       </FormSection>
@@ -696,15 +596,11 @@ export function ApplicationEditForm({
                           if (value === true) {
                             field.onChange([...field.value, sector])
                           } else {
-                            field.onChange(
-                              field.value.filter((item) => item !== sector)
-                            )
+                            field.onChange(field.value.filter((item) => item !== sector))
                           }
                         }}
                       />
-                      <Label htmlFor={`sector-${sector}`}>
-                        {workSectorLabels[sector]}
-                      </Label>
+                      <Label htmlFor={`sector-${sector}`}>{workSectorLabels[sector]}</Label>
                     </div>
                   )
                 })}
@@ -737,8 +633,7 @@ export function ApplicationEditForm({
           განაცხადის წაშლა
         </h2>
         <p className="text-sm text-muted-foreground">
-          განაცხადი და მისი ფოტო სამუდამოდ წაიშლება. ამ მოქმედების გაუქმება
-          შეუძლებელია.
+          განაცხადი და მისი ფოტო სამუდამოდ წაიშლება. ამ მოქმედების გაუქმება შეუძლებელია.
         </p>
         <Button
           type="button"
@@ -771,16 +666,11 @@ export function ApplicationEditForm({
         </div>
       </div>
 
-      <AlertDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-      >
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>წავშალოთ განაცხადი?</AlertDialogTitle>
-            <AlertDialogDescription>
-              განაცხადი და შენახული ფოტო სამუდამოდ წაიშლება.
-            </AlertDialogDescription>
+            <AlertDialogDescription>განაცხადი და შენახული ფოტო სამუდამოდ წაიშლება.</AlertDialogDescription>
           </AlertDialogHeader>
           {deleteError !== null ? (
             <p role="alert" className="text-sm text-destructive">
@@ -791,12 +681,7 @@ export function ApplicationEditForm({
             <AlertDialogCancel type="button" disabled={isDeleting}>
               გაუქმება
             </AlertDialogCancel>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={deleteApplication}
-              disabled={isDeleting}
-            >
+            <Button type="button" variant="destructive" onClick={deleteApplication} disabled={isDeleting}>
               {isDeleting ? "იშლება…" : "წაშლა"}
             </Button>
           </AlertDialogFooter>

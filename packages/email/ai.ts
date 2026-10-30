@@ -26,9 +26,7 @@ type ExtractionResult = {
   company: Record<string, unknown>
   usage: TokenUsage
 }
-export async function extractCompanyFromHtml(
-  html: string
-): Promise<ExtractionResult> {
+export async function extractCompanyFromHtml(html: string): Promise<ExtractionResult> {
   const apiKey = process.env.OPENAI_API_KEY
   const model = process.env.OPENAI_MODEL
 

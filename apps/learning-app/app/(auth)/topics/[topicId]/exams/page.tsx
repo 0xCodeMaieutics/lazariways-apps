@@ -1,16 +1,14 @@
+import { prisma } from "@workspace/database/client"
+import { headers } from "next/headers"
+import { notFound, redirect } from "next/navigation"
+
 import { auth } from "@/lib/auth.server"
 import { isExamUnlockedForUser } from "@/lib/exam-access"
 import { isTopicUnlockedForUser } from "@/lib/topic-access"
-import { prisma } from "@workspace/database/client"
-import { notFound, redirect } from "next/navigation"
-import { Exams } from "./page.client"
-import { headers } from "next/headers"
 
-export default async function TopicExamsPage({
-  params,
-}: {
-  params: Promise<{ topicId: string }>
-}) {
+import { Exams } from "./page.client"
+
+export default async function TopicExamsPage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId } = await params
 
   const user = await auth.api.getSession({
@@ -52,9 +50,7 @@ export default async function TopicExamsPage({
   const isUnlocked = isTopicUnlockedForUser({
     isAlwaysUnlocked: topic.isAlwaysUnlocked,
     topicId: topic.id,
-    unlockedTopicIds: new Set(
-      userUnlockedTopic === null ? [] : [userUnlockedTopic.topicId]
-    ),
+    unlockedTopicIds: new Set(userUnlockedTopic === null ? [] : [userUnlockedTopic.topicId]),
   })
 
   if (!isUnlocked) redirect("/topics")
@@ -97,9 +93,7 @@ export default async function TopicExamsPage({
       isUnlocked: isExamUnlockedForUser({
         isAlwaysUnlocked: exam.isAlwaysUnlocked,
         examId: exam.id,
-        unlockedExamIds: new Set(
-          userUnlockedExams.map((unlockedExam) => unlockedExam.examId)
-        ),
+        unlockedExamIds: new Set(userUnlockedExams.map((unlockedExam) => unlockedExam.examId)),
       }),
     }
   })

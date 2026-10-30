@@ -1,4 +1,5 @@
 import crypto from "node:crypto"
+
 import prisma from "@workspace/database/client"
 
 const VERIFICATION_CODE_EXPIRY_MINUTES = 10
@@ -15,9 +16,7 @@ export async function createAndSendVerificationCode({
   chatId: string
   token: string
 }): Promise<{ success: true } | { success: false; errorType: "COOLDOWN" }> {
-  const cooldownSince = new Date(
-    Date.now() - VERIFICATION_CODE_COOLDOWN_MINUTES * 60 * 1000
-  )
+  const cooldownSince = new Date(Date.now() - VERIFICATION_CODE_COOLDOWN_MINUTES * 60 * 1000)
 
   const recentCode = await prisma.telegramVerification.findFirst({
     where: {
@@ -42,9 +41,7 @@ export async function createAndSendVerificationCode({
   })
 
   const code = generateVerificationCode()
-  const expiresAt = new Date(
-    Date.now() + VERIFICATION_CODE_EXPIRY_MINUTES * 60 * 1000
-  )
+  const expiresAt = new Date(Date.now() + VERIFICATION_CODE_EXPIRY_MINUTES * 60 * 1000)
 
   await prisma.telegramVerification.create({
     data: { code, expiresAt },
@@ -94,15 +91,7 @@ export async function verifyCodeAndCreateSession(code: string) {
   return token
 }
 
-async function sendTelegramMessage({
-  text,
-  chatId,
-  token,
-}: {
-  text: string
-  token: string
-  chatId: string
-}) {
+async function sendTelegramMessage({ text, chatId, token }: { text: string; token: string; chatId: string }) {
   const body = new URLSearchParams({
     chat_id: chatId,
     text,
