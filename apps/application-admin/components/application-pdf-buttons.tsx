@@ -8,9 +8,7 @@ interface ApplicationPdfButtonsProps {
   applicationId: string
 }
 
-export function ApplicationPdfButtons({
-  applicationId,
-}: ApplicationPdfButtonsProps) {
+export function ApplicationPdfButtons({ applicationId }: ApplicationPdfButtonsProps) {
   return (
     <div className="space-y-2">
       <GenerateBewerberChecklistButton applicationId={applicationId} />

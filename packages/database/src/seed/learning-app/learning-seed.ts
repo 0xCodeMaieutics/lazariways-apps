@@ -1,12 +1,10 @@
-import {
-  ExerciseType,
-  TopicType,
-  PrismaClient,
-} from "../../../prisma/generated/client"
-import { uploadFilePathToStorage } from "@workspace/file-upload/s3-client"
 import { readdir, readFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+
+import { uploadFilePathToStorage } from "@workspace/file-upload/s3-client"
+
+import type { ExerciseType, TopicType, PrismaClient } from "../../../prisma/generated/client"
 import topicsJson from "./assets/dev/topics.json"
 
 const SEED_AUDIO_FILES = [
@@ -23,9 +21,7 @@ const PROGRAMS_PATH = join(ASSETS_DEV_PATH, "programs")
 async function uploadSeedAudios() {
   const bucket = process.env.S3_BUCKET_NAME
   if (bucket === undefined || bucket === "") {
-    throw new Error(
-      "S3_BUCKET_NAME is required to seed learning app audio files"
-    )
+    throw new Error("S3_BUCKET_NAME is required to seed learning app audio files")
   }
 
   for (const audio of SEED_AUDIO_FILES) {
@@ -39,13 +35,7 @@ async function uploadSeedAudios() {
   }
 }
 
-export const insertLearningData = async ({
-  prisma,
-  userId,
-}: {
-  prisma: PrismaClient
-  userId: string
-}) => {
+export const insertLearningData = async ({ prisma, userId }: { prisma: PrismaClient; userId: string }) => {
   console.log("Uploading seed audio files to S3...")
   await uploadSeedAudios()
   console.log("Inserting programs...")
@@ -69,8 +59,7 @@ export const insertLearningData = async ({
         enabled: topic.enabled,
         order: topic.order,
         isAlwaysUnlocked: topic.isAlwaysUnlocked ?? false,
-        minimumCompletedExamsToUnlock:
-          topic.minimumCompletedExamsToUnlock ?? null,
+        minimumCompletedExamsToUnlock: topic.minimumCompletedExamsToUnlock ?? null,
       },
     })
     topicIdByNumber.set(topicIndex, topic.id)
@@ -92,9 +81,7 @@ export const insertLearningData = async ({
 
     const topicId = topicIdByNumber.get(programNumber)
     if (!topicId) {
-      console.warn(
-        `No program found for ${programFolderName} (number ${programNumber}), skipping`
-      )
+      console.warn(`No program found for ${programFolderName} (number ${programNumber}), skipping`)
       continue
     }
 
@@ -121,20 +108,14 @@ export const insertLearningData = async ({
       const content = await readFile(examsPath, "utf-8")
       examsJson = JSON.parse(content) as typeof examsJson
     } catch {
-      console.warn(
-        `Could not read ${examsPath}, skipping program ${programNumber}`
-      )
+      console.warn(`Could not read ${examsPath}, skipping program ${programNumber}`)
       continue
     }
 
     const examIds = []
     let currentExamIndex = 0
     for (const exam of examsJson) {
-      const {
-        userPassCount = 0,
-        minimumPassedCount = 0,
-        waitUntilPassAllowedInSeconds = 3,
-      } = exam ?? {}
+      const { userPassCount = 0, waitUntilPassAllowedInSeconds = 3 } = exam ?? {}
       const createdExam = await prisma.exam.create({
         data: {
           id: exam.id,
@@ -189,10 +170,7 @@ export const insertLearningData = async ({
         },
       })
 
-      const exercisePath = join(
-        programPath,
-        exam.relativeExercisePath.replace(/^\.\//, "")
-      )
+      const exercisePath = join(programPath, exam.relativeExercisePath.replace(/^\.\//, ""))
 
       let exercisesJson: Array<{
         type: string
@@ -223,8 +201,7 @@ export const insertLearningData = async ({
             text: exercise.text ?? null,
             options: exercise.options,
             correctOptionIndex: exercise.correctOptionIndex,
-            allowsMultipleCorrectOptions:
-              exercise.allowsMultipleCorrectOptions ?? false,
+            allowsMultipleCorrectOptions: exercise.allowsMultipleCorrectOptions ?? false,
             correctInputs: exercise.correctInputs,
             audioUrl: exercise.audioUrl ?? null,
             slowAudioUrl: exercise.slowAudioUrl ?? null,
@@ -245,7 +222,7 @@ export const insertLearningData = async ({
           data: { unlockedId: exam.id },
         })
       )
-      await Promise.all([...promises])
+      await Promise.all(promises)
     }
   }
 
@@ -270,20 +247,14 @@ export const insertLearningData = async ({
 
   const unlockedTopicRows: Array<{ userId: string; topicId: string }> = []
   for (const unlocker of unlockerTopics) {
-    if (
-      unlocker.minimumCompletedExamsToUnlock === null ||
-      unlocker.unlocksTopics.length === 0
-    ) {
+    if (unlocker.minimumCompletedExamsToUnlock === null || unlocker.unlocksTopics.length === 0) {
       continue
     }
 
     let completedEnabledExamCount = 0
     for (const exam of unlocker.exams) {
       const aggregation = exam.userExamAggregation[0]
-      if (
-        aggregation !== undefined &&
-        aggregation.passedCount >= exam.minimumPassedCount
-      ) {
+      if (aggregation !== undefined && aggregation.passedCount >= exam.minimumPassedCount) {
         completedEnabledExamCount += 1
       }
     }

@@ -1,8 +1,6 @@
-import prisma from "@workspace/database/client"
+import type prisma from "@workspace/database/client"
 
-type TransactionClient = Parameters<
-  Parameters<typeof prisma.$transaction>[0]
->[0]
+type TransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
 
 export async function unlockTopicsAfterExamCompletion(
   tx: TransactionClient,
@@ -22,11 +20,7 @@ export async function unlockTopicsAfterExamCompletion(
     },
   })
 
-  if (
-    topic === null ||
-    topic.minimumCompletedExamsToUnlock === null ||
-    topic.unlocksTopics.length === 0
-  ) {
+  if (topic === null || topic.minimumCompletedExamsToUnlock === null || topic.unlocksTopics.length === 0) {
     return
   }
 

@@ -1,5 +1,6 @@
-import { AdminExams } from "./page.client"
 import prisma from "@workspace/database/client"
+
+import { AdminExams } from "./page.client"
 
 export default async function AdminExamsPage({
   params: paramsPromise,

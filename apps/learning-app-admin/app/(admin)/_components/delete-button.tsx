@@ -1,10 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
-import { useTRPC } from "@/lib/trpc/react"
-import { Button } from "@workspace/ui/components/button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,19 +12,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
+import { Button } from "@workspace/ui/components/button"
 import { Loader2, Trash2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+
+import { useTRPC } from "@/lib/trpc/react"
 
 type DeleteButtonProps = {
   entityType: "exam" | "exercise"
   entityId: string
   entityName: string
-  variant?:
-    | "default"
-    | "outline"
-    | "ghost"
-    | "destructive"
-    | "secondary"
-    | "link"
+  variant?: "default" | "outline" | "ghost" | "destructive" | "secondary" | "link"
   size?: "default" | "sm" | "lg" | "icon"
   className?: string
 }
@@ -75,8 +70,7 @@ export function DeleteButton({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete {entityType}?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete &quot;{entityName}&quot;? This
-            action cannot be undone.
+            Are you sure you want to delete &quot;{entityName}&quot;? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

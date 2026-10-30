@@ -1,22 +1,14 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useMutation } from "@tanstack/react-query"
 import { Card, CardContent } from "@workspace/ui/components/card"
 import { Separator } from "@workspace/ui/components/separator"
-import { cn } from "@/lib/utils"
-import {
-  Award,
-  Calendar,
-  Flame,
-  Plus,
-  Target,
-  Trophy,
-  User,
-  Zap,
-} from "lucide-react"
+import { Award, Calendar, Flame, Plus, Target, Trophy, User, Zap } from "lucide-react"
 import Image from "next/image"
-import { useMutation } from "@tanstack/react-query"
+import { useEffect, useRef, useState } from "react"
+
 import { useTRPC } from "@/lib/trpc/react"
+import { cn } from "@/lib/utils"
 
 const ProfileAvatar = ({
   image,
@@ -37,11 +29,7 @@ const ProfileAvatar = ({
         {displaySrc !== null ? (
           previewUrl !== null ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={previewUrl}
-              alt={name}
-              className="size-full rounded-full object-cover"
-            />
+            <img src={previewUrl} alt={name} className="size-full rounded-full object-cover" />
           ) : (
             <Image
               src={displaySrc}
@@ -154,10 +142,7 @@ const StatCard = ({
   <Card className="gap-0 py-4">
     <CardContent className="flex items-center gap-3 px-4">
       <div
-        className={cn(
-          "flex size-9 shrink-0 items-center justify-center rounded-full",
-          iconBg ?? "bg-muted"
-        )}
+        className={cn("flex size-9 shrink-0 items-center justify-center rounded-full", iconBg ?? "bg-muted")}
       >
         <Icon className={cn("size-4", iconColor ?? "text-muted-foreground")} />
       </div>

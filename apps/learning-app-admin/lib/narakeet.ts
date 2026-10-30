@@ -15,21 +15,15 @@ interface StatusResponse {
   message?: string
 }
 
-export async function generateAudio(
-  text: string,
-  voice: string
-): Promise<Buffer> {
-  const res = await fetch(
-    `https://api.narakeet.com/text-to-speech/m4a?voice=${encodeURIComponent(voice)}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain",
-        "x-api-key": env.NARAKEET_API_KEY,
-      },
-      body: text,
-    }
-  )
+export async function generateAudio(text: string, voice: string): Promise<Buffer> {
+  const res = await fetch(`https://api.narakeet.com/text-to-speech/m4a?voice=${encodeURIComponent(voice)}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain",
+      "x-api-key": env.NARAKEET_API_KEY,
+    },
+    body: text,
+  })
 
   if (!res.ok) {
     throw new Error(`Narakeet API error: ${res.status} ${await res.text()}`)
@@ -51,9 +45,7 @@ export async function generateAudio(
     if (!status.finished) continue
 
     if (!status.succeeded) {
-      throw new Error(
-        `Narakeet generation failed: ${status.message ?? "unknown error"}`
-      )
+      throw new Error(`Narakeet generation failed: ${status.message ?? "unknown error"}`)
     }
 
     if (!status.result) {

@@ -1,8 +1,6 @@
 import type { Application } from "@workspace/database/browser"
-import type {
-  AdminApplicationEditData,
-  ApplicationFormData,
-} from "./application-schema"
+
+import type { AdminApplicationEditData, ApplicationFormData } from "./application-schema"
 import { shoeSizeOptions, workSectorOptions } from "./application-schema"
 
 function optionalString(value: string | undefined): string | null {
@@ -48,23 +46,14 @@ function optionalDateForForm(date: Date | null | undefined): string {
   return formatDateForForm(date)
 }
 
-function parseShoeSizes(
-  sizes: string[]
-): NonNullable<AdminApplicationEditData["shoeSize"]> {
+function parseShoeSizes(sizes: string[]): NonNullable<AdminApplicationEditData["shoeSize"]> {
   const allowed = new Set<string>(shoeSizeOptions)
-  return sizes.filter((size): size is (typeof shoeSizeOptions)[number] =>
-    allowed.has(size)
-  )
+  return sizes.filter((size): size is (typeof shoeSizeOptions)[number] => allowed.has(size))
 }
 
-function parseWorkSectors(
-  sectors: string[]
-): AdminApplicationEditData["workSector"] {
+function parseWorkSectors(sectors: string[]): AdminApplicationEditData["workSector"] {
   const allowed = new Set<string>(workSectorOptions)
-  return sectors.filter(
-    (sector): sector is (typeof workSectorOptions)[number] =>
-      allowed.has(sector)
-  )
+  return sectors.filter((sector): sector is (typeof workSectorOptions)[number] => allowed.has(sector))
 }
 
 function optionalId(value: string | undefined): string | null {
@@ -72,9 +61,7 @@ function optionalId(value: string | undefined): string | null {
   return trimmed === "" ? null : trimmed
 }
 
-export function applicationToPrismaData(
-  data: AdminApplicationEditData | ApplicationFormData
-) {
+export function applicationToPrismaData(data: AdminApplicationEditData | ApplicationFormData) {
   return {
     firstName: data.firstName.trim(),
     lastName: data.lastName.trim(),
@@ -92,27 +79,16 @@ export function applicationToPrismaData(
     instagram: optionalString(data.instagram),
     taxId: optionalString(data.taxId),
     universityId: "universityId" in data ? optionalId(data.universityId) : null,
-    university:
-      "universityId" in data && hasText(data.universityId)
-        ? null
-        : optionalString(data.university),
+    university: "universityId" in data && hasText(data.universityId) ? null : optionalString(data.university),
     studySubject: optionalString(data.studySubject),
     standardStudyPeriodYears:
-      "standardStudyPeriodYears" in data
-        ? (data.standardStudyPeriodYears ?? null)
-        : null,
-    enrolledSince:
-      "enrolledSince" in data ? optionalIsoDate(data.enrolledSince) : null,
-    expectedStudyEnd:
-      "expectedStudyEnd" in data
-        ? optionalIsoDate(data.expectedStudyEnd)
-        : null,
+      "standardStudyPeriodYears" in data ? (data.standardStudyPeriodYears ?? null) : null,
+    enrolledSince: "enrolledSince" in data ? optionalIsoDate(data.enrolledSince) : null,
+    expectedStudyEnd: "expectedStudyEnd" in data ? optionalIsoDate(data.expectedStudyEnd) : null,
     semesterBreakFrom: optionalIsoDate(data.semesterBreakFrom),
     semesterBreakTo: optionalIsoDate(data.semesterBreakTo),
     studiesContinueAfterSemesterBreak:
-      "studiesContinueAfterSemesterBreak" in data
-        ? (data.studiesContinueAfterSemesterBreak ?? null)
-        : null,
+      "studiesContinueAfterSemesterBreak" in data ? (data.studiesContinueAfterSemesterBreak ?? null) : null,
     germanLevel: data.germanLevel ?? null,
     otherLanguages: optionalString(data.otherLanguages),
     driverLicense: data.driverLicense ?? false,
@@ -132,9 +108,7 @@ export function applicationToPrismaData(
   }
 }
 
-export function prismaToAdminEditData(
-  application: Application
-): AdminApplicationEditData {
+export function prismaToAdminEditData(application: Application): AdminApplicationEditData {
   return {
     firstName: application.firstName,
     lastName: application.lastName,
@@ -159,8 +133,7 @@ export function prismaToAdminEditData(
     expectedStudyEnd: optionalDateForForm(application.expectedStudyEnd),
     semesterBreakFrom: optionalDateForForm(application.semesterBreakFrom),
     semesterBreakTo: optionalDateForForm(application.semesterBreakTo),
-    studiesContinueAfterSemesterBreak:
-      application.studiesContinueAfterSemesterBreak ?? undefined,
+    studiesContinueAfterSemesterBreak: application.studiesContinueAfterSemesterBreak ?? undefined,
     germanLevel: application.germanLevel ?? undefined,
     otherLanguages: application.otherLanguages ?? undefined,
     driverLicense: application.driverLicense,
@@ -172,9 +145,7 @@ export function prismaToAdminEditData(
     shoeSize: parseShoeSizes(application.shoeSize),
     hasBeenInGermanyBefore: application.hasBeenInGermanyBefore,
     previousStayPlace: application.previousStayPlace ?? undefined,
-    previousStayPeriodFrom: optionalDateForForm(
-      application.previousStayPeriodFrom
-    ),
+    previousStayPeriodFrom: optionalDateForForm(application.previousStayPeriodFrom),
     previousStayPeriodTo: optionalDateForForm(application.previousStayPeriodTo),
     emergencyContactName: application.emergencyContactName,
     emergencyPhone: application.emergencyPhone,

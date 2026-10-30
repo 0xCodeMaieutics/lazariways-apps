@@ -1,33 +1,21 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm, useWatch } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import { z } from "zod"
-import { TopicType } from "@workspace/database/browser"
 import { useMutation } from "@tanstack/react-query"
-import { useTRPC } from "@/lib/trpc/react"
+import { TopicType } from "@workspace/database/browser"
 import { Button } from "@workspace/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Checkbox } from "@workspace/ui/components/checkbox"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@workspace/ui/components/native-select"
+import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Controller, useForm, useWatch } from "react-hook-form"
+import { z } from "zod"
+
+import { useTRPC } from "@/lib/trpc/react"
 
 const topicSchema = z
   .object({
@@ -37,10 +25,7 @@ const topicSchema = z
     enabled: z.boolean(),
     isAlwaysUnlocked: z.boolean(),
     unlockedByTopicId: z.string(),
-    minimumCompletedExamsToUnlock: z.union([
-      z.literal(""),
-      z.coerce.number().int().min(1),
-    ]),
+    minimumCompletedExamsToUnlock: z.union([z.literal(""), z.coerce.number().int().min(1)]),
   })
   .superRefine((data, ctx) => {
     if (data.isAlwaysUnlocked && data.unlockedByTopicId !== "") {
@@ -75,14 +60,9 @@ function toPayload(data: TopicFormValues) {
     order: data.order,
     enabled: data.enabled,
     isAlwaysUnlocked: data.isAlwaysUnlocked,
-    unlockedByTopicId:
-      data.isAlwaysUnlocked || data.unlockedByTopicId === ""
-        ? null
-        : data.unlockedByTopicId,
+    unlockedByTopicId: data.isAlwaysUnlocked || data.unlockedByTopicId === "" ? null : data.unlockedByTopicId,
     minimumCompletedExamsToUnlock:
-      data.minimumCompletedExamsToUnlock === ""
-        ? null
-        : data.minimumCompletedExamsToUnlock,
+      data.minimumCompletedExamsToUnlock === "" ? null : data.minimumCompletedExamsToUnlock,
   }
 }
 
@@ -161,12 +141,7 @@ export function TopicForm({
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="name">Name</FieldLabel>
-              <Input
-                id="name"
-                placeholder="Topic name"
-                disabled={isPending}
-                {...register("name")}
-              />
+              <Input id="name" placeholder="Topic name" disabled={isPending} {...register("name")} />
               <FieldError errors={[formState.errors.name]} />
             </Field>
             <div className="grid gap-6 sm:grid-cols-2">
@@ -199,13 +174,7 @@ export function TopicForm({
               </Field>
               <Field>
                 <FieldLabel htmlFor="order">Order</FieldLabel>
-                <Input
-                  id="order"
-                  type="number"
-                  min={0}
-                  disabled={isPending}
-                  {...register("order")}
-                />
+                <Input id="order" type="number" min={0} disabled={isPending} {...register("order")} />
                 <FieldError errors={[formState.errors.order]} />
               </Field>
             </div>
@@ -284,9 +253,8 @@ export function TopicForm({
                 )}
               />
               <p className="mt-2 text-xs text-muted-foreground">
-                Learners get this topic after they fully pass enough enabled
-                exams in the unlocker. Leave empty if it is always unlocked or
-                not yet attached.
+                Learners get this topic after they fully pass enough enabled exams in the unlocker. Leave
+                empty if it is always unlocked or not yet attached.
               </p>
             </Field>
             {isEdit && (
@@ -301,12 +269,10 @@ export function TopicForm({
                   disabled={isPending}
                   {...register("minimumCompletedExamsToUnlock")}
                 />
-                <FieldError
-                  errors={[formState.errors.minimumCompletedExamsToUnlock]}
-                />
+                <FieldError errors={[formState.errors.minimumCompletedExamsToUnlock]} />
                 <p className="mt-2 text-xs text-muted-foreground">
-                  Required if this topic unlocks others. May be higher than the
-                  current number of enabled exams.
+                  Required if this topic unlocks others. May be higher than the current number of enabled
+                  exams.
                 </p>
               </Field>
             )}

@@ -7,9 +7,7 @@ const DEV_PASSWORD = "!Dev$LazaryIsAwesome"
 const adminURL = "http://localhost:3008"
 const appURL = "http://localhost:3007"
 
-test("Create topic by admin and is displayed in the learning-app", async ({
-  page,
-}) => {
+test("Create topic by admin and is displayed in the learning-app", async ({ page }) => {
   await page.goto(`${appURL}/login`)
   await page.getByLabel("ელფოსტა").fill(DEV_EMAIL)
   await page.getByLabel("პაროლი").fill(DEV_PASSWORD)
@@ -28,9 +26,7 @@ test("Create topic by admin and is displayed in the learning-app", async ({
   await page.getByLabel("Type").selectOption("HOTEL")
   await page.getByRole("checkbox", { name: "Enable topic" }).click()
   await page.getByLabel("Unlocked by").selectOption("PLf3qkDXC9FYkANh5rkcB")
-  await page
-    .getByRole("spinbutton", { name: "Minimum completed exams to" })
-    .fill("6")
+  await page.getByRole("spinbutton", { name: "Minimum completed exams to" }).fill("6")
   await page.getByRole("button", { name: "Create topic" }).click()
   const createdTopic = await prisma.topic.findFirstOrThrow({
     where: { name: TOPIC_NAME },
@@ -49,9 +45,7 @@ test("Create topic by admin and is displayed in the learning-app", async ({
   await page.getByRole("textbox", { name: "Title" }).fill(EXAM_NAME)
   await page.getByRole("textbox", { name: "Description" }).click()
   await page.getByRole("textbox", { name: "Description" }).fill("Exam 1 desc")
-  await page
-    .getByRole("spinbutton", { name: "Minimum correct answers" })
-    .fill("1")
+  await page.getByRole("spinbutton", { name: "Minimum correct answers" }).fill("1")
   await page.getByRole("checkbox", { name: "Enable exam" }).click()
   await page.getByRole("button", { name: "Create exam" }).click()
   await expect(page).toHaveURL(/\/exams$/)
@@ -70,15 +64,9 @@ test("Create topic by admin and is displayed in the learning-app", async ({
   await page.getByRole("textbox", { name: "Text" }).click()
   await page.getByRole("textbox", { name: "Text" }).fill(exerciseText)
   await page.getByRole("textbox", { name: "Options (one per line)" }).click()
-  await page
-    .getByRole("textbox", { name: "Options (one per line)" })
-    .fill("Hey\nHallo\nHillo")
-  await page
-    .getByRole("textbox", { name: "Correct option index (0-based" })
-    .click()
-  await page
-    .getByRole("textbox", { name: "Correct option index (0-based" })
-    .fill("0")
+  await page.getByRole("textbox", { name: "Options (one per line)" }).fill("Hey\nHallo\nHillo")
+  await page.getByRole("textbox", { name: "Correct option index (0-based" }).click()
+  await page.getByRole("textbox", { name: "Correct option index (0-based" }).fill("0")
   await page.getByRole("button", { name: "Create exercise" }).click()
   await expect(page).toHaveURL(/\/exercises$/)
 

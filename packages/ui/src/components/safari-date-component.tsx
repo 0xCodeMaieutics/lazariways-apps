@@ -1,16 +1,9 @@
 import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
 import { Calendar } from "lucide-react"
-import type {
-  ControllerRenderProps,
-  FieldPath,
-  FieldValues,
-} from "react-hook-form"
+import type { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form"
 
-export function SafariInputDate<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
->({
+export function SafariInputDate<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
   field,
   id,
   "aria-invalid": ariaInvalid,
@@ -28,9 +21,7 @@ export function SafariInputDate<
         id={id}
         type="date"
         aria-invalid={ariaInvalid}
-        className={cn(
-          "box-border h-7 border-none pl-3 text-sm transition-colors"
-        )}
+        className={cn("box-border h-7 border-none pl-3 text-sm transition-colors")}
       />
       <Calendar className="absolute top-1/2 right-3 size-4 -translate-y-1/2 md:hidden" />
       {field.value === "" && (

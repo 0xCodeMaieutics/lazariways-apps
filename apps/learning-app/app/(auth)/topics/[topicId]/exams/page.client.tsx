@@ -1,7 +1,7 @@
 "use client"
-import { cn } from "@/lib/utils"
-import { Card, CardContent } from "@workspace/ui/components/card"
+import type { Exam, Topic, UserExamAggregation } from "@workspace/database/browser"
 import { Button } from "@workspace/ui/components/button"
+import { Card, CardContent } from "@workspace/ui/components/card"
 import {
   BookOpen,
   ChevronLeft,
@@ -13,30 +13,19 @@ import {
   Lock,
   Target,
 } from "lucide-react"
-import type {
-  Exam,
-  Topic,
-  UserExamAggregation,
-} from "@workspace/database/browser"
 import Link from "next/link"
-import { Banner } from "@/components/ui/banner"
-import { useCountdown } from "@/utils/useCountdown"
-import { useExamLogic } from "@/utils/use-exam-logic"
 import { useParams } from "next/navigation"
 
-function ExamCardTimer({
-  hasPassed,
-  countdownTarget,
-}: {
-  hasPassed: boolean
-  countdownTarget: Date | null
-}) {
+import { Banner } from "@/components/ui/banner"
+import { cn } from "@/lib/utils"
+import { useExamLogic } from "@/utils/use-exam-logic"
+import { useCountdown } from "@/utils/useCountdown"
+
+function ExamCardTimer({ hasPassed, countdownTarget }: { hasPassed: boolean; countdownTarget: Date | null }) {
   const { hours, minutes, seconds, isComplete } = useCountdown(countdownTarget)
 
   if (!hasPassed && isComplete && countdownTarget !== null) {
-    return (
-      <span className="text-xxs text-emerald-400">ჩაბარება შესაძლებელია</span>
-    )
+    return <span className="text-xxs text-emerald-400">ჩაბარება შესაძლებელია</span>
   }
 
   return (
@@ -45,8 +34,7 @@ function ExamCardTimer({
     countdownTarget !== null && (
       <span className="text-xxs flex items-center gap-0.5 text-amber-600 tabular-nums dark:text-amber-400">
         <Clock className="size-3" />
-        {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:
-        {String(seconds).padStart(2, "0")}
+        {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
       </span>
     )
   )
@@ -62,9 +50,7 @@ type ExamListItem = Exam & {
 
 function ExamCard({ exam }: { exam: ExamListItem }) {
   const { topicId } = useParams()
-  const userExamAggregation =
-    exam.userExamAggregation.find((userExam) => userExam.examId === exam.id) ??
-    null
+  const userExamAggregation = exam.userExamAggregation.find((userExam) => userExam.examId === exam.id) ?? null
 
   const { countdownTarget, examPassedCount, hasExamPassed } = useExamLogic({
     exam,
@@ -84,14 +70,11 @@ function ExamCard({ exam }: { exam: ExamListItem }) {
       className={cn(isCardUnlocked === false && "pointer-events-none")}
     >
       <Card
-        className={cn(
-          "group relative gap-0 overflow-hidden py-0 transition-all",
-          {
-            "border-emerald-200 bg-linear-to-r from-emerald-50 via-green-50 to-teal-50 dark:border-emerald-800/40 dark:from-emerald-950/40 dark:via-green-950/30 dark:to-teal-950/40":
-              hasExamPassed,
-            "opacity-50": isCardUnlocked === false,
-          }
-        )}
+        className={cn("group relative gap-0 overflow-hidden py-0 transition-all", {
+          "border-emerald-200 bg-linear-to-r from-emerald-50 via-green-50 to-teal-50 dark:border-emerald-800/40 dark:from-emerald-950/40 dark:via-green-950/30 dark:to-teal-950/40":
+            hasExamPassed,
+          "opacity-50": isCardUnlocked === false,
+        })}
       >
         <CardContent className="space-y-3 px-4 py-4 pl-5">
           <div className="flex items-start gap-3">
@@ -106,12 +89,9 @@ function ExamCard({ exam }: { exam: ExamListItem }) {
                 )}
 
                 <span
-                  className={cn(
-                    "transition-color text-sm leading-tight font-semibold",
-                    {
-                      "text-emerald-200": hasExamPassed,
-                    }
-                  )}
+                  className={cn("transition-color text-sm leading-tight font-semibold", {
+                    "text-emerald-200": hasExamPassed,
+                  })}
                 >
                   {exam.title}
                 </span>
@@ -141,10 +121,7 @@ function ExamCard({ exam }: { exam: ExamListItem }) {
               />
               {progressPercent}%
             </span>
-            <ExamCardTimer
-              hasPassed={hasExamPassed}
-              countdownTarget={countdownTarget}
-            />
+            <ExamCardTimer hasPassed={hasExamPassed} countdownTarget={countdownTarget} />
           </div>
         </CardContent>
       </Card>
@@ -166,21 +143,12 @@ function ExamsEmpty() {
   )
 }
 
-export function Exams({
-  exams,
-  topic,
-}: {
-  exams: ExamListItem[]
-  topic: Pick<Topic, "type" | "name">
-}) {
+export function Exams({ exams, topic }: { exams: ExamListItem[]; topic: Pick<Topic, "type" | "name"> }) {
   const isAllExamsPassed =
     exams.length > 0 &&
     exams.every((exam) => {
-      const completion =
-        exam.userExamAggregation.find((c) => c.examId === exam.id) ?? null
-      return (
-        completion !== null && completion.passedCount >= exam.minimumPassedCount
-      )
+      const completion = exam.userExamAggregation.find((c) => c.examId === exam.id) ?? null
+      return completion !== null && completion.passedCount >= exam.minimumPassedCount
     })
 
   return (

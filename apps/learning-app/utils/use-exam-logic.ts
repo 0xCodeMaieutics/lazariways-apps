@@ -1,7 +1,4 @@
-import {
-  type Exam,
-  type UserExamAggregation,
-} from "@workspace/database/browser"
+import { type Exam, type UserExamAggregation } from "@workspace/database/browser"
 import { useState } from "react"
 
 export const useExamLogic = ({
@@ -16,24 +13,20 @@ export const useExamLogic = ({
   const hasPassed = passedCount >= exam.minimumPassedCount
 
   const lastPassedMillisecondns =
-    userExamAggregation?.lastPassedAt === undefined ||
-    userExamAggregation?.lastPassedAt === null
+    userExamAggregation?.lastPassedAt === undefined || userExamAggregation?.lastPassedAt === null
       ? null
       : new Date(userExamAggregation.lastPassedAt).getTime()
 
   const waitUntilPassedAllowedAt =
     hasPassed === false && lastPassedMillisecondns !== null
-      ? new Date(
-          lastPassedMillisecondns + exam.waitUntilPassAllowedInSeconds * 1000
-        )
+      ? new Date(lastPassedMillisecondns + exam.waitUntilPassAllowedInSeconds * 1000)
       : null
 
   return {
     hasExamPassed: hasPassed,
     examPassedCount: passedCount,
     countdownTarget:
-      waitUntilPassedAllowedAt === undefined ||
-      waitUntilPassedAllowedAt === null
+      waitUntilPassedAllowedAt === undefined || waitUntilPassedAllowedAt === null
         ? null
         : waitUntilPassedAllowedAt.getTime() > now
           ? waitUntilPassedAllowedAt

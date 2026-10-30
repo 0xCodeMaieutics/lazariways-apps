@@ -1,10 +1,12 @@
-import { notFound } from "next/navigation"
-import { prismaToAdminEditData } from "@workspace/profile/prisma"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { prismaToAdminEditData } from "@workspace/profile/prisma"
+import { notFound } from "next/navigation"
+
 import { BackLink } from "@/components/back-link"
-import { requireAdminSessionForPage } from "@/lib/auth"
 import { env } from "@/env"
+import { requireAdminSessionForPage } from "@/lib/auth"
+
 import { ProfileEditForm } from "./page.client"
 
 interface EditPageProps {

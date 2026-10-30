@@ -1,6 +1,6 @@
-'use client'
-import { PropsWithChildren } from 'react'
+"use client"
+import type { PropsWithChildren } from "react"
 
 export function Providers({ children }: PropsWithChildren) {
-    return children
+  return children
 }

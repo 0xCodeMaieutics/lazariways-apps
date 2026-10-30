@@ -1,8 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
 import {
   DndContext,
   closestCenter,
@@ -12,31 +9,10 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core"
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable"
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { useMutation } from "@tanstack/react-query"
-import { useTRPC } from "@/lib/trpc/react"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+import type { Exercise } from "@workspace/database/browser"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,14 +23,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@workspace/ui/components/alert-dialog"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
 import {
-  Loader2,
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-  GripVertical,
-} from "lucide-react"
-import type { Exercise } from "@workspace/database/browser"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table"
+import { Loader2, MoreHorizontal, Pencil, Trash2, GripVertical } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+
+import { useTRPC } from "@/lib/trpc/react"
 
 function formatExerciseType(type: string) {
   return type
@@ -65,7 +48,7 @@ function formatExerciseType(type: string) {
 
 function SortableRow({
   exercise,
-  topicId: topicId,
+  topicId,
   examId,
   onRequestDelete,
 }: {
@@ -74,14 +57,9 @@ function SortableRow({
   examId: string
   onRequestDelete: (target: { id: string; label: string }) => void
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: exercise.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: exercise.id,
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -92,11 +70,7 @@ function SortableRow({
   return (
     <TableRow ref={setNodeRef} style={style}>
       <TableCell className="w-[40px]">
-        <button
-          className="cursor-grab touch-none"
-          {...attributes}
-          {...listeners}
-        >
+        <button className="cursor-grab touch-none" {...attributes} {...listeners}>
           <GripVertical className="size-4 text-muted-foreground" />
         </button>
       </TableCell>
@@ -105,27 +79,18 @@ function SortableRow({
         <Badge variant="secondary">{formatExerciseType(exercise.type)}</Badge>
       </TableCell>
       <TableCell>
-        <span className="line-clamp-2">
-          {exercise.prompt || exercise.text || "—"}
-        </span>
+        <span className="line-clamp-2">{exercise.prompt || exercise.text || "—"}</span>
       </TableCell>
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <Button variant="ghost" size="icon" className="size-8" onClick={(e) => e.stopPropagation()}>
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link
-                href={`/topics/${topicId}/exams/${examId}/exercises/${exercise.id}/edit`}
-              >
+              <Link href={`/topics/${topicId}/exams/${examId}/exercises/${exercise.id}/edit`}>
                 <Pencil className="mr-2 size-4" />
                 Edit
               </Link>
@@ -136,10 +101,7 @@ function SortableRow({
                 e.preventDefault()
                 onRequestDelete({
                   id: exercise.id,
-                  label:
-                    exercise.prompt ||
-                    exercise.text ||
-                    `Exercise ${exercise.order}`,
+                  label: exercise.prompt || exercise.text || `Exercise ${exercise.order}`,
                 })
               }}
             >
@@ -202,9 +164,7 @@ export function ExamExercisesTable({
       const newIndex = prev.findIndex((e) => e.id === over.id)
       const reordered = arrayMove(prev, oldIndex, newIndex)
 
-      reorderMutation.mutate(
-        reordered.map((ex, i) => ({ id: ex.id, order: i }))
-      )
+      reorderMutation.mutate(reordered.map((ex, i) => ({ id: ex.id, order: i })))
 
       return reordered
     })
@@ -212,11 +172,7 @@ export function ExamExercisesTable({
 
   return (
     <>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -228,10 +184,7 @@ export function ExamExercisesTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            <SortableContext
-              items={items.map((e) => e.id)}
-              strategy={verticalListSortingStrategy}
-            >
+            <SortableContext items={items.map((e) => e.id)} strategy={verticalListSortingStrategy}>
               {items.map((exercise) => (
                 <SortableRow
                   key={exercise.id}
@@ -246,10 +199,7 @@ export function ExamExercisesTable({
         </Table>
       </DndContext>
 
-      <AlertDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-      >
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete exercise?</AlertDialogTitle>
@@ -259,9 +209,7 @@ export function ExamExercisesTable({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteMutation.isPending}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault()

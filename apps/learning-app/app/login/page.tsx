@@ -1,21 +1,17 @@
 "use client"
 
-import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { useMutation } from "@tanstack/react-query"
-import { useTRPC } from "@/lib/trpc/react"
 import { Button } from "@workspace/ui/components/button"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod"
+
 import { DEV_EMAIL, DEV_PASSWORD } from "@/lib/constants"
+import { useTRPC } from "@/lib/trpc/react"
 
 const signInSchema = z.object({
   email: z.email({ message: "არასწორი ელფოსტის მისამართი" }),
@@ -56,10 +52,7 @@ export default function LoginPage() {
   return (
     <div className="flex h-dvh items-center justify-center px-4 py-12">
       <div className="flex w-full max-w-md flex-col items-center justify-center space-y-4">
-        <form
-          onSubmit={signInForm.handleSubmit(onSignIn)}
-          className="w-full space-y-4"
-        >
+        <form onSubmit={signInForm.handleSubmit(onSignIn)} className="w-full space-y-4">
           <FieldGroup>
             <Controller
               name="email"
@@ -75,9 +68,7 @@ export default function LoginPage() {
                     disabled={isLoading}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -95,9 +86,7 @@ export default function LoginPage() {
                     disabled={isLoading}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -109,12 +98,7 @@ export default function LoginPage() {
             </div>
           ) : null}
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-            size={"lg"}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading} size={"lg"}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 size-4 animate-spin" />

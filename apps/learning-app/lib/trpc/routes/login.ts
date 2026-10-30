@@ -1,8 +1,10 @@
-import { z } from "zod"
 import { TRPCError } from "@trpc/server"
-import { publicProcedure, router } from "../server"
+import { z } from "zod"
+
 import { auth } from "@/lib/auth.server"
 import { tryCatchAsync } from "@/lib/try-catch"
+
+import { publicProcedure, router } from "../server"
 
 const signInSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
@@ -26,118 +28,112 @@ const signInSocial = z.object({
 })
 
 export const loginRouter = router({
-  signInEmail: publicProcedure
-    .input(signInSchema)
-    .mutation(async ({ input, ctx }) => {
-      const [error, result] = await tryCatchAsync(
-        async () =>
-          await auth.api.signInEmail({
-            body: {
-              email: input.email,
-              password: input.password,
-              rememberMe: input.rememberMe,
-            },
-            headers: ctx.headers,
-          })
-      )
-
-      if (error) {
-        console.error(error)
-        // Handle better-auth errors
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to sign in",
-          cause: error,
+  signInEmail: publicProcedure.input(signInSchema).mutation(async ({ input, ctx }) => {
+    const [error, result] = await tryCatchAsync(
+      async () =>
+        await auth.api.signInEmail({
+          body: {
+            email: input.email,
+            password: input.password,
+            rememberMe: input.rememberMe,
+          },
+          headers: ctx.headers,
         })
-      }
+    )
 
-      if (result === null) {
-        console.error("SIGN_IN_EMAIL_RESULT_NULL")
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to sign in",
+    if (error) {
+      console.error(error)
+      // Handle better-auth errors
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to sign in",
+        cause: error,
+      })
+    }
+
+    if (result === null) {
+      console.error("SIGN_IN_EMAIL_RESULT_NULL")
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to sign in",
+      })
+    }
+
+    return {
+      success: true,
+      data: result,
+    }
+  }),
+  signInSocial: publicProcedure.input(signInSocial).mutation(async ({ ctx, input }) => {
+    const [error, result] = await tryCatchAsync(
+      async () =>
+        await auth.api.signInSocial({
+          body: {
+            provider: input.provider,
+          },
+          headers: ctx.headers,
         })
-      }
+    )
 
-      return {
-        success: true,
-        data: result,
-      }
-    }),
-  signInSocial: publicProcedure
-    .input(signInSocial)
-    .mutation(async ({ ctx, input }) => {
-      const [error, result] = await tryCatchAsync(
-        async () =>
-          await auth.api.signInSocial({
-            body: {
-              provider: input.provider,
-            },
-            headers: ctx.headers,
-          })
-      )
+    if (error) {
+      console.error(error)
+      // Handle better-auth errors
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to sign in",
+        cause: error,
+      })
+    }
 
-      if (error) {
-        console.error(error)
-        // Handle better-auth errors
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to sign in",
-          cause: error,
+    if (result === null) {
+      console.error("SIGN_IN_SOCIAL_RESULT_NULL")
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to sign in",
+      })
+    }
+
+    return {
+      success: true,
+      data: result,
+    }
+  }),
+  signUpEmail: publicProcedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
+    const [error, result] = await tryCatchAsync(
+      async () =>
+        await auth.api.signUpEmail({
+          body: {
+            name: input.name,
+            email: input.email,
+            password: input.password,
+            image: input.image,
+            callbackURL: input.callbackURL,
+          },
+          headers: ctx.headers,
         })
-      }
+    )
 
-      if (result === null) {
-        console.error("SIGN_IN_SOCIAL_RESULT_NULL")
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to sign in",
-        })
-      }
+    if (error) {
+      console.error(error)
+      // Handle better-auth errors
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to sign up",
+        cause: error,
+      })
+    }
 
-      return {
-        success: true,
-        data: result,
-      }
-    }),
-  signUpEmail: publicProcedure
-    .input(signUpSchema)
-    .mutation(async ({ input, ctx }) => {
-      const [error, result] = await tryCatchAsync(
-        async () =>
-          await auth.api.signUpEmail({
-            body: {
-              name: input.name,
-              email: input.email,
-              password: input.password,
-              image: input.image,
-              callbackURL: input.callbackURL,
-            },
-            headers: ctx.headers,
-          })
-      )
+    if (result === null) {
+      console.error("SIGN_UP_EMAIL_RESULT_NULL")
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to sign up",
+      })
+    }
 
-      if (error) {
-        console.error(error)
-        // Handle better-auth errors
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to sign up",
-          cause: error,
-        })
-      }
-
-      if (result === null) {
-        console.error("SIGN_UP_EMAIL_RESULT_NULL")
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to sign up",
-        })
-      }
-
-      return {
-        success: true,
-        data: result,
-      }
-    }),
+    return {
+      success: true,
+      data: result,
+    }
+  }),
 })

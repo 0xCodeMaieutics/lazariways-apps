@@ -1,13 +1,8 @@
-import type { ReactNode } from "react"
 import type { AdminApplicationEditData } from "@workspace/application/schema"
+import type { ReactNode } from "react"
+
 import { ReadOnlyField } from "@/components/read-only-field"
-import {
-  formatBool,
-  formatDateRange,
-  formatGender,
-  formatIsoDate,
-  hasText,
-} from "@/lib/format"
+import { formatBool, formatDateRange, formatGender, formatIsoDate, hasText } from "@/lib/format"
 import { instagramProfileUrl } from "@/lib/instagram"
 
 interface ApplicationViewProps {
@@ -20,13 +15,7 @@ interface ViewField {
   show: boolean
 }
 
-function ViewSection({
-  title,
-  fields,
-}: {
-  title: string
-  fields: ViewField[]
-}) {
+function ViewSection({ title, fields }: { title: string; fields: ViewField[] }) {
   const visibleFields = fields.filter((field) => field.show)
 
   if (visibleFields.length === 0) {
@@ -47,13 +36,7 @@ function ViewSection({
   )
 }
 
-function ExternalLink({
-  href,
-  children,
-}: {
-  href: string
-  children: ReactNode
-}) {
+function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <a
       href={href}
@@ -68,10 +51,7 @@ function ExternalLink({
 
 export function ApplicationView({ data }: ApplicationViewProps) {
   const instagramUrl = instagramProfileUrl(data.instagram)
-  const semesterBreak = formatDateRange(
-    data.semesterBreakFrom,
-    data.semesterBreakTo
-  )
+  const semesterBreak = formatDateRange(data.semesterBreakFrom, data.semesterBreakTo)
 
   return (
     <div className="space-y-8 pb-8">
@@ -112,10 +92,7 @@ export function ApplicationView({ data }: ApplicationViewProps) {
           {
             label: "E-Mail",
             value: (
-              <a
-                href={`mailto:${data.email}`}
-                className="text-primary underline-offset-4 hover:underline"
-              >
+              <a href={`mailto:${data.email}`} className="text-primary underline-offset-4 hover:underline">
                 {data.email}
               </a>
             ),
@@ -124,10 +101,7 @@ export function ApplicationView({ data }: ApplicationViewProps) {
           {
             label: "Telefon",
             value: (
-              <a
-                href={`tel:${data.phone}`}
-                className="text-primary underline-offset-4 hover:underline"
-              >
+              <a href={`tel:${data.phone}`} className="text-primary underline-offset-4 hover:underline">
                 {data.phone}
               </a>
             ),
@@ -137,9 +111,7 @@ export function ApplicationView({ data }: ApplicationViewProps) {
             label: "Instagram",
             value:
               instagramUrl !== null ? (
-                <ExternalLink href={instagramUrl}>
-                  {data.instagram?.trim().replace(/^@/, "")}
-                </ExternalLink>
+                <ExternalLink href={instagramUrl}>{data.instagram?.trim().replace(/^@/, "")}</ExternalLink>
               ) : (
                 data.instagram
               ),

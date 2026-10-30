@@ -1,7 +1,8 @@
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
 import type { AdminSession } from "@workspace/database/browser"
 import prisma from "@workspace/database/client"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+
 import { ADMIN_SESSION_COOKIE } from "./constants"
 
 export async function getAdminSession(): Promise<AdminSession | null> {
@@ -17,9 +18,7 @@ export async function getAdminSession(): Promise<AdminSession | null> {
   })
 }
 
-export async function requireAdminSessionForPage(
-  callbackUrl: string
-): Promise<AdminSession> {
+export async function requireAdminSessionForPage(callbackUrl: string): Promise<AdminSession> {
   const session = await getAdminSession()
 
   if (session === null) {
@@ -29,9 +28,7 @@ export async function requireAdminSessionForPage(
   return session
 }
 
-export async function requireAdminSessionForApi(): Promise<
-  AdminSession | Response
-> {
+export async function requireAdminSessionForApi(): Promise<AdminSession | Response> {
   const session = await getAdminSession()
 
   if (session === null) {

@@ -1,10 +1,9 @@
 import { TRPCError } from "@trpc/server"
-import prisma from "@workspace/database/client"
+import type prisma from "@workspace/database/client"
+
 import { backfillUnlockedExamsForUnlocker } from "@/lib/backfill-unlocked-exams"
 
-type TransactionClient = Parameters<
-  Parameters<typeof prisma.$transaction>[0]
->[0]
+type TransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
 
 function detectUnlockCycle(unlockerByExamId: Map<string, string | null>) {
   for (const startId of unlockerByExamId.keys()) {

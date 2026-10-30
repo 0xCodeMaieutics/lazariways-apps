@@ -1,17 +1,15 @@
-import { nanoid } from "nanoid"
 import prisma from "@workspace/database/client"
-import {
-  applicationInquiryFormSchema,
-  optionalInquiryField,
-} from "@/lib/application-inquiry-schema"
+import { nanoid } from "nanoid"
+
+import { env } from "@/env"
 import {
   applicationUrl,
   formatApplicationInquiryConfirmationEmail,
   formatApplicationInquiryTelegramMessage,
 } from "@/lib/application-inquiry-notifications"
+import { applicationInquiryFormSchema, optionalInquiryField } from "@/lib/application-inquiry-schema"
 import { sendApplicationInquiryConfirmationEmail } from "@/lib/email"
 import { sendTelegramMessage } from "@/lib/telegram"
-import { env } from "@/env"
 
 interface RouteContext {
   params: Promise<{ applicationId: string }>
@@ -29,10 +27,7 @@ export const POST = async (request: Request, context: RouteContext) => {
 
   const parsed = applicationInquiryFormSchema.safeParse(json)
   if (!parsed.success) {
-    return Response.json(
-      { error: parsed.error.issues[0]?.message ?? "Ungültige Eingabe." },
-      { status: 400 }
-    )
+    return Response.json({ error: parsed.error.issues[0]?.message ?? "Ungültige Eingabe." }, { status: 400 })
   }
 
   const application = await prisma.application.findUnique({
@@ -41,10 +36,7 @@ export const POST = async (request: Request, context: RouteContext) => {
   })
 
   if (application === null) {
-    return Response.json(
-      { error: "Bewerbung nicht gefunden." },
-      { status: 404 }
-    )
+    return Response.json({ error: "Bewerbung nicht gefunden." }, { status: 404 })
   }
 
   const inquiryData = {
@@ -65,10 +57,7 @@ export const POST = async (request: Request, context: RouteContext) => {
     })
   } catch (error) {
     console.error("APPLICATION_INQUIRY_DB_INSERT_FAILED", error)
-    return Response.json(
-      { error: "Die Anfrage konnte nicht gesendet werden." },
-      { status: 500 }
-    )
+    return Response.json({ error: "Die Anfrage konnte nicht gesendet werden." }, { status: 500 })
   }
 
   const appUrl = applicationUrl(env.BEWERBER_APP_URL, application.id)

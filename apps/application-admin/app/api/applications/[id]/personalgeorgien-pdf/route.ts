@@ -1,15 +1,10 @@
-import { z } from "zod"
-import {
-  adminEditDataToApplicationFormData,
-  prismaToAdminEditData,
-} from "@workspace/application/prisma"
-import {
-  generatePersonalGeorgienPdf,
-  personalGeorgienProfessionOptions,
-} from "@workspace/application/pdf"
+import { generatePersonalGeorgienPdf, personalGeorgienProfessionOptions } from "@workspace/application/pdf"
+import { adminEditDataToApplicationFormData, prismaToAdminEditData } from "@workspace/application/prisma"
 import prisma from "@workspace/database/client"
-import { requireAdminSessionForApi } from "@/lib/auth"
+import { z } from "zod"
+
 import { env } from "@/env"
+import { requireAdminSessionForApi } from "@/lib/auth"
 import { downloadFotoAsFile } from "@/lib/foto"
 
 function sanitizeFilenamePart(value: string): string {
@@ -31,10 +26,7 @@ const bodySchema = z.object({
   activities: z.array(z.string().trim().min(1).max(300)).max(20).optional(),
 })
 
-export const POST = async (
-  request: Request,
-  context: { params: Promise<{ id: string }> }
-) => {
+export const POST = async (request: Request, context: { params: Promise<{ id: string }> }) => {
   const authResult = await requireAdminSessionForApi()
   if (authResult instanceof Response) {
     return authResult
@@ -71,10 +63,7 @@ export const POST = async (
   let pdfBytes: Uint8Array
   try {
     pdfBytes = await generatePersonalGeorgienPdf({
-      ...adminEditDataToApplicationFormData(
-        prismaToAdminEditData(existing),
-        fotoFile
-      ),
+      ...adminEditDataToApplicationFormData(prismaToAdminEditData(existing), fotoFile),
       applicationId: id,
       bewerberAppUrl: env.BEWERBER_APP_URL,
       profession: parsed.data.profession,

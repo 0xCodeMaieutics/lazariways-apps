@@ -1,13 +1,15 @@
-import { Exam } from "./page.client"
-import { auth } from "@/lib/auth.server"
 import { prisma } from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
-import { env } from "@/env"
-import { notFound, redirect } from "next/navigation"
-import Link from "next/link"
-import { BookOpenCheck, ChevronLeft } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
+import { BookOpenCheck, ChevronLeft } from "lucide-react"
 import { headers } from "next/headers"
+import Link from "next/link"
+import { notFound, redirect } from "next/navigation"
+
+import { env } from "@/env"
+import { auth } from "@/lib/auth.server"
+
+import { Exam } from "./page.client"
 
 export default async function ExamDetailPage({
   params,
@@ -66,11 +68,7 @@ export default async function ExamDetailPage({
           ამ გამოცდისთვის სავარჯიშოები ჯერ არ არის დამატებული.
         </h2>
 
-        <Button
-          asChild
-          variant={"link"}
-          className="mt-8 flex items-center gap-2"
-        >
+        <Button asChild variant={"link"} className="mt-8 flex items-center gap-2">
           <Link href={`/topics/${exam.topicId}/exams`}>
             <ChevronLeft className="animate-bounce-right" />
             <span>გამოცდებზე დაბრუნება</span>
@@ -92,11 +90,5 @@ export default async function ExamDetailPage({
     }))
   )
 
-  return (
-    <Exam
-      userCompletions={exam.userExamAggregation}
-      exam={exam}
-      exercises={exercisesWithAudioUrls}
-    />
-  )
+  return <Exam userCompletions={exam.userExamAggregation} exam={exam} exercises={exercisesWithAudioUrls} />
 }

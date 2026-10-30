@@ -1,13 +1,12 @@
-import React from "react"
-import { redirect } from "next/navigation"
 import { headers } from "next/headers"
+import { redirect } from "next/navigation"
+import React from "react"
+
 import { auth } from "@/lib/auth.server"
 
 import { AdminNav } from "./_components/admin-nav"
 
-export default async function AdminLayout({
-  children,
-}: React.PropsWithChildren) {
+export default async function AdminLayout({ children }: React.PropsWithChildren) {
   const session = await auth.api.getSession({
     headers: await headers(),
   })

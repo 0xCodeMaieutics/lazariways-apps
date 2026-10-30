@@ -1,9 +1,7 @@
 import { TRPCError } from "@trpc/server"
-import prisma from "@workspace/database/client"
+import type prisma from "@workspace/database/client"
 
-type TransactionClient = Parameters<
-  Parameters<typeof prisma.$transaction>[0]
->[0]
+type TransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
 
 function detectTopicUnlockCycle(unlockerByTopicId: Map<string, string | null>) {
   for (const startId of unlockerByTopicId.keys()) {
@@ -58,8 +56,7 @@ export async function validateAndApplyTopicUnlock(
   if (childCount > 0 && minimumCompletedExamsToUnlock === null) {
     throw new TRPCError({
       code: "BAD_REQUEST",
-      message:
-        "A topic that unlocks other topics must have a minimum completed exam count",
+      message: "A topic that unlocks other topics must have a minimum completed exam count",
     })
   }
 

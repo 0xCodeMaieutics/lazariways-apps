@@ -34,10 +34,7 @@ export function formatIsoDate(isoDate: string | undefined): string | null {
   }).format(date)
 }
 
-export function formatDateRange(
-  from: string | undefined,
-  to: string | undefined
-): string | null {
+export function formatDateRange(from: string | undefined, to: string | undefined): string | null {
   const formattedFrom = formatIsoDate(from)
   const formattedTo = formatIsoDate(to)
 

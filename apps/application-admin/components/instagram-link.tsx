@@ -1,5 +1,6 @@
-import { instagramProfileUrl } from "@/lib/instagram"
 import Image from "next/image"
+
+import { instagramProfileUrl } from "@/lib/instagram"
 
 interface InstagramLinkProps {
   handle: string | undefined

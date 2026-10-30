@@ -1,13 +1,12 @@
 {
   "name": "@workspace/file-upload",
   "type": "module",
-  "scripts": {
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "lint": "eslint . --max-warnings 0"
-  },
   "exports": {
     "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/node": "^20.19.9",

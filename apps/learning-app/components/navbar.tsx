@@ -1,11 +1,11 @@
 "use client"
 
-import Image from "next/image"
-import * as React from "react"
+import { Button } from "@workspace/ui/components/button"
 import { Moon, Sun, Monitor, User } from "lucide-react"
 import { useTheme } from "next-themes"
-import { Button } from "@workspace/ui/components/button"
+import Image from "next/image"
 import Link from "next/link"
+import * as React from "react"
 
 const subscribe = () => () => {}
 
@@ -20,12 +20,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="size-9"
-        aria-label="Toggle theme"
-      >
+      <Button variant="ghost" size="icon" className="size-9" aria-label="Toggle theme">
         <Monitor className="size-4" />
       </Button>
     )

@@ -1,19 +1,10 @@
 "use client"
 
-import { captureException } from "@sentry/nextjs"
 import NextError from "next/error"
-import { useEffect } from "react"
 
-export default function GlobalError({
-  error,
-}: {
-  error: Error & { digest?: string }
-}) {
-  useEffect(() => {
-    // if (process.env.NODE_ENV === 'production') captureException(error)
-  }, [error])
+export default function GlobalError() {
   return (
-    <html>
+    <html lang="en">
       <body>
         {/* `NextError` is the default Next.js error page component. Its type
         definition requires a `statusCode` prop. However, since the App Router

@@ -1,11 +1,13 @@
-import { PDFDocument, PDFPage } from "pdf-lib"
-import { ApplicationFormData, workSectorOptions } from "../application-schema"
 import fontkit from "@pdf-lib/fontkit"
+import type { PDFPage } from "pdf-lib"
+import { PDFDocument } from "pdf-lib"
+
+import type { ApplicationFormData } from "../application-schema"
+import { workSectorOptions } from "../application-schema"
 
 const REMOTE_TEMPLATE_URL =
   "https://lazari-ways-bucket.s3.eu-central-1.amazonaws.com/public/Bewerbercheckliste.pdf"
-const REMOTE_FONT_URL =
-  "https://lazari-ways-bucket.s3.eu-central-1.amazonaws.com/public/ARIAL.TTF"
+const REMOTE_FONT_URL = "https://lazari-ways-bucket.s3.eu-central-1.amazonaws.com/public/ARIAL.TTF"
 
 const remotePdfLayout = {
   valueX: 240,
@@ -110,9 +112,7 @@ const formatRemoteBool = (v: boolean | undefined) => {
   return v ? "Ja" : "Nein"
 }
 
-export const generateBewerberChecklistPdf = async (
-  applicationFormData: ApplicationFormData
-) => {
+export const generateBewerberChecklistPdf = async (applicationFormData: ApplicationFormData) => {
   const [pdfTemplateBytes, arialFontBytes] = await Promise.all([
     fetch(REMOTE_TEMPLATE_URL).then((res) => res.arrayBuffer()),
     fetch(REMOTE_FONT_URL).then((res) => res.arrayBuffer()),
@@ -133,12 +133,7 @@ export const generateBewerberChecklistPdf = async (
     throw new Error("REMOTE_PDF_PAGE_UNDEFINED")
   }
 
-  const drawValue = (
-    page: PDFPage,
-    text: string,
-    y: number,
-    x: number = layout.valueX
-  ) => {
+  const drawValue = (page: PDFPage, text: string, y: number, x: number = layout.valueX) => {
     const trimmed = text.trim()
     page.drawText(trimmed.length === 0 ? "-" : trimmed, {
       x,
@@ -185,9 +180,7 @@ export const generateBewerberChecklistPdf = async (
     drawValue(page, signatureName, positions.y, positions.unterschriftX)
   }
 
-  const photoBytes = new Uint8Array(
-    await applicationFormData.foto.arrayBuffer()
-  )
+  const photoBytes = new Uint8Array(await applicationFormData.foto.arrayBuffer())
   const embeddedPhoto =
     applicationFormData.foto.type === "image/png"
       ? await pdfDoc.embedPng(photoBytes)
@@ -206,30 +199,18 @@ export const generateBewerberChecklistPdf = async (
   })
 
   const p1 = layout.page1
-  drawValue(
-    firstPage,
-    "Lazari Ways - Tsereteli str.117d, Tiflis, Georgien",
-    p1.agencyName
-  )
+  drawValue(firstPage, "Lazari Ways - Tsereteli str.117d, Tiflis, Georgien", p1.agencyName)
   drawValue(firstPage, applicationFormData.lastName, p1.nachname)
   drawValue(firstPage, applicationFormData.firstName, p1.vorname)
 
   const genderPos = layout.checkboxes.gender[applicationFormData.gender]
   drawCheck(firstPage, genderPos.x, genderPos.y)
 
-  drawValue(
-    firstPage,
-    formatRemoteDate(applicationFormData.birthDate),
-    p1.geburtsdatum
-  )
+  drawValue(firstPage, formatRemoteDate(applicationFormData.birthDate), p1.geburtsdatum)
   drawValue(firstPage, applicationFormData.birthPlace, p1.geburtsort)
   drawValue(firstPage, applicationFormData.birthCountry, p1.geburtsland)
   drawValue(firstPage, applicationFormData.street, p1.strasse)
-  drawValue(
-    firstPage,
-    `${applicationFormData.postalCode} ${applicationFormData.city}`.trim(),
-    p1.plzOrt
-  )
+  drawValue(firstPage, `${applicationFormData.postalCode} ${applicationFormData.city}`.trim(), p1.plzOrt)
   drawValue(firstPage, applicationFormData.country, p1.land)
   drawValue(firstPage, applicationFormData.nationality, p1.staatsangehoerigkeit)
 
@@ -251,37 +232,13 @@ export const generateBewerberChecklistPdf = async (
     drawCheck(firstPage, levelPos.x, levelPos.y)
   }
 
-  drawValue(
-    firstPage,
-    applicationFormData.otherLanguages ?? "",
-    p1.weitereSprachen
-  )
-  drawValue(
-    firstPage,
-    formatRemoteBool(applicationFormData.driverLicense),
-    p1.fuehrerschein
-  )
-  drawBoolCheckbox(
-    firstPage,
-    applicationFormData.canRideBike,
-    layout.checkboxes.canRideBike
-  )
-  drawBoolCheckbox(
-    firstPage,
-    applicationFormData.shiftWork,
-    layout.checkboxes.shiftWork
-  )
-  drawValue(
-    firstPage,
-    applicationFormData.healthRestrictions ?? "",
-    p1.gesundheit
-  )
+  drawValue(firstPage, applicationFormData.otherLanguages ?? "", p1.weitereSprachen)
+  drawValue(firstPage, formatRemoteBool(applicationFormData.driverLicense), p1.fuehrerschein)
+  drawBoolCheckbox(firstPage, applicationFormData.canRideBike, layout.checkboxes.canRideBike)
+  drawBoolCheckbox(firstPage, applicationFormData.shiftWork, layout.checkboxes.shiftWork)
+  drawValue(firstPage, applicationFormData.healthRestrictions ?? "", p1.gesundheit)
   drawValue(firstPage, applicationFormData.allergies ?? "", p1.allergien)
-  drawValue(
-    firstPage,
-    applicationFormData.clothingSize ?? "",
-    p1.kleidergroesse
-  )
+  drawValue(firstPage, applicationFormData.clothingSize ?? "", p1.kleidergroesse)
   drawValue(
     firstPage,
     applicationFormData.shoeSize && applicationFormData.shoeSize.length > 0
@@ -304,12 +261,7 @@ export const generateBewerberChecklistPdf = async (
       : prevFrom === "" || prevTo === ""
         ? prevFrom || prevTo
         : `${prevFrom} - ${prevTo}`
-  drawValue(
-    firstPage,
-    applicationFormData.previousStayPlace ?? "",
-    137.3,
-    p1.vorherigerAufenthaltOrt
-  )
+  drawValue(firstPage, applicationFormData.previousStayPlace ?? "", 137.3, p1.vorherigerAufenthaltOrt)
   drawValue(firstPage, prevPeriod, 137.3, p1.vorherigerAufenthaltZeitraum)
 
   drawValue(firstPage, applicationFormData.taxId ?? "", p1.steuerId)
@@ -317,16 +269,8 @@ export const generateBewerberChecklistPdf = async (
   drawValue(firstPage, applicationFormData.email ?? "", p1.email)
   drawValue(firstPage, applicationFormData.instagram ?? "", p1.instagram)
 
-  drawValue(
-    secondPage,
-    applicationFormData.emergencyContactName,
-    layout.page2.notfallKontakt
-  )
-  drawValue(
-    secondPage,
-    applicationFormData.emergencyPhone,
-    layout.page2.notfallTelefon
-  )
+  drawValue(secondPage, applicationFormData.emergencyContactName, layout.page2.notfallKontakt)
+  drawValue(secondPage, applicationFormData.emergencyPhone, layout.page2.notfallTelefon)
 
   for (const sector of workSectorOptions) {
     if (!applicationFormData.workSector.includes(sector)) continue
@@ -334,11 +278,7 @@ export const generateBewerberChecklistPdf = async (
     drawCheck(secondPage, pos.x, pos.y)
   }
 
-  const signaturePages = [
-    layout.signature.page2,
-    layout.signature.page3,
-    layout.signature.page4,
-  ] as const
+  const signaturePages = [layout.signature.page2, layout.signature.page3, layout.signature.page4] as const
   for (const [index, page] of pages.slice(1).entries()) {
     drawFullNameHeader(page)
     const signaturePos = signaturePages[index]

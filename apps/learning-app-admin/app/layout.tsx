@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
+
 import "@workspace/ui/globals.css"
 import "./animations.css"
-import { ThemeProvider } from "./theme-provider"
 import { Providers } from "./providers"
+import { ThemeProvider } from "./theme-provider"
 
 export const metadata: Metadata = {
   title: "LazariLingo",

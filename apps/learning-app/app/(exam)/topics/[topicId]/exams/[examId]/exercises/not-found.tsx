@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { BookX } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
+import { BookX } from "lucide-react"
+import Link from "next/link"
 
 export default function NotFound() {
   return (
@@ -9,9 +9,7 @@ export default function NotFound() {
         <BookX className="size-10 text-muted-foreground" />
       </div>
 
-      <h2 className="text-2xl font-semibold tracking-tight">
-        გამოცდა ვერ მოიძებნა
-      </h2>
+      <h2 className="text-2xl font-semibold tracking-tight">გამოცდა ვერ მოიძებნა</h2>
 
       <p className="mt-2 max-w-sm text-sm text-muted-foreground">
         გამოცდა, რომელსაც ეძებთ, არ არსებობს ან წაშლილია.

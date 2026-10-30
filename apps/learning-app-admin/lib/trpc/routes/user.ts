@@ -1,24 +1,21 @@
-import { z } from "zod"
-import { router, authedProcedure } from "../server"
+import { TRPCError } from "@trpc/server"
 import prisma from "@workspace/database/client"
 import { uploadToStorage } from "@workspace/file-upload/s3-client"
+import { z } from "zod"
+
 import { env } from "@/env"
-import { TRPCError } from "@trpc/server"
+
+import { router, authedProcedure } from "../server"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB
-const ALLOWED_MIME_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-]
+const ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"])
 
 export const userRouter = router({
   uploadImage: authedProcedure
     .input(
       z.object({
         base64: z.string().min(1),
-        contentType: z.string().refine((v) => ALLOWED_MIME_TYPES.includes(v), {
+        contentType: z.string().refine((v) => ALLOWED_MIME_TYPES.has(v), {
           message: "Unsupported image type",
         }),
       })

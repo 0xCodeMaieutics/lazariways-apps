@@ -1,7 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { Exam } from "@workspace/database/browser"
 import {
   DndContext,
   closestCenter,
@@ -11,45 +9,27 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core"
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable"
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import {
-  Table,
-  TableHeader,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@workspace/ui/components/table"
+import { useMutation } from "@tanstack/react-query"
+import type { Exam } from "@workspace/database/browser"
 import { Button } from "@workspace/ui/components/button"
-import { Switch } from "@workspace/ui/components/switch"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import { Switch } from "@workspace/ui/components/switch"
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@workspace/ui/components/table"
+import { ArrowLeft, GripVertical, Loader2, Lock, LockOpen, MoreHorizontal, Pencil, Plus } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import {
-  ArrowLeft,
-  GripVertical,
-  Loader2,
-  Lock,
-  LockOpen,
-  MoreHorizontal,
-  Pencil,
-  Plus,
-} from "lucide-react"
-import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
+import { toast } from "sonner"
+
 import { useTRPC } from "@/lib/trpc/react"
 import { formatSecondsAsHoursMinutes } from "@/utils/format-duration"
-import { toast } from "sonner"
 
 function SortableRow({
   exam,
@@ -68,14 +48,9 @@ function SortableRow({
   isTogglePending: boolean
   isAlwaysUnlockedPending: boolean
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: exam.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: exam.id,
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -84,12 +59,7 @@ function SortableRow({
   }
 
   return (
-    <TableRow
-      ref={setNodeRef}
-      style={style}
-      className="cursor-pointer"
-      onClick={onNavigate}
-    >
+    <TableRow ref={setNodeRef} style={style} className="cursor-pointer" onClick={onNavigate}>
       <TableCell className="w-10">
         <button
           className="cursor-grab touch-none"
@@ -113,19 +83,12 @@ function SortableRow({
           checked={exam.enabled}
           onCheckedChange={onToggleEnabled}
         />
-        {isTogglePending && (
-          <Loader2 className="absolute -right-5 size-5 animate-spin" />
-        )}
+        {isTogglePending && <Loader2 className="absolute -right-5 size-5 animate-spin" />}
       </TableCell>
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <Button variant="ghost" size="icon" className="size-8" onClick={(e) => e.stopPropagation()}>
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -241,10 +204,7 @@ export const AdminExams = ({ exams: examsOuter }: { exams: Exam[] }) => {
           </Link>
         </Button>
         <Button asChild>
-          <Link
-            href={`/topics/${topicId}/exams/new`}
-            className="flex items-center gap-2"
-          >
+          <Link href={`/topics/${topicId}/exams/new`} className="flex items-center gap-2">
             <Plus className="size-4" />
             <span>Create new exam</span>
           </Link>
@@ -287,20 +247,13 @@ export const AdminExams = ({ exams: examsOuter }: { exams: Exam[] }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <SortableContext
-                items={exams.map((e) => e.id)}
-                strategy={verticalListSortingStrategy}
-              >
+              <SortableContext items={exams.map((e) => e.id)} strategy={verticalListSortingStrategy}>
                 {exams.map((exam) => (
                   <SortableRow
                     key={exam.id}
                     exam={exam}
                     topicId={topicId}
-                    onNavigate={() =>
-                      router.push(
-                        `/topics/${topicId}/exams/${exam.id}/exercises`
-                      )
-                    }
+                    onNavigate={() => router.push(`/topics/${topicId}/exams/${exam.id}/exercises`)}
                     onToggleEnabled={(enabled) =>
                       updateExamEnable({
                         id: exam.id,
@@ -313,12 +266,9 @@ export const AdminExams = ({ exams: examsOuter }: { exams: Exam[] }) => {
                         isAlwaysUnlocked: !exam.isAlwaysUnlocked,
                       })
                     }
-                    isTogglePending={
-                      isTogglePending && variables?.id === exam.id
-                    }
+                    isTogglePending={isTogglePending && variables?.id === exam.id}
                     isAlwaysUnlockedPending={
-                      isAlwaysUnlockedPending &&
-                      alwaysUnlockedVariables?.id === exam.id
+                      isAlwaysUnlockedPending && alwaysUnlockedVariables?.id === exam.id
                     }
                   />
                 ))}

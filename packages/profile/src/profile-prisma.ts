@@ -1,4 +1,5 @@
 import type { Profile, ProfileLanguage } from "@workspace/database/browser"
+
 import type { AdminProfileEditData } from "./profile-schema"
 import { workSectorOptions } from "./profile-schema"
 
@@ -29,14 +30,9 @@ function formatDateForForm(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-function parseWorkSectors(
-  sectors: string[]
-): AdminProfileEditData["workSector"] {
+function parseWorkSectors(sectors: string[]): AdminProfileEditData["workSector"] {
   const allowed = new Set<string>(workSectorOptions)
-  return sectors.filter(
-    (sector): sector is (typeof workSectorOptions)[number] =>
-      allowed.has(sector)
-  )
+  return sectors.filter((sector): sector is (typeof workSectorOptions)[number] => allowed.has(sector))
 }
 
 export function profileToPrismaData(data: AdminProfileEditData) {
@@ -54,9 +50,7 @@ export function profileToPrismaData(data: AdminProfileEditData) {
   }
 }
 
-export function profileLanguagesToPrismaCreate(
-  languages: AdminProfileEditData["languages"]
-) {
+export function profileLanguagesToPrismaCreate(languages: AdminProfileEditData["languages"]) {
   return languages.map((entry) => ({
     language: entry.language.trim(),
     level: entry.level,

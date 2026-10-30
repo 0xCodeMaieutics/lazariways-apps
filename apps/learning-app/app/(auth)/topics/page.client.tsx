@@ -1,17 +1,11 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import type { TopicType } from "@workspace/database/browser"
 import { Card, CardContent } from "@workspace/ui/components/card"
-import {
-  BookOpen,
-  ChevronRight,
-  Croissant,
-  Lock,
-  Puzzle,
-  Rocket,
-} from "lucide-react"
+import { BookOpen, ChevronRight, Croissant, Lock, Puzzle, Rocket } from "lucide-react"
 import Link from "next/link"
-import { TopicType } from "@workspace/database/browser"
+
+import { cn } from "@/lib/utils"
 
 function TopicsEmpty() {
   return (
@@ -20,9 +14,7 @@ function TopicsEmpty() {
         <BookOpen className="size-8 text-muted-foreground/60" />
       </div>
       <h2 className="mt-5 text-lg font-semibold">თემები ჯერ არ არის</h2>
-      <p className="mt-1.5 max-w-65 text-sm text-muted-foreground">
-        ხელმისაწვდომი თემები მალე გამოჩნდება.
-      </p>
+      <p className="mt-1.5 max-w-65 text-sm text-muted-foreground">ხელმისაწვდომი თემები მალე გამოჩნდება.</p>
     </div>
   )
 }
@@ -46,17 +38,13 @@ export function TopicsHub({
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {topics.map((topic) => {
-            const isAllExamsPassed =
-              topic.totalExams > 0 && topic.completedExams >= topic.totalExams
+            const isAllExamsPassed = topic.totalExams > 0 && topic.completedExams >= topic.totalExams
             const isLocked = !topic.isUnlocked
             return (
               <Link
                 key={topic.id}
                 href={`/topics/${topic.id}/exams`}
-                className={cn(
-                  "block",
-                  isLocked && "pointer-events-none opacity-40"
-                )}
+                className={cn("block", isLocked && "pointer-events-none opacity-40")}
               >
                 <Card
                   className={cn(
@@ -74,8 +62,7 @@ export function TopicsHub({
                     <div
                       className={cn(
                         "flex size-10 shrink-0 items-center justify-center rounded-full bg-primary",
-                        isAllExamsPassed &&
-                          "bg-emerald-100 dark:bg-emerald-900/50"
+                        isAllExamsPassed && "bg-emerald-100 dark:bg-emerald-900/50"
                       )}
                     >
                       {
@@ -84,8 +71,7 @@ export function TopicsHub({
                             <Rocket
                               className={cn(
                                 "size-4",
-                                isAllExamsPassed &&
-                                  "text-emerald-600 dark:text-emerald-400"
+                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
                               )}
                             />
                           ),
@@ -93,8 +79,7 @@ export function TopicsHub({
                             <Croissant
                               className={cn(
                                 "size-4",
-                                isAllExamsPassed &&
-                                  "text-emerald-600 dark:text-emerald-400"
+                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
                               )}
                             />
                           ),
@@ -102,8 +87,7 @@ export function TopicsHub({
                             <Puzzle
                               className={cn(
                                 "size-4",
-                                isAllExamsPassed &&
-                                  "text-emerald-600 dark:text-emerald-400"
+                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
                               )}
                             />
                           ),
@@ -111,8 +95,7 @@ export function TopicsHub({
                             <Puzzle
                               className={cn(
                                 "size-4",
-                                isAllExamsPassed &&
-                                  "text-emerald-600 dark:text-emerald-400"
+                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
                               )}
                             />
                           ),
@@ -120,8 +103,7 @@ export function TopicsHub({
                             <Puzzle
                               className={cn(
                                 "size-4",
-                                isAllExamsPassed &&
-                                  "text-emerald-600 dark:text-emerald-400"
+                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
                               )}
                             />
                           ),
@@ -129,9 +111,7 @@ export function TopicsHub({
                       }
                     </div>
                     <div className="min-w-0 pr-6">
-                      <span className="text-sm leading-tight font-semibold">
-                        {topic.name}
-                      </span>
+                      <span className="text-sm leading-tight font-semibold">{topic.name}</span>
                       <p className="text-xxs mt-1 text-muted-foreground">
                         {topic.completedExams}/{topic.totalExams}
                       </p>

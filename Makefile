@@ -45,7 +45,7 @@ create-next: $(filter-out create-next,$(MAKECMDGOALS))
 		echo "Error: ./apps/$$APP already exists"; \
 		exit 1; \
 	fi; \
-	pnpm create next-app@latest --ts --tailwind --app --eslint --use-pnpm --yes --disable-git "./apps/$$APP"
+	pnpm create next-app@latest --ts --tailwind --app --no-linter --use-pnpm --yes --disable-git "./apps/$$APP"
 
 %:
 	@:

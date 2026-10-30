@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useTransition } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import { useRouter } from "next/navigation"
+import { useState, useTransition } from "react"
 
 interface LoginFormProps {
   callbackUrl: string
@@ -70,12 +70,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
 
   return (
     <div className="space-y-6">
-      <Button
-        type="button"
-        className="w-full"
-        onClick={sendCode}
-        disabled={isSending}
-      >
+      <Button type="button" className="w-full" onClick={sendCode} disabled={isSending}>
         {isSending ? "Sending…" : "Send code to Telegram group"}
       </Button>
 
@@ -100,12 +95,8 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
         {isVerifying ? "Signing in…" : "Sign in"}
       </Button>
 
-      {info !== null ? (
-        <p className="text-center text-sm text-green-700">{info}</p>
-      ) : null}
-      {error !== null ? (
-        <p className="text-center text-sm text-destructive">{error}</p>
-      ) : null}
+      {info !== null ? <p className="text-center text-sm text-green-700">{info}</p> : null}
+      {error !== null ? <p className="text-center text-sm text-destructive">{error}</p> : null}
     </div>
   )
 }

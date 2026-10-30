@@ -11,16 +11,11 @@ export function HowItWorks() {
         <ol className="mt-10 grid gap-8 lg:grid-cols-3">
           {STEPS.map((step, index) => (
             <li key={step.title} className="flex flex-col gap-4">
-              <span
-                className="text-3xl leading-none font-semibold text-primary"
-                aria-hidden="true"
-              >
+              <span className="text-3xl leading-none font-semibold text-primary" aria-hidden="true">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  {step.title}
-                </h3>
+                <h3 className="text-lg font-semibold text-foreground">{step.title}</h3>
                 <p className="mt-2 text-muted-foreground">{step.description}</p>
               </div>
             </li>

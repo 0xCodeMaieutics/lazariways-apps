@@ -1,4 +1,5 @@
 import { Manrope } from "next/font/google"
+
 import "@workspace/ui/globals.css"
 import "./globals.css"
 import { createPageMetadata } from "../lib/seo"

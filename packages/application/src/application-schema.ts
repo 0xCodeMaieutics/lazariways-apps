@@ -10,10 +10,7 @@ export const workSectorOptions = [
   "Industrielle Produktion",
 ] as const
 
-export const workSectorLabels: Record<
-  (typeof workSectorOptions)[number],
-  string
-> = {
+export const workSectorLabels: Record<(typeof workSectorOptions)[number], string> = {
   "Hotel/Gaststätte": "სასტუმრო / რესტორანი",
   Systemgastronomie: "სწრაფი კვების ქსელი",
   Landwirtschaft: "სოფლის მეურნეობა",
@@ -66,16 +63,14 @@ export const applicationFormSchema = z.object({
     .refine(
       (val) =>
         val.trim() === "" ||
-        /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/.test(
-          val.trim()
-        ),
+        /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/.test(val.trim()),
       "არასწორი ტელეფონის ნომრის ფორმატი"
     )
     .optional(),
   instagram: z
     .string()
     .refine(
-      (val) => val.trim() === "" || /^[\w\.]+$/.test(val.trim()),
+      (val) => val.trim() === "" || /^[\w.]+$/.test(val.trim()),
       "არასწორი Instagram-ის ფორმატი (მხოლოდ მომხმარებლის სახელი @-ის გარეშე)"
     )
     .optional(),
@@ -84,12 +79,9 @@ export const applicationFormSchema = z.object({
     .instanceof(File, {
       message: "გთხოვთ ატვირთოტ თქვენი ფოტო",
     })
-    .refine(
-      (file) => ["image/png", "image/jpeg", "image/jpg"].includes(file.type),
-      {
-        message: "მხოლოდ PNG და JPEG ფაილებია დაშვებული",
-      }
-    ),
+    .refine((file) => ["image/png", "image/jpeg", "image/jpg"].includes(file.type), {
+      message: "მხოლოდ PNG და JPEG ფაილებია დაშვებული",
+    }),
   universityId: z.string().optional(),
   university: z.string().optional(),
   studySubject: z.string().optional(),
@@ -119,13 +111,9 @@ export const applicationFormSchema = z.object({
   previousStayPeriodFrom: z.string().optional(),
   previousStayPeriodTo: z.string().optional(),
 
-  emergencyContactName: z
-    .string()
-    .min(1, "საგანგებო საკონტაქტო პირი სავალდებულოა"),
+  emergencyContactName: z.string().min(1, "საგანგებო საკონტაქტო პირი სავალდებულოა"),
   emergencyPhone: z.string().min(1, "საგანგებო ტელეფონის ნომერი სავალდებულოა"),
-  workSector: z
-    .array(z.enum(workSectorOptions))
-    .min(1, "სასურველი სამუშაო სფერო სავალდებულოა"),
+  workSector: z.array(z.enum(workSectorOptions)).min(1, "სასურველი სამუშაო სფერო სავალდებულოა"),
 })
 
 export type ApplicationFormData = z.infer<typeof applicationFormSchema>
@@ -141,8 +129,7 @@ export const adminApplicationEditSchema = applicationFormSchema
       return !(hasId && hasName)
     },
     {
-      message:
-        "Cannot set both a linked university and a custom university name",
+      message: "Cannot set both a linked university and a custom university name",
       path: ["university"],
     }
   )
@@ -171,6 +158,4 @@ export const adminApplicationEditSchema = applicationFormSchema
     }
   )
 
-export type AdminApplicationEditData = z.infer<
-  typeof adminApplicationEditSchema
->
+export type AdminApplicationEditData = z.infer<typeof adminApplicationEditSchema>

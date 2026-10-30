@@ -1,11 +1,8 @@
 import { downloadFileFromStorage } from "@workspace/file-upload/s3-client"
+
 import { env } from "@/env"
 
-export const ALLOWED_FOTO_MIME_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/jpg",
-] as const
+export const ALLOWED_FOTO_MIME_TYPES = ["image/png", "image/jpeg", "image/jpg"] as const
 
 function fotoFilenameFromKey(fotoS3Key: string): string {
   const segment = fotoS3Key.split("/").pop()
@@ -20,13 +17,9 @@ export function isAllowedFotoMimeType(mimeType: string): boolean {
   return (ALLOWED_FOTO_MIME_TYPES as readonly string[]).includes(mimeType)
 }
 
-export function replacementFotoS3Key(
-  currentFotoS3Key: string,
-  originalFilename: string
-): string {
+export function replacementFotoS3Key(currentFotoS3Key: string, originalFilename: string): string {
   const lastSlash = currentFotoS3Key.lastIndexOf("/")
-  const folder =
-    lastSlash === -1 ? "applications" : currentFotoS3Key.slice(0, lastSlash)
+  const folder = lastSlash === -1 ? "applications" : currentFotoS3Key.slice(0, lastSlash)
   const filename = sanitizeFilenamePart(originalFilename) || "foto.jpg"
   return `${folder}/${Date.now()}-${filename}`
 }

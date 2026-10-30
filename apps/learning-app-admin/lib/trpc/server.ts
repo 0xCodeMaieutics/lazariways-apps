@@ -1,4 +1,5 @@
 import { initTRPC, TRPCError } from "@trpc/server"
+
 import { auth } from "@/lib/auth.server"
 
 const t = initTRPC.context<{ auth: typeof auth; headers: Headers }>().create()

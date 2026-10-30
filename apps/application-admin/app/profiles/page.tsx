@@ -1,11 +1,12 @@
-import Link from "next/link"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { Button } from "@workspace/ui/components/button"
+import Link from "next/link"
+
 import { ProfileCard } from "@/components/profile-card"
 import { env } from "@/env"
 import { requireAdminSessionForPage } from "@/lib/auth"
 import { PROFILES_PER_PAGE } from "@/lib/constants"
-import { Button } from "@workspace/ui/components/button"
 
 interface ProfilesPageProps {
   searchParams: Promise<{ page?: string }>
@@ -19,9 +20,7 @@ function formatCreatedAt(date: Date): string {
   }).format(date)
 }
 
-export default async function ProfilesPage({
-  searchParams,
-}: ProfilesPageProps) {
+export default async function ProfilesPage({ searchParams }: ProfilesPageProps) {
   await requireAdminSessionForPage("/profiles")
 
   const { page: pageParam } = await searchParams
@@ -62,9 +61,7 @@ export default async function ProfilesPage({
 
       <div className="space-y-3">
         {profilesWithFotos.length === 0 ? (
-          <p className="py-12 text-center text-sm text-muted-foreground">
-            No profiles yet.
-          </p>
+          <p className="py-12 text-center text-sm text-muted-foreground">No profiles yet.</p>
         ) : (
           profilesWithFotos.map(({ profile, fotoUrl }) => (
             <ProfileCard

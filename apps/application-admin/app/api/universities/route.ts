@@ -1,9 +1,7 @@
 import prisma from "@workspace/database/client"
+
 import { requireAdminSessionForApi } from "@/lib/auth"
-import {
-  normalizeUniversityInput,
-  optionalUniversityString,
-} from "@/lib/normalize-university-input"
+import { normalizeUniversityInput, optionalUniversityString } from "@/lib/normalize-university-input"
 import { universityCreateSchema } from "@/lib/university-schema"
 
 export const POST = async (request: Request) => {
@@ -12,9 +10,7 @@ export const POST = async (request: Request) => {
     return authResult
   }
 
-  const parsed = universityCreateSchema.safeParse(
-    normalizeUniversityInput(await request.json())
-  )
+  const parsed = universityCreateSchema.safeParse(normalizeUniversityInput(await request.json()))
 
   if (!parsed.success) {
     console.error("ZOD_VALIDATION_FAILED", parsed.error)
@@ -40,16 +36,8 @@ export const POST = async (request: Request) => {
 
     return Response.json({ success: true, id: university.id })
   } catch (error) {
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "P2002"
-    ) {
-      return Response.json(
-        { error: "A university with this name already exists" },
-        { status: 409 }
-      )
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
+      return Response.json({ error: "A university with this name already exists" }, { status: 409 })
     }
 
     console.error("UNIVERSITY_DB_CREATE_FAILED", error)

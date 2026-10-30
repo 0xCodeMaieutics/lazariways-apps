@@ -17,10 +17,7 @@ export function WhatsappButton({
     <Button
       asChild
       size="lg"
-      className={cn(
-        "h-12 bg-[#25D366] px-6 text-white hover:bg-[#20bd5a]",
-        className
-      )}
+      className={cn("h-12 bg-[#25D366] px-6 text-white hover:bg-[#20bd5a]", className)}
     >
       <a
         href={SITE.whatsappUrl(whatsappText)}
@@ -28,12 +25,8 @@ export function WhatsappButton({
         rel="noopener noreferrer"
         aria-label="Per WhatsApp kontaktieren"
       >
-        <WhatsappIcon
-          className={cn("size-4", iconOnlyOnMobile && "size-5 lg:size-4")}
-        />
-        <span className={cn(iconOnlyOnMobile && "sr-only lg:not-sr-only")}>
-          დაინტერესებული ვარ!
-        </span>
+        <WhatsappIcon className={cn("size-4", iconOnlyOnMobile && "size-5 lg:size-4")} />
+        <span className={cn(iconOnlyOnMobile && "sr-only lg:not-sr-only")}>დაინტერესებული ვარ!</span>
       </a>
     </Button>
   )

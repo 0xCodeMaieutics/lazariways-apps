@@ -2,10 +2,7 @@ import * as Sentry from "@sentry/nextjs"
 
 type LogAttributes = Record<string, unknown>
 
-export const debug = (
-  message: string,
-  attributes?: Record<string, unknown>
-) => {
+export const debug = (message: string, attributes?: Record<string, unknown>) => {
   Sentry.logger.debug(message, attributes)
 }
 

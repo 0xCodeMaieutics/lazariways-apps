@@ -1,15 +1,12 @@
 import prisma from "@workspace/database/client"
-import { notFound } from "next/navigation"
-import Link from "next/link"
 import { Button } from "@workspace/ui/components/button"
 import { ChevronLeft } from "lucide-react"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+
 import { ExamForm } from "@/app/(admin)/_components/forms/exam-form"
 
-export default async function NewExamPage({
-  params,
-}: {
-  params: Promise<{ topicId: string }>
-}) {
+export default async function NewExamPage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId } = await params
 
   const [program, lastExam, unlockableExams] = await Promise.all([
@@ -41,10 +38,7 @@ export default async function NewExamPage({
     <div className="px-6 py-8">
       <div className="mb-6">
         <Button asChild variant="ghost" size="sm">
-          <Link
-            href={`/topics/${topicId}/exams`}
-            className="flex items-center gap-2"
-          >
+          <Link href={`/topics/${topicId}/exams`} className="flex items-center gap-2">
             <ChevronLeft className="size-4" />
             Back to exams
           </Link>

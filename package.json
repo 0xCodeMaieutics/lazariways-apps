@@ -5,24 +5,23 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "turbo format",
+    "lint": "oxlint",
+    "format": "oxfmt",
     "typecheck": "turbo typecheck",
     "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@workspace/database exec prisma",
-    "format:check": "prettier --check .",
-    "format:write": "prettier --write ."
+    "lint:fix": "oxlint --fix",
+    "format:check": "oxfmt --check"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.61.0",
-    "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
+    "oxfmt": "^0.74.0",
+    "oxlint": "^1.89.0",
     "turbo": "^2.9.15",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@10.33.4",
   "engines": {
     "node": ">=20"
-  }
+  },
+  "packageManager": "pnpm@10.33.4"
 }

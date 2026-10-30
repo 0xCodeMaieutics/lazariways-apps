@@ -1,15 +1,10 @@
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
+
+import type { LucideIcon } from "lucide-react"
+import { Building2, CalendarRange, ConciergeBell, MapPin, UtensilsCrossed } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
-import type { LucideIcon } from "lucide-react"
-import {
-  Building2,
-  CalendarRange,
-  ConciergeBell,
-  MapPin,
-  UtensilsCrossed,
-} from "lucide-react"
 
 import { WhatsappButton } from "../components/whatsapp-button"
 
@@ -145,10 +140,7 @@ function parseJobContent(markdown: string): ParsedJobContent {
 }
 
 function getJobContent(): ParsedJobContent {
-  const filePath = join(
-    process.cwd(),
-    "app/europark-restaurant-bar/_/job-content.md"
-  )
+  const filePath = join(process.cwd(), "app/europark-restaurant-bar/_/job-content.md")
   const markdown = readFileSync(filePath, "utf8")
 
   return parseJobContent(markdown)
@@ -158,8 +150,7 @@ const { frontmatter: jobFrontmatter } = getJobContent()
 
 export const metadata: Metadata = {
   title: `${jobFrontmatter.title} — ${jobFrontmatter.employer}`,
-  description:
-    "ვაკანსიები Europa-Park-ის რესტორნსა და ბარში — ოფიციანტი, ბარმენი, ბარისტა, მიმტანი და სხვა.",
+  description: "ვაკანსიები Europa-Park-ის რესტორნსა და ბარში — ოფიციანტი, ბარმენი, ბარისტა, მიმტანი და სხვა.",
 }
 
 export default function EuroparkRestaurantBarPage() {
@@ -196,9 +187,7 @@ export default function EuroparkRestaurantBarPage() {
         <div className="mt-12 space-y-10">
           {sections.map((section) => (
             <section key={section.title}>
-              <h2 className="mb-4 text-xl font-semibold tracking-tight sm:text-2xl">
-                {section.title}
-              </h2>
+              <h2 className="mb-4 text-xl font-semibold tracking-tight sm:text-2xl">{section.title}</h2>
               <ul className="space-y-4 text-base leading-7 text-neutral-800 dark:text-neutral-200">
                 {section.items.map((item) => (
                   <li key={item} className="flex gap-3">

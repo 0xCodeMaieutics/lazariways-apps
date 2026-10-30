@@ -1,7 +1,7 @@
 "use client"
 
+import type { Topic } from "@workspace/database/browser"
 import { useState } from "react"
-import { Topic } from "@workspace/database/browser"
 
 interface TopicListItem extends Topic {
   unlockedTopic: { name: string } | null
@@ -15,27 +15,16 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core"
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable"
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import {
-  Table,
-  TableHeader,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@workspace/ui/components/table"
+import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Switch } from "@workspace/ui/components/switch"
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@workspace/ui/components/table"
+import { Edit2, GripVertical, Loader2, Plus } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Edit2, GripVertical, Loader2, Plus } from "lucide-react"
-import { useMutation } from "@tanstack/react-query"
+
 import { useTRPC } from "@/lib/trpc/react"
 
 const TOPIC_TYPE_LABELS: Record<Topic["type"], string> = {
@@ -67,14 +56,9 @@ function SortableRow({
   onToggleEnabled: (enabled: boolean) => void
   isTogglePending: boolean
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: topic.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: topic.id,
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -83,12 +67,7 @@ function SortableRow({
   }
 
   return (
-    <TableRow
-      ref={setNodeRef}
-      style={style}
-      className="cursor-pointer"
-      onClick={onNavigate}
-    >
+    <TableRow ref={setNodeRef} style={style} className="cursor-pointer" onClick={onNavigate}>
       <TableCell className="w-10">
         <button
           className="cursor-grab touch-none"
@@ -108,9 +87,7 @@ function SortableRow({
           checked={topic.enabled}
           onCheckedChange={onToggleEnabled}
         />
-        {isTogglePending && (
-          <Loader2 className="absolute -right-5 size-5 animate-spin" />
-        )}
+        {isTogglePending && <Loader2 className="absolute -right-5 size-5 animate-spin" />}
       </TableCell>
       <TableCell>
         <Button onClick={(e) => e.stopPropagation()} asChild variant={"ghost"}>
@@ -123,11 +100,7 @@ function SortableRow({
   )
 }
 
-export const TopicsList = ({
-  topics: topicsOuter,
-}: {
-  topics: TopicListItem[]
-}) => {
+export const TopicsList = ({ topics: topicsOuter }: { topics: TopicListItem[] }) => {
   const router = useRouter()
   const trpc = useTRPC()
   const [topics, setTopics] = useState([...topicsOuter])
@@ -216,10 +189,7 @@ export const TopicsList = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              <SortableContext
-                items={topics.map((t) => t.id)}
-                strategy={verticalListSortingStrategy}
-              >
+              <SortableContext items={topics.map((t) => t.id)} strategy={verticalListSortingStrategy}>
                 {topics.map((topic) => (
                   <SortableRow
                     key={topic.id}
@@ -231,9 +201,7 @@ export const TopicsList = ({
                         enabled,
                       })
                     }
-                    isTogglePending={
-                      isTogglePending && variables?.id === topic.id
-                    }
+                    isTogglePending={isTogglePending && variables?.id === topic.id}
                   />
                 ))}
               </SortableContext>

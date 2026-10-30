@@ -12,5 +12,6 @@
       "@workspace/shared/*": ["./node_modules/@workspace/shared/src/*"],
       "@workspace/file-upload/*": ["./src/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "scripts"]
 }

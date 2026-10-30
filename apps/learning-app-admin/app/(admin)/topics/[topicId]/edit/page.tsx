@@ -1,14 +1,11 @@
-import Link from "next/link"
+import prisma from "@workspace/database/client"
 import { Button } from "@workspace/ui/components/button"
 import { ChevronLeft } from "lucide-react"
-import prisma from "@workspace/database/client"
+import Link from "next/link"
+
 import { EditTopicForm } from "./page.client"
 
-async function TopicsEditPage({
-  params,
-}: {
-  params: Promise<{ topicId: string }>
-}) {
+async function TopicsEditPage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId } = await params
 
   const topics = await prisma.topic.findMany({

@@ -1,31 +1,9 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form"
-import type { FieldPath } from "react-hook-form"
-import { useCallback, useEffect, useState, useTransition } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Plus, Trash2, XCircle } from "lucide-react"
-import { cn } from "@workspace/ui/lib/utils"
-
+import { SafariInputDate } from "@workspace/ui/components//safari-date-component"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@workspace/ui/components/radio-group"
-import { Label } from "@workspace/ui/components/label"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { FileUpload } from "@workspace/ui/components/file-upload"
-import { ImageCropper } from "@workspace/ui/components/image-cropper"
-import { SafariInputDate } from "@workspace/ui/components//safari-date-component"
 import {
   Dialog,
   DialogContent,
@@ -34,6 +12,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
+import { FileUpload } from "@workspace/ui/components/file-upload"
+import { ImageCropper } from "@workspace/ui/components/image-cropper"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
+import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
+import { cn } from "@workspace/ui/lib/utils"
+import { Plus, Trash2, XCircle } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useCallback, useEffect, useState, useTransition } from "react"
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form"
+import type { FieldPath } from "react-hook-form"
+
 import {
   defaultProfileLanguages,
   defaultWorkSectors,
@@ -48,15 +40,7 @@ import {
   type ProfileFormData,
 } from "@/utils/profile-schema"
 
-function FormRadioOption({
-  id,
-  value,
-  label,
-}: {
-  id: string
-  value: string
-  label: string
-}) {
+function FormRadioOption({ id, value, label }: { id: string; value: string; label: string }) {
   return (
     <div className="flex items-center gap-2">
       <RadioGroupItem value={value} id={id} />
@@ -230,12 +214,8 @@ export function ProfileForm() {
       >
         <div className="space-y-8">
           <div>
-            <h1 className="mb-2 text-2xl font-semibold tracking-tight">
-              პროფილის შექმნა
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              შეავსეთ თქვენი პროფილი ინგლისური ასოებით.
-            </p>
+            <h1 className="mb-2 text-2xl font-semibold tracking-tight">პროფილის შექმნა</h1>
+            <p className="text-sm text-muted-foreground">შეავსეთ თქვენი პროფილი ინგლისური ასოებით.</p>
           </div>
 
           <div>
@@ -247,10 +227,7 @@ export function ProfileForm() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel
-                        htmlFor="firstName"
-                        className="text-sm font-medium"
-                      >
+                      <FieldLabel htmlFor="firstName" className="text-sm font-medium">
                         სახელი *
                       </FieldLabel>
                       <Input
@@ -269,9 +246,7 @@ export function ProfileForm() {
                         placeholder="თქვენი სახელი მაგ. Ana"
                         className="transition-colors"
                       />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                   )}
                 />
@@ -280,10 +255,7 @@ export function ProfileForm() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel
-                        htmlFor="lastName"
-                        className="text-sm font-medium"
-                      >
+                      <FieldLabel htmlFor="lastName" className="text-sm font-medium">
                         გვარი *
                       </FieldLabel>
                       <Input
@@ -301,9 +273,7 @@ export function ProfileForm() {
                           })
                         }}
                       />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                   )}
                 />
@@ -313,10 +283,7 @@ export function ProfileForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel
-                      htmlFor="gender"
-                      className="text-sm font-medium"
-                    >
+                    <FieldLabel htmlFor="gender" className="text-sm font-medium">
                       სქესი *
                     </FieldLabel>
                     <RadioGroup
@@ -330,18 +297,11 @@ export function ProfileForm() {
                         const id = `gender-${option.toLowerCase()}`
 
                         return (
-                          <FormRadioOption
-                            key={option}
-                            id={id}
-                            value={option}
-                            label={genderLabels[option]}
-                          />
+                          <FormRadioOption key={option} id={id} value={option} label={genderLabels[option]} />
                         )
                       })}
                     </RadioGroup>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -350,20 +310,11 @@ export function ProfileForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel
-                      htmlFor="birthDate"
-                      className="text-sm font-medium"
-                    >
+                    <FieldLabel htmlFor="birthDate" className="text-sm font-medium">
                       დაბადების თარიღი *
                     </FieldLabel>
-                    <SafariInputDate
-                      field={field}
-                      id="birthDate"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    <SafariInputDate field={field} id="birthDate" aria-invalid={fieldState.invalid} />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -383,9 +334,7 @@ export function ProfileForm() {
                       placeholder="მაგ. ana@example.com"
                       className="transition-colors"
                     />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -405,9 +354,7 @@ export function ProfileForm() {
                       placeholder="მაგ. +995 555 123456"
                       className="transition-colors"
                     />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -416,10 +363,7 @@ export function ProfileForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel
-                      htmlFor="isStudent"
-                      className="text-sm font-medium"
-                    >
+                    <FieldLabel htmlFor="isStudent" className="text-sm font-medium">
                       ხართ სტუდენტი? *
                     </FieldLabel>
                     <RadioGroup
@@ -429,20 +373,10 @@ export function ProfileForm() {
                       className="mt-2 flex flex-row gap-4"
                       aria-invalid={fieldState.invalid}
                     >
-                      <FormRadioOption
-                        id="is-student-yes"
-                        value="true"
-                        label="დიახ"
-                      />
-                      <FormRadioOption
-                        id="is-student-no"
-                        value="false"
-                        label="არა"
-                      />
+                      <FormRadioOption id="is-student-yes" value="true" label="დიახ" />
+                      <FormRadioOption id="is-student-no" value="false" label="არა" />
                     </RadioGroup>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -463,10 +397,7 @@ export function ProfileForm() {
                       control={form.control}
                       render={({ field: languageField, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel
-                            htmlFor={`language-${index}`}
-                            className="text-sm font-medium"
-                          >
+                          <FieldLabel htmlFor={`language-${index}`} className="text-sm font-medium">
                             ენა *
                           </FieldLabel>
                           <Input
@@ -483,9 +414,7 @@ export function ProfileForm() {
                               })
                             }}
                           />
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                       )}
                     />
@@ -493,22 +422,14 @@ export function ProfileForm() {
                       name={`languages.${index}.level`}
                       control={form.control}
                       render={({ field: levelField, fieldState }) => (
-                        <Field
-                          data-invalid={fieldState.invalid}
-                          className="md:min-w-32"
-                        >
-                          <FieldLabel
-                            htmlFor={`level-${index}`}
-                            className="text-sm font-medium"
-                          >
+                        <Field data-invalid={fieldState.invalid} className="md:min-w-32">
+                          <FieldLabel htmlFor={`level-${index}`} className="text-sm font-medium">
                             დონე *
                           </FieldLabel>
                           <select
                             id={`level-${index}`}
                             value={levelField.value ?? ""}
-                            onChange={(event) =>
-                              levelField.onChange(event.target.value)
-                            }
+                            onChange={(event) => levelField.onChange(event.target.value)}
                             aria-invalid={fieldState.invalid}
                             className={cn(
                               "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
@@ -523,9 +444,7 @@ export function ProfileForm() {
                               </option>
                             ))}
                           </select>
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                       )}
                     />
@@ -545,11 +464,7 @@ export function ProfileForm() {
                 ))}
               </div>
               {form.formState.errors.languages?.message && (
-                <FieldError
-                  errors={[
-                    { message: form.formState.errors.languages.message },
-                  ]}
-                />
+                <FieldError errors={[{ message: form.formState.errors.languages.message }]} />
               )}
               <Button
                 type="button"
@@ -586,11 +501,7 @@ export function ProfileForm() {
                                 if (checked) {
                                   field.onChange([...field.value, option])
                                 } else {
-                                  field.onChange(
-                                    field.value.filter(
-                                      (value) => value !== option
-                                    )
-                                  )
+                                  field.onChange(field.value.filter((value) => value !== option))
                                 }
                               }}
                             />
@@ -604,9 +515,7 @@ export function ProfileForm() {
                         )
                       })}
                     </div>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -621,9 +530,7 @@ export function ProfileForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel className="text-sm font-medium">
-                      სასურველი ანაზღაურება *
-                    </FieldLabel>
+                    <FieldLabel className="text-sm font-medium">სასურველი ანაზღაურება *</FieldLabel>
                     <RadioGroup
                       value={field.value ?? ""}
                       onValueChange={field.onChange}
@@ -636,16 +543,12 @@ export function ProfileForm() {
                         return (
                           <div key={option} className="flex items-center gap-2">
                             <RadioGroupItem value={option} id={id} />
-                            <Label htmlFor={id}>
-                              {desiredSalaryLabels[option]}
-                            </Label>
+                            <Label htmlFor={id}>{desiredSalaryLabels[option]}</Label>
                           </div>
                         )
                       })}
                     </RadioGroup>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -683,9 +586,7 @@ export function ProfileForm() {
                       placeholder="აირჩიეთ ფოტო"
                       required
                     />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     {base64String !== null && field.value instanceof File && (
                       <ImageCropper
                         base64Image={base64String}
@@ -738,30 +639,21 @@ export function ProfileForm() {
                       .
                     </label>
                   </div>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
           </div>
 
           <div className="flex flex-col-reverse gap-4 sm:flex-row">
-            <Button
-              type="submit"
-              size="lg"
-              disabled={isSubmitting || !isDirty || !acceptPrivacyPolicy}
-            >
+            <Button type="submit" size="lg" disabled={isSubmitting || !isDirty || !acceptPrivacyPolicy}>
               {isSubmitting ? "იგზავნება..." : "შექმნა"}
             </Button>
           </div>
         </div>
       </form>
 
-      <Dialog
-        open={isSubmissionErrorOpen}
-        onOpenChange={setIsSubmissionErrorOpen}
-      >
+      <Dialog open={isSubmissionErrorOpen} onOpenChange={setIsSubmissionErrorOpen}>
         <DialogContent>
           <DialogHeader>
             <div className="flex items-center gap-3">
@@ -769,15 +661,11 @@ export function ProfileForm() {
               <DialogTitle>შექმნა ვერ მოხერხდა</DialogTitle>
             </div>
             <DialogDescription>
-              პროფილის შექმნისას მოხდა შეცდომა. გთხოვთ, დაუკავშირდეთ ანას ან
-              ქრისტის.
+              პროფილის შექმნისას მოხდა შეცდომა. გთხოვთ, დაუკავშირდეთ ანას ან ქრისტის.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              type="button"
-              onClick={() => setIsSubmissionErrorOpen(false)}
-            >
+            <Button type="button" onClick={() => setIsSubmissionErrorOpen(false)}>
               დახურვა
             </Button>
           </DialogFooter>

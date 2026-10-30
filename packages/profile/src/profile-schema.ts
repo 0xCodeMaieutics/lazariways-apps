@@ -10,16 +10,9 @@ export const workSectorOptions = [
   "Industrielle Produktion",
 ] as const
 
-export const desiredSalaryOptions = [
-  "EURO_10_12",
-  "EURO_12_14",
-  "EURO_15_PLUS",
-] as const
+export const desiredSalaryOptions = ["EURO_10_12", "EURO_12_14", "EURO_15_PLUS"] as const
 
-export const desiredSalaryLabels: Record<
-  (typeof desiredSalaryOptions)[number],
-  string
-> = {
+export const desiredSalaryLabels: Record<(typeof desiredSalaryOptions)[number], string> = {
   EURO_10_12: "10–12 €",
   EURO_12_14: "12–14 €",
   EURO_15_PLUS: "15+ €",
@@ -47,31 +40,22 @@ export const adminProfileEditSchema = z.object({
     .refine(
       (val) =>
         val.trim() === "" ||
-        /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/.test(
-          val.trim()
-        ),
+        /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/.test(val.trim()),
       "Invalid phone number format"
     )
     .optional(),
   instagram: z
     .string()
-    .refine(
-      (val) => val.trim() === "" || /^[\w\.]+$/.test(val.trim()),
-      "Invalid Instagram username"
-    )
+    .refine((val) => val.trim() === "" || /^[\w.]+$/.test(val.trim()), "Invalid Instagram username")
     .optional(),
   isStudent: z.boolean({
     message: "Student status is required",
   }),
-  workSector: z
-    .array(z.enum(workSectorOptions))
-    .min(1, "At least one work sector is required"),
+  workSector: z.array(z.enum(workSectorOptions)).min(1, "At least one work sector is required"),
   desiredSalary: z.enum(desiredSalaryOptions, {
     message: "Desired salary is required",
   }),
-  languages: z
-    .array(profileLanguageSchema)
-    .min(1, "At least one language is required"),
+  languages: z.array(profileLanguageSchema).min(1, "At least one language is required"),
 })
 
 export type AdminProfileEditData = z.infer<typeof adminProfileEditSchema>

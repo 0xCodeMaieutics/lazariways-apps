@@ -8,13 +8,7 @@ interface ProfileCardProps {
   fotoUrl: string
 }
 
-export function ProfileCard({
-  id,
-  firstName,
-  lastName,
-  createdAtLabel,
-  fotoUrl,
-}: ProfileCardProps) {
+export function ProfileCard({ id, firstName, lastName, createdAtLabel, fotoUrl }: ProfileCardProps) {
   return (
     <Link
       href={`/profiles/${id}/edit`}
@@ -22,11 +16,7 @@ export function ProfileCard({
     >
       <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={fotoUrl}
-          alt={`${firstName} ${lastName}`}
-          className="h-full w-full object-cover"
-        />
+        <img src={fotoUrl} alt={`${firstName} ${lastName}`} className="h-full w-full object-cover" />
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">

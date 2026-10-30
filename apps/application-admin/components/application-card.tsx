@@ -1,6 +1,7 @@
-import Link from "next/link"
 import type { GermanLevel } from "@workspace/database/browser"
 import { Badge } from "@workspace/ui/components/badge"
+import Link from "next/link"
+
 import { InstagramLink } from "./instagram-link"
 
 interface ApplicationCardProps {
@@ -30,11 +31,7 @@ export function ApplicationCard({
       >
         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted md:aspect-[4/3] md:h-auto md:w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={fotoUrl}
-            alt={`${firstName} ${lastName}`}
-            className="h-full w-full object-cover"
-          />
+          <img src={fotoUrl} alt={`${firstName} ${lastName}`} className="h-full w-full object-cover" />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="truncate font-medium md:whitespace-normal">
@@ -51,9 +48,7 @@ export function ApplicationCard({
                   <span className="truncate">{linkedUniversityName}</span>
                 </Badge>
               ) : null}
-              {germanLevel !== null ? (
-                <Badge variant="secondary">{germanLevel}</Badge>
-              ) : null}
+              {germanLevel !== null ? <Badge variant="secondary">{germanLevel}</Badge> : null}
             </div>
           ) : null}
         </div>

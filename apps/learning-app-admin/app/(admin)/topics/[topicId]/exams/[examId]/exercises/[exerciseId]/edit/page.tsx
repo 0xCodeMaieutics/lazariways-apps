@@ -1,8 +1,9 @@
 import prisma from "@workspace/database/client"
-import { notFound } from "next/navigation"
-import Link from "next/link"
 import { Button } from "@workspace/ui/components/button"
 import { ChevronLeft } from "lucide-react"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+
 import { ExerciseForm } from "@/app/(admin)/_components/forms/exercise-form"
 
 export default async function EditExercisePage({
@@ -39,8 +40,7 @@ export default async function EditExercisePage({
     slowAudioUrl: exercise.slowAudioUrl ?? "",
     optionsText: exercise.options.join("\n"),
     correctOptionIndexText: exercise.correctOptionIndex.join(", "),
-    allowsMultipleCorrectOptions:
-      exercise.allowsMultipleCorrectOptions ?? false,
+    allowsMultipleCorrectOptions: exercise.allowsMultipleCorrectOptions ?? false,
     correctInputsText: exercise.correctInputs.join("\n"),
   }
 
@@ -48,21 +48,13 @@ export default async function EditExercisePage({
     <div className="px-6 py-8">
       <div className="mb-6">
         <Button asChild variant="ghost" size="sm">
-          <Link
-            href={`/topics/${topicId}/exams/${examId}/exercises`}
-            className="flex items-center gap-2"
-          >
+          <Link href={`/topics/${topicId}/exams/${examId}/exercises`} className="flex items-center gap-2">
             <ChevronLeft className="size-4" />
             Back to exercises
           </Link>
         </Button>
       </div>
-      <ExerciseForm
-        topicId={topicId}
-        examId={examId}
-        exerciseId={exerciseId}
-        defaultValues={defaultValues}
-      />
+      <ExerciseForm topicId={topicId} examId={examId} exerciseId={exerciseId} defaultValues={defaultValues} />
     </div>
   )
 }

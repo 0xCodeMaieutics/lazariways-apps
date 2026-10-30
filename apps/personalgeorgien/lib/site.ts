@@ -1,9 +1,7 @@
 const PHONE_NUMBER = "4915229204123"
 const SALES_PHONE_NUMBER = "491777053894"
-const WHATSAPP_MESSAGE =
-  "Hallo, ich interessiere mich für Fachkräfte aus Georgien."
-const SALES_WHATSAPP_MESSAGE =
-  "Hallo David, ich interessiere mich für Fachkräfte aus Georgien."
+const WHATSAPP_MESSAGE = "Hallo, ich interessiere mich für Fachkräfte aus Georgien."
+const SALES_WHATSAPP_MESSAGE = "Hallo David, ich interessiere mich für Fachkräfte aus Georgien."
 
 export const BENEFITS = [
   {
@@ -13,36 +11,30 @@ export const BENEFITS = [
   },
   {
     title: "Persönliche Betreuung",
-    description:
-      "Ein fester Ansprechpartner begleitet Sie von der ersten Anfrage bis zur Einstellung.",
+    description: "Ein fester Ansprechpartner begleitet Sie von der ersten Anfrage bis zur Einstellung.",
   },
   {
     title: "Rechtssichere Vermittlung",
-    description:
-      "Wir kennen die Anforderungen und unterstützen Sie durch den gesamten Prozess.",
+    description: "Wir kennen die Anforderungen und unterstützen Sie durch den gesamten Prozess.",
   },
   {
     title: "Schnelle Verfügbarkeit",
-    description:
-      "Kurze Wege vom ersten Kontakt bis zur Besetzung Ihrer offenen Stellen.",
+    description: "Kurze Wege vom ersten Kontakt bis zur Besetzung Ihrer offenen Stellen.",
   },
 ] as const
 
 export const STEPS = [
   {
     title: "Kontakt",
-    description:
-      "Schreiben Sie uns per WhatsApp und schildern Sie Ihren Personalbedarf.",
+    description: "Schreiben Sie uns per WhatsApp und schildern Sie Ihren Personalbedarf.",
   },
   {
     title: "Auswahl",
-    description:
-      "Wir stellen Ihnen passende Fachkräfte vor, die zu Ihren Anforderungen passen.",
+    description: "Wir stellen Ihnen passende Fachkräfte vor, die zu Ihren Anforderungen passen.",
   },
   {
     title: "Einstellung",
-    description:
-      "Sie wählen die richtigen Kandidaten — wir begleiten Sie bis zur Einstellung.",
+    description: "Sie wählen die richtigen Kandidaten — wir begleiten Sie bis zur Einstellung.",
   },
 ] as const
 

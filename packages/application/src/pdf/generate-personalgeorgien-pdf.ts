@@ -1,27 +1,22 @@
+import fontkit from "@pdf-lib/fontkit"
+import type { PDFFont, PDFPage } from "pdf-lib"
 import {
   clipEvenOdd,
   drawEllipsePath,
   endPath,
   PDFArray,
   PDFDocument,
-  PDFFont,
   PDFName,
-  PDFPage,
   PDFString,
   popGraphicsState,
   pushGraphicsState,
   rgb,
   type RGB,
 } from "pdf-lib"
-import { ApplicationFormData } from "../application-schema"
-import fontkit from "@pdf-lib/fontkit"
 
-function pdfWrapLines(
-  text: string,
-  font: PDFFont,
-  fontSize: number,
-  maxWidth: number
-): string[] {
+import type { ApplicationFormData } from "../application-schema"
+
+function pdfWrapLines(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
   const words = text.split(/\s+/).filter(Boolean)
   const lines: string[] = []
 
@@ -63,14 +58,10 @@ function pdfWrapLines(
   }
 
   for (const word of words) {
-    const fragments =
-      font.widthOfTextAtSize(word, fontSize) <= maxWidth
-        ? [word]
-        : splitWord(word)
+    const fragments = font.widthOfTextAtSize(word, fontSize) <= maxWidth ? [word] : splitWord(word)
 
     for (const fragment of fragments) {
-      const candidate =
-        currentLine === "" ? fragment : `${currentLine} ${fragment}`
+      const candidate = currentLine === "" ? fragment : `${currentLine} ${fragment}`
 
       if (font.widthOfTextAtSize(candidate, fontSize) <= maxWidth) {
         currentLine = candidate
@@ -110,8 +101,7 @@ const formatDate = (isoDate: string | undefined) => {
   }).format(date)
 }
 
-const formatGender = (gender: ApplicationFormData["gender"]) =>
-  gender === "M" ? "Männlich" : "Weiblich"
+const formatGender = (gender: ApplicationFormData["gender"]) => (gender === "M" ? "Männlich" : "Weiblich")
 
 const formatBool = (value: boolean | undefined) => {
   if (value === undefined) return ""
@@ -129,10 +119,7 @@ const calculateAge = (isoDate: string) => {
   const today = new Date()
   let age = today.getFullYear() - birthDate.getFullYear()
   const monthDiff = today.getMonth() - birthDate.getMonth()
-  if (
-    monthDiff < 0 ||
-    (monthDiff === 0 && today.getDate() < birthDate.getDate())
-  ) {
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
     age -= 1
   }
 
@@ -327,9 +314,7 @@ const professionRandom = {
 
 export type PersonalGeorgienProfession = keyof typeof professionRandom
 
-export const personalGeorgienProfessionOptions = Object.keys(
-  professionRandom
-) as PersonalGeorgienProfession[]
+export const personalGeorgienProfessionOptions = Object.keys(professionRandom) as PersonalGeorgienProfession[]
 
 const createSeededRandom = (seed: string) => {
   let state = 0
@@ -343,11 +328,7 @@ const createSeededRandom = (seed: string) => {
   }
 }
 
-const pickRandomSubset = <T>(
-  items: readonly T[],
-  count: number,
-  random: () => number
-): T[] => {
+const pickRandomSubset = <T>(items: readonly T[], count: number, random: () => number): T[] => {
   const pool = [...items]
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1))
@@ -385,10 +366,7 @@ const formatExperiencePeriod = (from: Date, ongoing: boolean) => {
   return ongoing ? `seit ${monthYear}` : monthYear
 }
 
-const formatOverrideExperiencePeriod = (
-  yearMonth: string | undefined,
-  ongoing: boolean
-) => {
+const formatOverrideExperiencePeriod = (yearMonth: string | undefined, ongoing: boolean) => {
   if (yearMonth === undefined) return null
 
   const match = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(yearMonth.trim())
@@ -489,9 +467,7 @@ export const generatePersonalGeorgienPdf = async (
     }
   }
 
-  const photoBytes = new Uint8Array(
-    await applicationFormData.foto.arrayBuffer()
-  )
+  const photoBytes = new Uint8Array(await applicationFormData.foto.arrayBuffer())
 
   const embeddedPhoto =
     applicationFormData.foto.type === "image/png"
@@ -508,10 +484,7 @@ export const generatePersonalGeorgienPdf = async (
   const photoCenterY = photoY + photoSize / 2
   const photoRadius = photoSize / 2
 
-  const coverScale = Math.max(
-    photoSize / embeddedPhoto.width,
-    photoSize / embeddedPhoto.height
-  )
+  const coverScale = Math.max(photoSize / embeddedPhoto.width, photoSize / embeddedPhoto.height)
   const drawPhotoWidth = embeddedPhoto.width * coverScale
   const drawPhotoHeight = embeddedPhoto.height * coverScale
   const drawPhotoX = photoX + (photoSize - drawPhotoWidth) / 2
@@ -545,15 +518,12 @@ export const generatePersonalGeorgienPdf = async (
 
   const age = calculateAge(applicationFormData.birthDate)
   const ageSuffix = age === null ? "" : ` - ${age} J.`
-  firstPage.drawText(
-    `${applicationFormData.firstName} ${applicationFormData.lastName}${ageSuffix}`,
-    {
-      x: layout.fields.name.x,
-      y: layout.fields.name.y,
-      size: layout.nameSize,
-      font,
-    }
-  )
+  firstPage.drawText(`${applicationFormData.firstName} ${applicationFormData.lastName}${ageSuffix}`, {
+    x: layout.fields.name.x,
+    y: layout.fields.name.y,
+    size: layout.nameSize,
+    font,
+  })
 
   const birthInfo = joinNonEmpty(
     [
@@ -568,57 +538,34 @@ export const generatePersonalGeorgienPdf = async (
 
   drawValue(birthInfo, layout.fields.geburtsdatumOrtLand.y)
 
-  drawValue(
-    formatGender(applicationFormData.gender),
-    layout.fields.geschlecht.y
-  )
+  drawValue(formatGender(applicationFormData.gender), layout.fields.geschlecht.y)
 
   const address = joinNonEmpty(
     [
       applicationFormData.street,
-      joinNonEmpty(
-        [applicationFormData.postalCode, applicationFormData.city],
-        " "
-      ),
+      joinNonEmpty([applicationFormData.postalCode, applicationFormData.city], " "),
       applicationFormData.country,
     ],
     ", "
   )
   drawValue(address, layout.fields.wohnort.y)
 
-  drawValue(
-    formatDate(applicationFormData.semesterBreakFrom),
-    layout.fields.einreisen.y
-  )
+  drawValue(formatDate(applicationFormData.semesterBreakFrom), layout.fields.einreisen.y)
 
-  drawValue(
-    formatValue(applicationFormData.germanLevel),
-    layout.fields.deutschniveau.y
-  )
+  drawValue(formatValue(applicationFormData.germanLevel), layout.fields.deutschniveau.y)
 
-  drawValue(
-    formatValue(applicationFormData.otherLanguages),
-    layout.fields.weitereSprachen.y
-  )
+  drawValue(formatValue(applicationFormData.otherLanguages), layout.fields.weitereSprachen.y)
 
-  drawValue(
-    formatBool(applicationFormData.driverLicense),
-    layout.fields.fuehrerschein.y
-  )
+  drawValue(formatBool(applicationFormData.driverLicense), layout.fields.fuehrerschein.y)
 
-  drawValue(
-    formatBool(applicationFormData.shiftWork),
-    layout.fields.schichbereitschaft.y
-  )
+  drawValue(formatBool(applicationFormData.shiftWork), layout.fields.schichbereitschaft.y)
 
   drawValue(formatValue(applicationFormData.phone), layout.fields.telefon.y)
   drawValue(formatValue(applicationFormData.email), layout.fields.email.y)
 
   const instagram = formatValue(applicationFormData.instagram)
   drawValue(
-    instagram.length > 0 && !instagram.startsWith("@") && instagram !== "-"
-      ? `@${instagram}`
-      : instagram,
+    instagram.length > 0 && !instagram.startsWith("@") && instagram !== "-" ? `@${instagram}` : instagram,
     layout.fields.instagram.y
   )
 
@@ -643,11 +590,7 @@ export const generatePersonalGeorgienPdf = async (
   const activities =
     overrideActivities !== undefined && overrideActivities.length > 0
       ? overrideActivities
-      : pickRandomSubset(
-          professionData.randomActivities,
-          activityCount,
-          experienceRandom
-        )
+      : pickRandomSubset(professionData.randomActivities, activityCount, experienceRandom)
   const { from, ongoing } = generateExperiencePeriod(
     applicationFormData.birthDate,
     applicationFormData.applicationId
@@ -657,10 +600,7 @@ export const generatePersonalGeorgienPdf = async (
       applicationFormData.experienceDate,
       applicationFormData.experienceOngoing ?? true
     ) ?? formatExperiencePeriod(from, ongoing)
-  const experienceLocation = joinNonEmpty(
-    [applicationFormData.city, applicationFormData.country],
-    ", "
-  )
+  const experienceLocation = joinNonEmpty([applicationFormData.city, applicationFormData.country], ", ")
   const pe = layout.praktischeErfahrung
   let experienceY = pe.startY
 
@@ -697,12 +637,7 @@ export const generatePersonalGeorgienPdf = async (
       font,
     })
 
-    const activityLines = pdfWrapLines(
-      activity,
-      font,
-      layout.fieldSize,
-      bulletTextMaxWidth
-    )
+    const activityLines = pdfWrapLines(activity, font, layout.fieldSize, bulletTextMaxWidth)
     for (const [lineIndex, line] of activityLines.entries()) {
       if (lineIndex > 0) {
         experienceY -= pe.lineHeight

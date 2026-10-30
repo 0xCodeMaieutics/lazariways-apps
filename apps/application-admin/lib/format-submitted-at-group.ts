@@ -45,10 +45,7 @@ export function getSubmittedAtGroupKey(date: Date): string {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
 }
 
-export function formatSubmittedAtGroupLabel(
-  date: Date,
-  now: Date = new Date()
-): string {
+export function formatSubmittedAtGroupLabel(date: Date, now: Date = new Date()): string {
   const daysAgo = getDaysAgoInTbilisi(date, now)
 
   if (daysAgo === 0) {

@@ -1,10 +1,11 @@
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { prismaToAdminEditData } from "@workspace/application/prisma"
 import prisma from "@workspace/database/client"
 import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
-import { ApplicationView } from "@/components/application-view"
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
+
 import { ApplicationInquiryFooter } from "@/components/application-inquiry-footer"
+import { ApplicationView } from "@/components/application-view"
 import { env } from "@/env"
 
 const FOTO_URL_EXPIRES_IN_SECONDS = 60 * 60
@@ -13,9 +14,7 @@ interface ApplicationPageProps {
   params: Promise<{ applicationId: string }>
 }
 
-export async function generateMetadata({
-  params,
-}: ApplicationPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ApplicationPageProps): Promise<Metadata> {
   const { applicationId } = await params
   const application = await prisma.application.findUnique({
     where: { id: applicationId },
@@ -31,9 +30,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function ApplicationPage({
-  params,
-}: ApplicationPageProps) {
+export default async function ApplicationPage({ params }: ApplicationPageProps) {
   const { applicationId } = await params
   const application = await prisma.application.findUnique({
     where: { id: applicationId },

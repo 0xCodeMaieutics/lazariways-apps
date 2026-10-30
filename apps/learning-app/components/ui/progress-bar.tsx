@@ -1,14 +1,6 @@
 import { cn } from "@/lib/utils"
 
-export function ProgressBar({
-  value,
-  max,
-  className,
-}: {
-  value: number
-  max: number
-  className?: string
-}) {
+export function ProgressBar({ value, max, className }: { value: number; max: number; className?: string }) {
   const percentage = max > 0 ? (value / max) * 100 : 0
 
   return (

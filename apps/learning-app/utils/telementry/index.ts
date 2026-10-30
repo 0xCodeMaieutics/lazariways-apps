@@ -5,12 +5,13 @@ import {
   setTag as sentry_setTag,
 } from "@sentry/nextjs"
 
-export type Span = {
-  setAttribute: (key: string, value: any) => void
-}
+type SentrySpanOptions = Parameters<typeof sentry_startSpan>[0]
+type SentrySpan = Parameters<Parameters<typeof sentry_startSpan>[1]>[0]
+
+export type Span = Pick<SentrySpan, "setAttribute">
 
 function startSpan<T>(
-  options: { name: string; op?: string; attributes?: Record<string, any> },
+  options: Pick<SentrySpanOptions, "name" | "op" | "attributes">,
   fn: (span: Span) => T
 ): T {
   return sentry_startSpan(options, fn)

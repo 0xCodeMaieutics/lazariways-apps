@@ -1,9 +1,11 @@
-import dotenv from "dotenv"
 import { readFileSync, writeFileSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+
+import dotenv from "dotenv"
+import z from "zod"
+
 import { extractCompanyFromHtml } from "../ai.js"
-import z, { email } from "zod"
 import "colors"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -13,18 +15,11 @@ const inputHtmlPath = path.join(__dirname, "input.html")
 const companiesPath = path.join(__dirname, "..", "companies.json")
 
 function readCompanies(): Record<string, unknown>[] {
-  return JSON.parse(readFileSync(companiesPath, "utf8")) as Record<
-    string,
-    unknown
-  >[]
+  return JSON.parse(readFileSync(companiesPath, "utf8")) as Record<string, unknown>[]
 }
 
 function writeCompanies(companies: Record<string, unknown>[]) {
-  writeFileSync(
-    companiesPath,
-    `${JSON.stringify(companies, null, 2)}\n`,
-    "utf8"
-  )
+  writeFileSync(companiesPath, `${JSON.stringify(companies, null, 2)}\n`, "utf8")
 }
 
 function printUsage() {
@@ -94,10 +89,7 @@ async function main() {
   )
 
   if (alreadyExists) {
-    console.warn(
-      `Company already exists for ${parsedUrl.href} ${parsedCompany.email}`
-        .yellow
-    )
+    console.warn(`Company already exists for ${parsedUrl.href} ${parsedCompany.email}`.yellow)
   }
 
   writeCompanies([...companies, company])

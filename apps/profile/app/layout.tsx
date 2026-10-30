@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+
 import "@workspace/ui/globals.css"
 import { Providers } from "./providers"
 
 export const metadata: Metadata = {
   title: "Lazari Ways - პროფილის ფორმა",
-  description:
-    "შექმენით თქვენი პროფილი Lazari Ways-ის საშუალებით და გახდით ხილული დამსაქმებლებისთვის.",
+  description: "შექმენით თქვენი პროფილი Lazari Ways-ის საშუალებით და გახდით ხილული დამსაქმებლებისთვის.",
 }
 
 export default function RootLayout({

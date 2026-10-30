@@ -1,7 +1,7 @@
-import React, { useRef } from "react"
 import { Button } from "@workspace/ui/components/button"
-import { Upload, X, File, FileImage } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
+import { Upload, X, File, FileImage } from "lucide-react"
+import React, { useRef } from "react"
 
 export interface FileUploadProps {
   accept?: string
@@ -64,9 +64,7 @@ const FileUpload = ({
     const extension = fileName.split(".").pop()?.toLowerCase()
     if (extension === "pdf") {
       return <File className="h-4 w-4" />
-    } else if (
-      ["jpg", "jpeg", "png", "gif", "webp"].includes(extension || "")
-    ) {
+    } else if (["jpg", "jpeg", "png", "gif", "webp"].includes(extension || "")) {
       return <FileImage className="h-4 w-4" />
     }
     return <File className="h-4 w-4" />
@@ -95,9 +93,7 @@ const FileUpload = ({
             <div className="flex min-w-0 flex-1 items-center gap-2">
               {getFileIcon(file.name)}
               <span className="truncate text-sm">{file.name}</span>
-              <span className="text-xs text-muted-foreground">
-                ({formatFileSize(file.size)})
-              </span>
+              <span className="text-xs text-muted-foreground">({formatFileSize(file.size)})</span>
             </div>
             <Button
               type="button"

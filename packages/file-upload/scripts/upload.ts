@@ -1,24 +1,16 @@
-import {
-  getSignedUrlForDownload,
-  uploadToStorage,
-} from "@workspace/file-upload/s3-client.ts"
-import { keyBuilders } from "@workspace/file-upload/key-builder.ts"
-import { randomUUID } from "crypto"
 import { readFileSync } from "fs"
-import z from "zod"
+
+import { keyBuilders } from "@workspace/file-upload/key-builder.ts"
+import { getSignedUrlForDownload, uploadToStorage } from "@workspace/file-upload/s3-client.ts"
 import { generateRandomString } from "@workspace/shared/lib/random.ts"
+import z from "zod"
 
 void (async function main() {
-  const s3BucketNameResult = z
-    .string()
-    .min(1)
-    .safeParse(process.env.S3_BUCKET_NAME)
+  const s3BucketNameResult = z.string().min(1).safeParse(process.env.S3_BUCKET_NAME)
   if (!s3BucketNameResult.success) {
     console.error("S3_BUCKET_ENV_LOAD_FAILED")
     return
   }
-
-  const id = randomUUID()
 
   const photoData = readFileSync("./scripts/photo.png")
 
