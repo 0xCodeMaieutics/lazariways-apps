@@ -50,11 +50,13 @@ export async function createAndSendVerificationCode({
     data: { code, expiresAt },
   })
 
-  await sendTelegramMessage({
-    text: `Admin login code: ${code}\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`,
-    chatId,
-    token,
-  })
+  const text = `Admin login code: ${code}\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`\n${text}\n`)
+  } else {
+    await sendTelegramMessage({ text, chatId, token })
+  }
 
   return { success: true as const }
 }
