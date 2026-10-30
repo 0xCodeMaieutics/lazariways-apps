@@ -49,6 +49,6 @@ chrome.runtime.onMessage.addListener((message): undefined => {
   document.addEventListener("click", onClick, true)
 })
 
-document.addEventListener("DOMContentLoaded", (event) => {
+document.addEventListener("DOMContentLoaded", () => {
   // append sidebar toggle <- This
 })

@@ -1,7 +1,6 @@
 "use client"
-import { useEffect, useEffectEvent, useState } from "react"
 import { Button } from "@workspace/ui/components/button"
-import { resumeToPipeableStream } from "react-dom/server"
+import { useEffect, useEffectEvent, useState } from "react"
 
 const TOKEN_KEY = "personalgeorgien.token"
 
@@ -9,10 +8,8 @@ export const App = () => {
   const [token, setToken] = useState<null | string>(null)
   const [error, setError] = useState<null | string>(null)
   const [isCodeSent, setIsCodeSent] = useState<null | boolean>(null)
-  const tokenResult = chrome.storage.local.get(TOKEN_KEY)
-
   useEffect(() => {
-    tokenResult.then((result) => {
+    chrome.storage.local.get(TOKEN_KEY).then((result) => {
       if (TOKEN_KEY in result) {
         const token = result[TOKEN_KEY]
         setToken(token)
@@ -27,14 +24,12 @@ export const App = () => {
           {isCodeSent === null && (
             <Button
               onClick={async () => {
-                const token = "12345-token"
                 try {
                   // request code api request
                   const result = await fetch("")
-                  if (result.ok === false || result.status !== 200)
-                    return setError("Failed requesting code")
+                  if (result.ok === false || result.status !== 200) return setError("Failed requesting code")
                   setIsCodeSent(true)
-                } catch (error) {
+                } catch {
                   setError("Failed to login")
                 }
               }}
@@ -52,13 +47,12 @@ export const App = () => {
                   try {
                     // TODO: implement verify code api request
                     const result = await fetch("")
-                    if (result.ok === false || result.status !== 200)
-                      return setError("Failed verifying code")
+                    if (result.ok === false || result.status !== 200) return setError("Failed verifying code")
                     await chrome.storage.local.set({
                       [TOKEN_KEY]: token,
                     })
                     setToken(token)
-                  } catch (error) {
+                  } catch {
                     setError("Failed to login")
                   }
                 }}
