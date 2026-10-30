@@ -3,15 +3,7 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { Controller, useForm, useWatch, type Control } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import {
-  startTransition,
-  useEffect,
-  useEffectEvent,
-  useState,
-  useTransition,
-  type ReactNode,
-} from "react"
-import { ArrowDown, ArrowUp } from "lucide-react"
+import { startTransition, useState, useTransition, type ReactNode } from "react"
 import {
   adminApplicationEditSchema,
   type AdminApplicationEditData,
@@ -19,21 +11,24 @@ import {
   workSectorLabels,
   workSectorOptions,
 } from "@workspace/application/schema"
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@workspace/ui/components/dialog"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
+  FieldSet,
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
@@ -46,12 +41,34 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@workspace/ui/components/native-select"
+import { toast } from "@workspace/ui/components/sonner"
 import { ApplicationPdfButtons } from "@/components/application-pdf-buttons"
 import { CopyApplicationLinkButton } from "@/components/copy-application-link-button"
 import { InstagramLink } from "@/components/instagram-link"
 import type { UniversityOption } from "./edit-application-content"
 
 const UNIVERSITY_NOT_IN_LIST = "__not_in_list__"
+
+const SAVE_ERROR = "განაცხადის შენახვა ვერ მოხერხდა. სცადეთ ხელახლა."
+const DELETE_ERROR = "განაცხადის წაშლა ვერ მოხერხდა. სცადეთ ხელახლა."
+const INVALID_FORM_ERROR = "გთხოვთ, შეასწოროთ მონიშნული ველები."
+
+const sections = [
+  { id: "personal", title: "პირადი ინფორმაცია" },
+  { id: "address", title: "მისამართი" },
+  { id: "contact", title: "კონტაქტი და სოციალური ქსელები" },
+  { id: "studies", title: "სწავლა" },
+  { id: "qualification", title: "კვალიფიკაცია და ჯანმრთელობა" },
+  { id: "germany", title: "ყოფნა გერმანიაში" },
+  { id: "emergency", title: "საგანგებო საკონტაქტო პირი" },
+  { id: "work-sector", title: "სასურველი სამუშაო სფერო" },
+  { id: "actions", title: "სხვა მოქმედებები" },
+] as const
+
+type SectionId = (typeof sections)[number]["id"]
+
+const sectionTitle = (id: SectionId) =>
+  sections.find((section) => section.id === id)?.title ?? ""
 
 interface ApplicationEditFormProps {
   applicationId: string
@@ -60,18 +77,42 @@ interface ApplicationEditFormProps {
   universities: UniversityOption[]
 }
 
-function FormSection({
-  title,
-  children,
-}: {
-  title: string
-  children: ReactNode
-}) {
+function FormSection({ id, children }: { id: SectionId; children: ReactNode }) {
   return (
-    <section className="space-y-4">
-      <h2 className="text-lg font-medium">{title}</h2>
+    <section
+      id={id}
+      aria-labelledby={`${id}-heading`}
+      className="scroll-mt-16 space-y-4"
+    >
+      <h2 id={`${id}-heading`} className="text-lg font-semibold">
+        {sectionTitle(id)}
+      </h2>
       <FieldGroup>{children}</FieldGroup>
     </section>
+  )
+}
+
+function SectionNavigation() {
+  return (
+    <nav
+      aria-label="განაცხადის სექციები"
+      className="sticky top-0 z-10 -mx-4 overflow-x-auto border-b bg-background/95 px-4 py-2 backdrop-blur"
+    >
+      <ul className="flex w-max gap-2">
+        {sections.map((section) => (
+          <li key={section.id}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              asChild
+            >
+              <a href={`#${section.id}`}>{section.title}</a>
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </nav>
   )
 }
 
@@ -104,53 +145,11 @@ function DateField<TName extends DateFieldName>({
             field={field}
             id={name}
             aria-invalid={fieldState.invalid}
-            placeholder="Select date"
           />
           <FieldError errors={[fieldState.error]} />
         </Field>
       )}
     />
-  )
-}
-
-function ScrollNavigationButton() {
-  const [isAtTop, setIsAtTop] = useState(true)
-
-  const updateScrollPosition = useEffectEvent(() => {
-    setIsAtTop(window.scrollY === 0)
-  })
-
-  useEffect(() => {
-    window.addEventListener("scroll", updateScrollPosition, { passive: true })
-    const frame = requestAnimationFrame(updateScrollPosition)
-    return () => {
-      cancelAnimationFrame(frame)
-      window.removeEventListener("scroll", updateScrollPosition)
-    }
-  }, [])
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
-
-  const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "smooth",
-    })
-  }
-
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      size="icon-lg"
-      className="fixed right-4 bottom-28 z-50 rounded-full shadow-md"
-      aria-label={isAtTop ? "Scroll to bottom" : "Scroll to top"}
-      onClick={isAtTop ? scrollToBottom : scrollToTop}
-    >
-      {isAtTop ? <ArrowDown /> : <ArrowUp />}
-    </Button>
   )
 }
 
@@ -164,8 +163,8 @@ function BooleanRadioField({
   control: ReturnType<typeof useForm<AdminApplicationEditData>>["control"]
 }) {
   return (
-    <Field>
-      <FieldLabel>{label}</FieldLabel>
+    <FieldSet>
+      <FieldLegend variant="label">{label}</FieldLegend>
       <Controller
         name={name}
         control={control}
@@ -192,7 +191,7 @@ function BooleanRadioField({
           </RadioGroup>
         )}
       />
-    </Field>
+    </FieldSet>
   )
 }
 
@@ -204,6 +203,7 @@ export function ApplicationEditForm({
 }: ApplicationEditFormProps) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const [isSaving, startSaveTransition] = useTransition()
   const [isDeleting, startDeleteTransition] = useTransition()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -233,13 +233,16 @@ export function ApplicationEditForm({
 
         if (!response.ok) {
           startTransition(() => {
-            setError("Could not save application. Please try again.")
+            setError(SAVE_ERROR)
           })
           return
         }
+
+        form.reset(data)
+        toast.success("ცვლილებები შენახულია")
       } catch {
         startTransition(() => {
-          setError("Could not save application. Please try again.")
+          setError(SAVE_ERROR)
         })
       }
     })
@@ -248,7 +251,7 @@ export function ApplicationEditForm({
   const deleteApplication = () => {
     startDeleteTransition(async () => {
       startTransition(() => {
-        setError(null)
+        setDeleteError(null)
       })
 
       try {
@@ -258,7 +261,7 @@ export function ApplicationEditForm({
 
         if (!response.ok) {
           startTransition(() => {
-            setError("Could not delete application. Please try again.")
+            setDeleteError(DELETE_ERROR)
           })
           return
         }
@@ -270,7 +273,7 @@ export function ApplicationEditForm({
         router.refresh()
       } catch {
         startTransition(() => {
-          setError("Could not delete application. Please try again.")
+          setDeleteError(DELETE_ERROR)
         })
       }
     })
@@ -278,6 +281,10 @@ export function ApplicationEditForm({
 
   const { control, register, formState, setValue } = form
   const instagram = useWatch({ control, name: "instagram" })
+  const hasBeenInGermanyBefore = useWatch({
+    control,
+    name: "hasBeenInGermanyBefore",
+  })
   const universityId = useWatch({ control, name: "universityId" })
 
   const universitySelectValue = showCustomUniversity
@@ -305,11 +312,15 @@ export function ApplicationEditForm({
 
   return (
     <form
-      className="space-y-8 pb-24"
-      onSubmit={form.handleSubmit(save)}
+      className="space-y-8 pb-40"
+      onSubmit={form.handleSubmit(save, () => {
+        setError(INVALID_FORM_ERROR)
+      })}
       noValidate
     >
-      <FormSection title="პირადი ინფორმაცია">
+      <SectionNavigation />
+
+      <FormSection id="personal">
         <Field>
           <FieldLabel htmlFor="firstName">სახელი</FieldLabel>
           <Input id="firstName" {...register("firstName")} />
@@ -320,8 +331,8 @@ export function ApplicationEditForm({
           <Input id="lastName" {...register("lastName")} />
           <FieldError errors={[formState.errors.lastName]} />
         </Field>
-        <Field>
-          <FieldLabel>სქესი</FieldLabel>
+        <FieldSet>
+          <FieldLegend variant="label">სქესი</FieldLegend>
           <Controller
             name="gender"
             control={control}
@@ -343,7 +354,7 @@ export function ApplicationEditForm({
             )}
           />
           <FieldError errors={[formState.errors.gender]} />
-        </Field>
+        </FieldSet>
         <DateField
           name="birthDate"
           label="დაბადების თარიღი"
@@ -361,7 +372,7 @@ export function ApplicationEditForm({
         </Field>
       </FormSection>
 
-      <FormSection title="მისამართი">
+      <FormSection id="address">
         <Field>
           <FieldLabel htmlFor="street">ქუჩა, სახლის ნომერი</FieldLabel>
           <Input id="street" {...register("street")} />
@@ -369,7 +380,11 @@ export function ApplicationEditForm({
         </Field>
         <Field>
           <FieldLabel htmlFor="postalCode">საფოსტო ინდექსი</FieldLabel>
-          <Input id="postalCode" {...register("postalCode")} />
+          <Input
+            id="postalCode"
+            inputMode="numeric"
+            {...register("postalCode")}
+          />
           <FieldError errors={[formState.errors.postalCode]} />
         </Field>
         <Field>
@@ -389,7 +404,7 @@ export function ApplicationEditForm({
         </Field>
       </FormSection>
 
-      <FormSection title="კონტაქტი და სოციალური ქსელები">
+      <FormSection id="contact">
         <Field>
           <FieldLabel htmlFor="email">საფოსტო ემაილი</FieldLabel>
           <Input id="email" type="email" {...register("email")} />
@@ -397,7 +412,7 @@ export function ApplicationEditForm({
         </Field>
         <Field>
           <FieldLabel htmlFor="phone">ტელეფონის ნომერი</FieldLabel>
-          <Input id="phone" {...register("phone")} />
+          <Input id="phone" type="tel" {...register("phone")} />
           <FieldError errors={[formState.errors.phone]} />
         </Field>
         <Field>
@@ -417,7 +432,7 @@ export function ApplicationEditForm({
         </Field>
       </FormSection>
 
-      <FormSection title="სწავლა">
+      <FormSection id="studies">
         <Field>
           <FieldLabel htmlFor="linkedUniversity">უნივერსიტეტი</FieldLabel>
           <NativeSelect
@@ -468,7 +483,7 @@ export function ApplicationEditForm({
                   step="0.5"
                   min="0"
                   aria-invalid={fieldState.invalid}
-                  placeholder="e.g. 4"
+                  placeholder="მაგ. 4"
                   value={field.value ?? ""}
                   onChange={(event) => {
                     const raw = event.target.value
@@ -505,7 +520,7 @@ export function ApplicationEditForm({
         />
         <DateField
           name="semesterBreakTo"
-          label="არდადეგები დასასრული"
+          label="არდადეგების დასასრული"
           control={control}
         />
         <BooleanRadioField
@@ -515,9 +530,9 @@ export function ApplicationEditForm({
         />
       </FormSection>
 
-      <FormSection title="კვალიფიკაცია და ჯანმრთელობა">
-        <Field>
-          <FieldLabel>გერმანულის დონე</FieldLabel>
+      <FormSection id="qualification">
+        <FieldSet>
+          <FieldLegend variant="label">გერმანულის დონე</FieldLegend>
           <Controller
             name="germanLevel"
             control={control}
@@ -538,7 +553,7 @@ export function ApplicationEditForm({
               </RadioGroup>
             )}
           />
-        </Field>
+        </FieldSet>
         <Field>
           <FieldLabel htmlFor="otherLanguages">
             სხვა ენების ცოდნა / ენის დონე
@@ -574,8 +589,8 @@ export function ApplicationEditForm({
           <FieldLabel htmlFor="clothingSize">ტანსაცმლის ზომა</FieldLabel>
           <Input id="clothingSize" {...register("clothingSize")} />
         </Field>
-        <Field>
-          <FieldLabel>ფეხსაცმლის ზომა</FieldLabel>
+        <FieldSet>
+          <FieldLegend variant="label">ფეხსაცმლის ზომა</FieldLegend>
           <Controller
             name="shoeSize"
             control={control}
@@ -606,32 +621,39 @@ export function ApplicationEditForm({
               </div>
             )}
           />
-        </Field>
+        </FieldSet>
       </FormSection>
 
-      <FormSection title="ყოფნა გერმანიაში">
+      <FormSection id="germany">
         <BooleanRadioField
           name="hasBeenInGermanyBefore"
-          label="ყოფნა გერმანიაში"
+          label="ყოფილა თუ არა ადრე გერმანიაში?"
           control={control}
         />
-        <Field>
-          <FieldLabel htmlFor="previousStayPlace">თუ კი, სად</FieldLabel>
-          <Input id="previousStayPlace" {...register("previousStayPlace")} />
-        </Field>
-        <DateField
-          name="previousStayPeriodFrom"
-          label="პერიოდის დასაწყისი"
-          control={control}
-        />
-        <DateField
-          name="previousStayPeriodTo"
-          label="პერიოდის დასასრული"
-          control={control}
-        />
+        {hasBeenInGermanyBefore !== false ? (
+          <>
+            <Field>
+              <FieldLabel htmlFor="previousStayPlace">სად</FieldLabel>
+              <Input
+                id="previousStayPlace"
+                {...register("previousStayPlace")}
+              />
+            </Field>
+            <DateField
+              name="previousStayPeriodFrom"
+              label="პერიოდის დასაწყისი"
+              control={control}
+            />
+            <DateField
+              name="previousStayPeriodTo"
+              label="პერიოდის დასასრული"
+              control={control}
+            />
+          </>
+        ) : null}
       </FormSection>
 
-      <FormSection title="საგანგებო საკონტაქტო პირი">
+      <FormSection id="emergency">
         <Field>
           <FieldLabel htmlFor="emergencyContactName">
             საგანგებო საკონტაქტო პირი
@@ -646,13 +668,18 @@ export function ApplicationEditForm({
           <FieldLabel htmlFor="emergencyPhone">
             საგანგებო ტელეფონის ნომერი
           </FieldLabel>
-          <Input id="emergencyPhone" {...register("emergencyPhone")} />
+          <Input
+            id="emergencyPhone"
+            type="tel"
+            {...register("emergencyPhone")}
+          />
           <FieldError errors={[formState.errors.emergencyPhone]} />
         </Field>
       </FormSection>
 
-      <FormSection title="სასურველი სამუშაო სფერო">
-        <Field>
+      <FormSection id="work-sector">
+        <FieldSet>
+          <FieldLegend variant="label">აირჩიეთ ერთი ან მეტი სფერო</FieldLegend>
           <Controller
             name="workSector"
             control={control}
@@ -685,39 +712,54 @@ export function ApplicationEditForm({
             )}
           />
           <FieldError errors={[formState.errors.workSector]} />
-        </Field>
+        </FieldSet>
       </FormSection>
 
-      <section className="space-y-4 border-t pt-8">
-        <h2 className="text-lg font-medium">Other actions</h2>
+      <section
+        id="actions"
+        aria-labelledby="actions-heading"
+        className="scroll-mt-16 space-y-4 border-t pt-8"
+      >
+        <h2 id="actions-heading" className="text-lg font-semibold">
+          {sectionTitle("actions")}
+        </h2>
         <div className="space-y-2">
           <CopyApplicationLinkButton applicationLink={applicationLink} />
           <ApplicationPdfButtons applicationId={applicationId} />
         </div>
       </section>
 
-      <section className="space-y-4 border-t pt-8">
-        <h2 className="text-lg font-medium">Delete application</h2>
+      <section
+        aria-labelledby="delete-heading"
+        className="mt-16 space-y-4 rounded-lg border border-destructive/30 p-4"
+      >
+        <h2 id="delete-heading" className="text-lg font-semibold">
+          განაცხადის წაშლა
+        </h2>
         <p className="text-sm text-muted-foreground">
-          Permanently remove this application and its photo. This cannot be
-          undone.
+          განაცხადი და მისი ფოტო სამუდამოდ წაიშლება. ამ მოქმედების გაუქმება
+          შეუძლებელია.
         </p>
         <Button
           type="button"
           variant="destructive"
-          onClick={() => setIsDeleteDialogOpen(true)}
+          onClick={() => {
+            setDeleteError(null)
+            setIsDeleteDialogOpen(true)
+          }}
           disabled={isSaving || isDeleting}
         >
-          Delete application
+          განაცხადის წაშლა
         </Button>
       </section>
 
-      {error !== null ? (
-        <p className="text-sm text-destructive">{error}</p>
-      ) : null}
-
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4">
-        <div className="mx-auto w-full max-w-lg">
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <div className="mx-auto w-full max-w-lg space-y-2">
+          {error !== null ? (
+            <p role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
+          ) : null}
           <Button
             type="submit"
             className="w-full"
@@ -729,36 +771,37 @@ export function ApplicationEditForm({
         </div>
       </div>
 
-      <ScrollNavigationButton />
-
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete application?</DialogTitle>
-            <DialogDescription>
-              This will permanently delete the application and the stored photo.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-              disabled={isDeleting}
-            >
-              Cancel
-            </Button>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>წავშალოთ განაცხადი?</AlertDialogTitle>
+            <AlertDialogDescription>
+              განაცხადი და შენახული ფოტო სამუდამოდ წაიშლება.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {deleteError !== null ? (
+            <p role="alert" className="text-sm text-destructive">
+              {deleteError}
+            </p>
+          ) : null}
+          <AlertDialogFooter>
+            <AlertDialogCancel type="button" disabled={isDeleting}>
+              გაუქმება
+            </AlertDialogCancel>
             <Button
               type="button"
               variant="destructive"
               onClick={deleteApplication}
               disabled={isDeleting}
             >
-              {isDeleting ? "Deleting…" : "Delete application"}
+              {isDeleting ? "იშლება…" : "წაშლა"}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </form>
   )
 }

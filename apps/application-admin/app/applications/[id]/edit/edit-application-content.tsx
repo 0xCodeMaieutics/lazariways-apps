@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState, useTransition } from "react"
-import { Pencil } from "lucide-react"
+import { Loader2, Pencil } from "lucide-react"
 import type { AdminApplicationEditData } from "@workspace/application/schema"
 import { Button } from "@workspace/ui/components/button"
 import { ImageCropper } from "@workspace/ui/components/image-cropper"
@@ -87,27 +87,43 @@ export function EditApplicationContent({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <div className="relative mx-auto h-96 w-full">
-          <div className="h-full w-full overflow-hidden rounded-lg bg-muted">
+        <div className="relative mx-auto h-72 w-54">
+          <button
+            type="button"
+            className="group h-full w-full overflow-hidden rounded-lg bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none disabled:cursor-wait"
+            disabled={isUploading}
+            aria-label="ფოტოს შეცვლა"
+            aria-busy={isUploading}
+            onClick={() => {
+              fileInputRef.current?.click()
+            }}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewUrl}
               alt={applicantName}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-opacity group-hover:opacity-90"
             />
-          </div>
+            {isUploading ? (
+              <span className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/60">
+                <Loader2 className="size-8 animate-spin" aria-hidden />
+              </span>
+            ) : null}
+          </button>
           <Button
             type="button"
-            size="icon"
+            size="sm"
             variant="secondary"
-            className="absolute right-3 bottom-3 shadow-md"
+            className="absolute right-2 bottom-2 shadow-md"
             disabled={isUploading}
-            aria-label="ფოტოს შეცვლა"
+            tabIndex={-1}
+            aria-hidden
             onClick={() => {
               fileInputRef.current?.click()
             }}
           >
             <Pencil />
+            შეცვლა
           </Button>
           <input
             ref={fileInputRef}

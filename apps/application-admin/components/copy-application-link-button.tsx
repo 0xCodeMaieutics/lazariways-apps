@@ -33,12 +33,12 @@ export function CopyApplicationLinkButton({
       {copied ? (
         <>
           <Check />
-          Link copied
+          ბმული დაკოპირდა
         </>
       ) : (
         <>
           <Copy />
-          Copy application link
+          განაცხადის ბმულის კოპირება
         </>
       )}
     </Button>

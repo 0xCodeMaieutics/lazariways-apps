@@ -40,7 +40,7 @@ export default async function EditApplicationPage({ params }: EditPageProps) {
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-6">
       <header className="mb-6 space-y-4">
-        <BackLink href="/applications" label="Applications" />
+        <BackLink href="/applications" label="განაცხადები" />
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
             {application.firstName} {application.lastName}
