@@ -2,6 +2,7 @@
 
 import { cn } from "@workspace/ui/lib/utils"
 import { FileText, GraduationCap, type LucideIcon } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -31,9 +32,7 @@ export function AdminNav() {
             href="/applications"
             className="flex items-center gap-2 rounded-md text-sm font-semibold tracking-tight focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
-            <span className="flex size-7 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
-              LW
-            </span>
+            <Image src="/logo-icon.svg" alt="" width={28} height={28} className="size-7" />
             Lazari Ways
             <span className="font-normal text-muted-foreground">Admin</span>
           </Link>
