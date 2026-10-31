@@ -21,13 +21,12 @@ function formatCreatedAt(date: Date): string {
 }
 
 export default async function ProfilesPage({ searchParams }: ProfilesPageProps) {
-  await requireAdminSessionForPage("/profiles")
-
   const { page: pageParam } = await searchParams
   const page = Math.max(1, Number(pageParam ?? "1") || 1)
   const skip = (page - 1) * PROFILES_PER_PAGE
 
-  const [profiles, totalCount] = await Promise.all([
+  const [, profiles, totalCount] = await Promise.all([
+    requireAdminSessionForPage("/profiles"),
     prisma.profile.findMany({
       skip,
       take: PROFILES_PER_PAGE,

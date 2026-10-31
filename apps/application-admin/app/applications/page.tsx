@@ -29,8 +29,6 @@ interface ApplicationsPageProps {
 }
 
 export default async function ApplicationsPage({ searchParams }: ApplicationsPageProps) {
-  await requireAdminSessionForPage("/applications")
-
   const params = await searchParams
   const filters = parseApplicationFilters(params)
   const isFiltered = hasActiveApplicationFilters(filters)
@@ -39,7 +37,8 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
   const page = Math.max(1, Number(params.page ?? "1") || 1)
   const skip = (page - 1) * APPLICATIONS_PER_PAGE
 
-  const [applications, totalCount, universities] = await Promise.all([
+  const [, applications, totalCount, universities] = await Promise.all([
+    requireAdminSessionForPage("/applications"),
     prisma.application.findMany({
       where,
       skip,
