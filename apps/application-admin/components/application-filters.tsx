@@ -81,7 +81,7 @@ export function ApplicationFiltersBar({ filters, universities }: ApplicationFilt
           onChange={(event) => setQuery(event.target.value)}
           placeholder="ძებნა სახელით, ელფოსტით, ტელეფონით…"
           aria-label="განაცხადების ძებნა"
-          className="h-10 pr-9 pl-9 text-base md:text-sm"
+          className="h-8 pr-9 pl-9 text-base md:text-sm"
         />
         {isNavigating ? (
           <Loader2
