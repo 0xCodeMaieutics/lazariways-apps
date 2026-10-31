@@ -1,6 +1,7 @@
 import type { GermanLevel } from "@workspace/database/browser"
 import { Badge } from "@workspace/ui/components/badge"
 import { cn } from "@workspace/ui/lib/utils"
+import { TriangleAlertIcon } from "lucide-react"
 import Link from "next/link"
 
 import { instagramProfileUrl } from "@/lib/instagram"
@@ -12,6 +13,7 @@ interface ApplicationCardProps {
   firstName: string
   lastName: string
   linkedUniversityName: string | null
+  customUniversityName: string | null
   germanLevel: GermanLevel | null
   fotoUrl: string
   instagram: string | null
@@ -23,6 +25,7 @@ export function ApplicationCard({
   firstName,
   lastName,
   linkedUniversityName,
+  customUniversityName,
   germanLevel,
   fotoUrl,
   instagram,
@@ -53,12 +56,23 @@ export function ApplicationCard({
           <p className="truncate text-sm font-semibold md:text-base">
             {firstName} {lastName}
           </p>
-          <p
-            className="truncate text-xs text-muted-foreground md:text-sm"
-            title={linkedUniversityName ?? undefined}
-          >
-            {linkedUniversityName ?? "—"}
-          </p>
+          {linkedUniversityName === null && customUniversityName ? (
+            <p
+              className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground md:text-sm"
+              title={`${customUniversityName} — უნივერსიტეტი სიიდან არ არის არჩეული`}
+            >
+              <TriangleAlertIcon className="size-3.5 shrink-0 text-amber-500 md:size-4" aria-hidden />
+              <span className="sr-only">უნივერსიტეტი სიიდან არ არის არჩეული:</span>
+              <span className="truncate">{customUniversityName}</span>
+            </p>
+          ) : (
+            <p
+              className="truncate text-xs text-muted-foreground md:text-sm"
+              title={linkedUniversityName ?? undefined}
+            >
+              {linkedUniversityName ?? "—"}
+            </p>
+          )}
           <div className={cn("mt-1.5 flex items-center gap-2", hasInstagram && "md:pr-10")}>
             {germanLevel !== null ? <Badge variant="secondary">Deutsch {germanLevel}</Badge> : null}
             <span className="text-xs text-muted-foreground tabular-nums">{submittedTime}</span>
