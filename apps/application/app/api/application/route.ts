@@ -69,12 +69,15 @@ export const POST = async (request: NextRequest) => {
     )
   }
 
+  const applicantCaption =
+    `${process.env.NODE_ENV === "development" ? "TEST - " : ""}${parsed.data.firstName} ${parsed.data.lastName}`.trim()
+  const customUniversity = parsed.data.universityId ? null : optionalString(parsed.data.university)
+  const caption = customUniversity
+    ? `${applicantCaption}\n\n⚠️ უნივერსიტეტი სიიდან არ არის არჩეული: ${customUniversity.slice(0, 200)}`
+    : applicantCaption
+
   try {
-    await sendPdfToTelegram(
-      pdfBytesResult,
-      `${firstName} ${lastName}.pdf`,
-      `${process.env.NODE_ENV === "development" ? "TEST - " : ""}${parsed.data.firstName} ${parsed.data.lastName}`.trim()
-    )
+    await sendPdfToTelegram(pdfBytesResult, `${firstName} ${lastName}.pdf`, caption)
   } catch (error) {
     console.error("TELEGRAM_REQUEST_FAILED", error)
     return Response.json({ error: "Internal server error" }, { status: 502 })
