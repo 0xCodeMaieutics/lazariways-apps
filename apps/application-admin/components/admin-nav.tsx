@@ -26,8 +26,8 @@ export function AdminNav() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 hidden h-14 border-b border-border bg-background/95 backdrop-blur md:block">
-        <div className="mx-auto flex h-full w-full max-w-6xl items-center gap-8 px-6">
+      <header className="sticky top-0 z-30 h-14 border-b border-border bg-background/95 backdrop-blur">
+        <div className="mx-auto flex h-full w-full max-w-6xl items-center gap-8 px-4 md:px-6">
           <Link
             href="/applications"
             className="flex items-center gap-2 rounded-md text-sm font-semibold tracking-tight focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
@@ -36,7 +36,7 @@ export function AdminNav() {
             Lazari Ways
             <span className="font-normal text-muted-foreground">Admin</span>
           </Link>
-          <nav aria-label="მთავარი ნავიგაცია" className="flex h-full items-center gap-1">
+          <nav aria-label="მთავარი ნავიგაცია" className="hidden h-full items-center gap-1 md:flex">
             {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
               const active = isActive(pathname, href)
               return (

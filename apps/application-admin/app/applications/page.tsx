@@ -131,7 +131,7 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
           <div className="space-y-4 md:space-y-6">
             {applicationGroups.map((group) => (
               <section key={group.key} aria-labelledby={`day-${group.key}`}>
-                <div className="sticky top-0 z-10 -mx-4 flex items-baseline justify-between gap-4 border-b border-border bg-background/95 px-4 py-2 backdrop-blur md:top-14 md:-mx-6 md:mb-3 md:px-6">
+                <div className="sticky top-14 z-10 -mx-4 flex items-baseline justify-between gap-4 border-b border-border bg-background/95 px-4 py-2 backdrop-blur md:-mx-6 md:mb-3 md:px-6">
                   <h2 id={`day-${group.key}`} className="text-sm font-semibold">
                     {group.label}
                   </h2>
