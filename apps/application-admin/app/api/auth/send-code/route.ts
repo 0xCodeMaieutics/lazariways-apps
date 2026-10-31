@@ -5,6 +5,7 @@ import { env } from "@/env"
 export const POST = async () => {
   try {
     const result = await createAndSendVerificationCode({
+      scope: "ADMIN",
       chatId: env.TELEGRAM_CHAT_ID,
       token: env.TELEGRAM_BOT_TOKEN,
     })

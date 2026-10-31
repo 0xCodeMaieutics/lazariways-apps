@@ -1,5 +1,6 @@
 import crypto from "node:crypto"
 
+import type { AdminSession, AuthScope } from "@workspace/database/browser"
 import prisma from "@workspace/database/client"
 
 const VERIFICATION_CODE_EXPIRY_MINUTES = 10
@@ -10,9 +11,11 @@ function generateVerificationCode(): string {
 }
 
 export async function createAndSendVerificationCode({
+  scope,
   chatId,
   token,
 }: {
+  scope: AuthScope
   chatId: string
   token: string
 }): Promise<{ success: true } | { success: false; errorType: "COOLDOWN" }> {
@@ -20,6 +23,7 @@ export async function createAndSendVerificationCode({
 
   const recentCode = await prisma.telegramVerification.findFirst({
     where: {
+      scope,
       createdAt: { gte: cooldownSince },
     },
     orderBy: { createdAt: "desc" },
@@ -33,6 +37,7 @@ export async function createAndSendVerificationCode({
 
   await prisma.telegramVerification.updateMany({
     where: {
+      scope,
       usedAt: null,
       invalidatedAt: null,
       expiresAt: { gt: now },
@@ -44,10 +49,10 @@ export async function createAndSendVerificationCode({
   const expiresAt = new Date(Date.now() + VERIFICATION_CODE_EXPIRY_MINUTES * 60 * 1000)
 
   await prisma.telegramVerification.create({
-    data: { code, expiresAt },
+    data: { scope, code, expiresAt },
   })
 
-  const text = `Admin login code: ${code}\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`
+  const text = `Login code: ${code}\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`
 
   if (process.env.NODE_ENV === "development") {
     console.log(`\n${text}\n`)
@@ -58,12 +63,13 @@ export async function createAndSendVerificationCode({
   return { success: true as const }
 }
 
-export async function verifyCodeAndCreateSession(code: string) {
+export async function verifyCodeAndCreateSession({ scope, code }: { scope: AuthScope; code: string }) {
   const trimmed = code.trim()
   const now = new Date()
 
   const verification = await prisma.telegramVerification.findFirst({
     where: {
+      scope,
       code: trimmed,
       usedAt: null,
       invalidatedAt: null,
@@ -84,11 +90,23 @@ export async function verifyCodeAndCreateSession(code: string) {
       data: { usedAt: now },
     }),
     prisma.adminSession.create({
-      data: { token },
+      data: { scope, token },
     }),
   ])
 
   return token
+}
+
+export async function findSession({
+  scope,
+  token,
+}: {
+  scope: AuthScope
+  token: string
+}): Promise<AdminSession | null> {
+  return prisma.adminSession.findFirst({
+    where: { scope, token },
+  })
 }
 
 async function sendTelegramMessage({ text, chatId, token }: { text: string; token: string; chatId: string }) {

@@ -120,23 +120,32 @@ model ApplicationInquiry {
   @@schema("public")
 }
 
+enum AuthScope {
+  ADMIN
+  CONTENT
+
+  @@schema("public")
+}
+
 model TelegramVerification {
   id            String    @id @default(uuid())
+  scope         AuthScope @default(ADMIN)
   code          String
   expiresAt     DateTime
   usedAt        DateTime?
   invalidatedAt DateTime?
   createdAt     DateTime  @default(now())
 
-  @@index([code])
-  @@index([createdAt])
+  @@index([scope, code])
+  @@index([scope, createdAt])
   @@schema("public")
 }
 
 model AdminSession {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  createdAt DateTime @default(now())
+  id        String    @id @default(uuid())
+  scope     AuthScope @default(ADMIN)
+  token     String    @unique
+  createdAt DateTime  @default(now())
 
   @@schema("public")
 }
