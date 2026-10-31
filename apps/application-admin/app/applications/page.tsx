@@ -38,7 +38,7 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
   const page = Math.max(1, Number(params.page ?? "1") || 1)
   const skip = (page - 1) * APPLICATIONS_PER_PAGE
 
-  const [applications, totalCount] = await Promise.all([
+  const [applications, totalCount, universities] = await Promise.all([
     prisma.application.findMany({
       where,
       skip,
@@ -47,6 +47,10 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
       include: { linkedUniversity: true },
     }),
     prisma.application.count({ where }),
+    prisma.university.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
   ])
 
   const totalPages = Math.max(1, Math.ceil(totalCount / APPLICATIONS_PER_PAGE))
@@ -104,7 +108,7 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
           </div>
           <RefreshButton label="განახლება" />
         </div>
-        <ApplicationFiltersBar filters={filters} />
+        <ApplicationFiltersBar filters={filters} universities={universities} />
       </header>
 
       {applicationGroups.length === 0 ? (
