@@ -6,7 +6,10 @@ import type { NextRequest } from "next/server"
 
 import { env } from "@/env"
 import { sendNewApplicationEmailToAdmins } from "@/lib/email"
+import { reportError } from "@/lib/error-report"
 import { applicationFormSchema, type ApplicationFormData } from "@/utils/application-schema"
+
+const ROUTE_LOCATION = "apps/application/app/api/application/route.ts"
 
 export const POST = async (request: NextRequest) => {
   const formData = await request.formData()
@@ -15,6 +18,12 @@ export const POST = async (request: NextRequest) => {
 
   if (!parsed.success) {
     console.error("ZOD_VALIDATION_FAILED", parsed.error)
+    await reportError({
+      location: `${ROUTE_LOCATION} › POST (validation)`,
+      message:
+        "An applicant submitted the form, but the server rejected the data as invalid, so they saw a submission error. The browser and server validation may be out of sync.",
+      error: parsed.error.issues,
+    })
     return Response.json({ error: "Bad request" }, { status: 400 })
   }
 
@@ -25,6 +34,11 @@ export const POST = async (request: NextRequest) => {
     })
 
     if (!linkedUniversity) {
+      await reportError({
+        location: `${ROUTE_LOCATION} › POST (university lookup)`,
+        message: `An applicant (${applicantName(parsed.data)}) picked a university from the list that no longer exists, so their submission was rejected.`,
+        error: { universityId: parsed.data.universityId },
+      })
       return Response.json({ error: "Bad request" }, { status: 400 })
     }
   }
@@ -44,6 +58,11 @@ export const POST = async (request: NextRequest) => {
     })
   } catch (error) {
     console.error("FOTO_UPLOAD_FAILED", error)
+    await reportError({
+      location: `${ROUTE_LOCATION} › POST (photo upload)`,
+      message: `An applicant (${applicantName(parsed.data)}) submitted the form, but their photo could not be uploaded to storage, so the application was not saved and they saw a submission error.`,
+      error,
+    })
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 
@@ -56,6 +75,11 @@ export const POST = async (request: NextRequest) => {
     applicationId = application.id
   } catch (error) {
     console.error("APPLICATION_DB_INSERT_FAILED", error)
+    await reportError({
+      location: `${ROUTE_LOCATION} › POST (saving application to database)`,
+      message: `An applicant (${applicantName(parsed.data)}) submitted the form and their photo was uploaded, but the application could not be saved to the database, so it is missing from the admin app and they saw a submission error.`,
+      error,
+    })
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 
@@ -65,6 +89,11 @@ export const POST = async (request: NextRequest) => {
       await sendUniversityNotInListAlertToTelegram(parsed.data, customUniversity, applicationId)
     } catch (error) {
       console.error("TELEGRAM_UNIVERSITY_ALERT_FAILED", error)
+      await reportError({
+        location: `${ROUTE_LOCATION} › POST (university-not-in-list Telegram alert)`,
+        message: `An applicant (${applicantName(parsed.data)}) submitted successfully with a university that is not in the list ("${customUniversity}"), but the Telegram alert about it could not be sent. The applicant saw no error.`,
+        error,
+      })
     }
   }
 
@@ -78,6 +107,11 @@ export const POST = async (request: NextRequest) => {
     })
   } catch (error) {
     console.error("ADMIN_NOTIFICATION_EMAIL_FAILED", error)
+    await reportError({
+      location: `${ROUTE_LOCATION} › POST (admin notification email)`,
+      message: `An applicant (${applicantName(parsed.data)}) submitted successfully, but the notification email to the admins could not be sent. The applicant saw no error.`,
+      error,
+    })
   }
 
   return Response.json({ success: true }, { status: 200 })
@@ -106,6 +140,10 @@ function formOptionalBool(formData: FormData, key: string): boolean | undefined 
 
 function formBoolean(formData: FormData, key: string): boolean {
   return formString(formData, key) === "true"
+}
+
+function applicantName(data: ApplicationFormData): string {
+  return `${data.firstName} ${data.lastName}`.trim()
 }
 
 function sanitizeFilenamePart(value: string): string {

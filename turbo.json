@@ -15,6 +15,7 @@
         "SKIP_ENV_VALIDATION",
         "TELEGRAM_BOT_TOKEN",
         "TELEGRAM_CHAT_ID",
+        "TELEGRAM_ERROR_CHAT_ID",
         "RESEND_API_KEY",
         "RESEND_FROM_EMAIL",
         "BEWERBER_APP_URL",
