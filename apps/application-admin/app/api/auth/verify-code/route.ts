@@ -15,7 +15,7 @@ export const POST = async (request: Request) => {
     return Response.json({ error: "Bad request" }, { status: 400 })
   }
 
-  const token = await verifyCodeAndCreateSession(body.data.code)
+  const token = await verifyCodeAndCreateSession({ scope: "ADMIN", code: body.data.code })
 
   if (token === null) {
     return Response.json({ error: "Invalid or expired code." }, { status: 401 })

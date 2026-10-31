@@ -1,5 +1,5 @@
 import type { AdminSession } from "@workspace/database/browser"
-import prisma from "@workspace/database/client"
+import { findSession } from "@workspace/verification"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
@@ -13,9 +13,7 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     return null
   }
 
-  return prisma.adminSession.findUnique({
-    where: { token },
-  })
+  return findSession({ scope: "ADMIN", token })
 }
 
 export async function requireAdminSessionForPage(callbackUrl: string): Promise<AdminSession> {
