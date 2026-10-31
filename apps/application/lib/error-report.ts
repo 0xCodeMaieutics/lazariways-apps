@@ -67,7 +67,9 @@ function formatError(error: unknown): string {
 }
 
 function truncate(value: string): string {
-  return value.length > MAX_ERROR_DETAILS_LENGTH ? `${value.slice(0, MAX_ERROR_DETAILS_LENGTH)}\n… (truncated)` : value
+  return value.length > MAX_ERROR_DETAILS_LENGTH
+    ? `${value.slice(0, MAX_ERROR_DETAILS_LENGTH)}\n… (truncated)`
+    : value
 }
 
 function escapeHtml(value: string): string {
