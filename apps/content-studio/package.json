@@ -9,6 +9,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource/manrope": "^5.0.0",
+    "@fontsource/noto-sans-georgian": "^5.0.0",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@workspace/database": "workspace:*",
     "@workspace/ui": "workspace:*",
