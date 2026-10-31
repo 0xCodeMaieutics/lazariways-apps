@@ -40,3 +40,76 @@ jobs:
           DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
 
       - run: pnpm ${{ matrix.check.script }}
+
+  migrations:
+    name: Migrations up to date
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci -d ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Apply migrations to an empty database
+        run: pnpm --filter @workspace/database db:migrate:deploy
+
+      - name: Fail if schema has unmigrated changes
+        working-directory: packages/database
+        run: |
+          set +e
+          pnpm exec prisma migrate diff --from-config-datasource --to-schema prisma/schema --script --exit-code > drift.sql
+          status=$?
+          set -e
+          if [ "$status" -eq 2 ]; then
+            echo "::error::packages/database/prisma/schema differs from packages/database/prisma/migrations. Run 'pnpm prisma migrate dev' and commit the result."
+            cat drift.sql
+            exit 1
+          fi
+          exit "$status"
+
+  migrate:
+    name: Migrate database
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [checks, migrations]
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: db-migrate
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter @workspace/database db:migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
