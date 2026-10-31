@@ -15,8 +15,8 @@ interface EditPageProps {
 
 export default async function EditApplicationPage({ params }: EditPageProps) {
   const { id } = await params
-  await requireAdminSessionForPage(`/applications/${id}/edit`)
-  const [application, universities] = await Promise.all([
+  const [, application, universities] = await Promise.all([
+    requireAdminSessionForPage(`/applications/${id}/edit`),
     prisma.application.findUnique({ where: { id } }),
     prisma.university.findMany({
       orderBy: { name: "asc" },

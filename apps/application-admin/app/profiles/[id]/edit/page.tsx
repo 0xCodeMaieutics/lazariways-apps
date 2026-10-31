@@ -15,12 +15,13 @@ interface EditPageProps {
 
 export default async function EditProfilePage({ params }: EditPageProps) {
   const { id } = await params
-  await requireAdminSessionForPage(`/profiles/${id}/edit`)
-
-  const profile = await prisma.profile.findUnique({
-    where: { id },
-    include: { languages: { orderBy: { language: "asc" } } },
-  })
+  const [, profile] = await Promise.all([
+    requireAdminSessionForPage(`/profiles/${id}/edit`),
+    prisma.profile.findUnique({
+      where: { id },
+      include: { languages: { orderBy: { language: "asc" } } },
+    }),
+  ])
 
   if (profile === null) {
     notFound()

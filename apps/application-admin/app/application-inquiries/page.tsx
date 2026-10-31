@@ -13,13 +13,12 @@ interface ApplicationInquiriesPageProps {
 }
 
 export default async function ApplicationInquiriesPage({ searchParams }: ApplicationInquiriesPageProps) {
-  await requireAdminSessionForPage("/application-inquiries")
-
   const { page: pageParam } = await searchParams
   const page = Math.max(1, Number(pageParam ?? "1") || 1)
   const skip = (page - 1) * APPLICATION_INQUIRIES_PER_PAGE
 
-  const [inquiries, totalCount] = await Promise.all([
+  const [, inquiries, totalCount] = await Promise.all([
+    requireAdminSessionForPage("/application-inquiries"),
     prisma.applicationInquiry.findMany({
       skip,
       take: APPLICATION_INQUIRIES_PER_PAGE,

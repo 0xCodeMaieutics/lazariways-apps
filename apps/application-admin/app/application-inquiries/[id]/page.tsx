@@ -31,21 +31,22 @@ function DetailField({ label, children }: { label: string; children: React.React
 
 export default async function ApplicationInquiryDetailPage({ params }: ApplicationInquiryDetailPageProps) {
   const { id } = await params
-  await requireAdminSessionForPage(`/application-inquiries/${id}`)
-
-  const inquiry = await prisma.applicationInquiry.findUnique({
-    where: { id },
-    include: {
-      application: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          fotoS3Key: true,
+  const [, inquiry] = await Promise.all([
+    requireAdminSessionForPage(`/application-inquiries/${id}`),
+    prisma.applicationInquiry.findUnique({
+      where: { id },
+      include: {
+        application: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            fotoS3Key: true,
+          },
         },
       },
-    },
-  })
+    }),
+  ])
 
   if (inquiry === null) {
     notFound()
