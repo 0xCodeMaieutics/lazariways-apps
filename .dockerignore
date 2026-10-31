@@ -1,0 +1,18 @@
+*
+
+# Root
+
+!turbo.json
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+
+# all packages
+
+!*/*/package.json
+!*/*/tsconfig.json
+!*/*/turbo.json
+!*/*/src
+!*/*/reset.d.ts
+
+!apps/sales-extension-backend/src
