@@ -7,7 +7,6 @@ import type { NextRequest } from "next/server"
 import { env } from "@/env"
 import { sendNewApplicationEmailToAdmins } from "@/lib/email"
 import { applicationFormSchema, type ApplicationFormData } from "@/utils/application-schema"
-import { generateBewerberChecklistPdf } from "@/utils/pdf"
 
 export const POST = async (request: NextRequest) => {
   const formData = await request.formData()
@@ -19,21 +18,14 @@ export const POST = async (request: NextRequest) => {
     return Response.json({ error: "Bad request" }, { status: 400 })
   }
 
-  let pdfFormData: ApplicationFormData = parsed.data
-
   if (parsed.data.universityId) {
     const linkedUniversity = await prisma.university.findUnique({
       where: { id: parsed.data.universityId },
-      select: { name: true },
+      select: { id: true },
     })
 
     if (!linkedUniversity) {
       return Response.json({ error: "Bad request" }, { status: 400 })
-    }
-
-    pdfFormData = {
-      ...parsed.data,
-      university: linkedUniversity.name,
     }
   }
 
@@ -55,42 +47,25 @@ export const POST = async (request: NextRequest) => {
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 
-  let pdfBytesResult
+  let applicationId: string
   try {
-    pdfBytesResult = await generateBewerberChecklistPdf(pdfFormData)
-  } catch (error) {
-    console.log("GENERATE_APPLICATION_PDF_ERROR", error)
-    return Response.json(
-      {
-        error: "Internal server error",
-      },
-      {
-        status: 500,
-      }
-    )
-  }
-
-  const applicantCaption =
-    `${process.env.NODE_ENV === "development" ? "TEST - " : ""}${parsed.data.firstName} ${parsed.data.lastName}`.trim()
-  const customUniversity = parsed.data.universityId ? null : optionalString(parsed.data.university)
-  const caption = customUniversity
-    ? `${applicantCaption}\n\n⚠️ უნივერსიტეტი სიიდან არ არის არჩეული: ${customUniversity.slice(0, 200)}`
-    : applicantCaption
-
-  try {
-    await sendPdfToTelegram(pdfBytesResult, `${firstName} ${lastName}.pdf`, caption)
-  } catch (error) {
-    console.error("TELEGRAM_REQUEST_FAILED", error)
-    return Response.json({ error: "Internal server error" }, { status: 502 })
-  }
-
-  try {
-    await prisma.application.create({
+    const application = await prisma.application.create({
       data: applicationToPrismaCreateData(parsed.data, fotoKey),
+      select: { id: true },
     })
+    applicationId = application.id
   } catch (error) {
     console.error("APPLICATION_DB_INSERT_FAILED", error)
     return Response.json({ error: "Internal server error" }, { status: 500 })
+  }
+
+  const customUniversity = parsed.data.universityId ? null : optionalString(parsed.data.university)
+  if (customUniversity) {
+    try {
+      await sendUniversityNotInListAlertToTelegram(parsed.data, customUniversity, applicationId)
+    } catch (error) {
+      console.error("TELEGRAM_UNIVERSITY_ALERT_FAILED", error)
+    }
   }
 
   try {
@@ -136,7 +111,13 @@ function sanitizeFilenamePart(value: string): string {
   return value.replace(/[^a-zA-Z0-9._-]+/g, "_").slice(0, 60)
 }
 
-async function sendPdfToTelegram(pdfBytes: Uint8Array, pdfFilename: string, caption: string) {
+const ADMIN_APP_URL = "https://application-admin.lazariways.eu"
+
+async function sendUniversityNotInListAlertToTelegram(
+  data: ApplicationFormData,
+  customUniversity: string,
+  applicationId: string
+) {
   const token = process.env.TELEGRAM_BOT_TOKEN
   const chatId = process.env.TELEGRAM_CHAT_ID
 
@@ -145,21 +126,27 @@ async function sendPdfToTelegram(pdfBytes: Uint8Array, pdfFilename: string, capt
     return
   }
 
-  const body = new FormData()
-  body.append("chat_id", chatId)
-  const pdfCopy = Uint8Array.from(pdfBytes)
-  body.append("document", new Blob([pdfCopy], { type: "application/pdf" }), pdfFilename)
-  body.append("caption", caption)
+  const applicant =
+    `${process.env.NODE_ENV === "development" ? "TEST - " : ""}${data.firstName} ${data.lastName}`.trim()
 
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
-    body,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: `${applicant}\n\n⚠️ უნივერსიტეტი სიიდან არ არის არჩეული: ${customUniversity.slice(0, 200)}`,
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "Application detail page", url: `${ADMIN_APP_URL}/applications/${applicationId}/edit` }],
+        ],
+      },
+    }),
   })
 
   const json = (await res.json()) as { ok?: boolean; description?: string }
 
   if (!res.ok || !json.ok) {
-    console.error("Telegram sendDocument failed:", json)
+    console.error("Telegram sendMessage failed:", json)
     throw new Error(json.description ?? "Telegram API error")
   }
 }
