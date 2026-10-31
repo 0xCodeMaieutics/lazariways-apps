@@ -1,3 +1,4 @@
+import { Toaster } from "@workspace/ui/components/sonner"
 import type { Metadata } from "next"
 import { Manrope, Noto_Sans_Georgian } from "next/font/google"
 
@@ -28,6 +29,7 @@ export default function RootLayout({
         style={{ fontFamily: `${manrope.style.fontFamily}, ${notoSansGeorgian.style.fontFamily}` }}
       >
         {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   )
