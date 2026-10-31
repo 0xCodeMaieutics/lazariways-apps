@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const universityCreateSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
+  name: z.string().trim().min(1, "სახელი სავალდებულოა"),
   street: z.string().optional(),
   streetNumber: z.string().optional(),
   postalCode: z.string().optional(),
@@ -10,7 +10,10 @@ export const universityCreateSchema = z.object({
   telephone: z.string().optional(),
   email: z
     .string()
-    .refine((val) => val.trim() === "" || z.email().safeParse(val.trim()).success, "Invalid email format")
+    .refine(
+      (val) => val.trim() === "" || z.email().safeParse(val.trim()).success,
+      "ელ. ფოსტის ფორმატი არასწორია"
+    )
     .optional(),
   website: z
     .string()
@@ -25,7 +28,7 @@ export const universityCreateSchema = z.object({
       } catch {
         return false
       }
-    }, "Invalid website URL")
+    }, "ვებსაიტის მისამართი არასწორია (მაგ. https://example.edu)")
     .optional(),
 })
 

@@ -2,12 +2,26 @@
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
-import { useState, useTransition } from "react"
+import { toast } from "@workspace/ui/components/sonner"
+import { CircleAlert, Loader2, Plus } from "lucide-react"
+import { startTransition, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 
 import { universityCreateSchema, type UniversityCreateData } from "@/lib/university-schema"
+
+const CREATE_ERROR = "უნივერსიტეტის დამატება ვერ მოხერხდა. სცადეთ ხელახლა."
+
+const SECTION_CLASS_NAME = "rounded-xl bg-card p-4 ring-1 ring-foreground/10 md:p-6"
 
 const defaultValues: UniversityCreateData = {
   name: "",
@@ -22,7 +36,6 @@ const defaultValues: UniversityCreateData = {
 }
 
 export function UniversityCreateForm() {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSubmitting, startSubmitTransition] = useTransition()
 
@@ -30,6 +43,8 @@ export function UniversityCreateForm() {
     register,
     handleSubmit,
     reset,
+    setError,
+    setFocus,
     formState: { errors },
   } = useForm<UniversityCreateData>({
     resolver: standardSchemaResolver(universityCreateSchema),
@@ -38,8 +53,7 @@ export function UniversityCreateForm() {
 
   const onSubmit = handleSubmit((data) => {
     startSubmitTransition(async () => {
-      startSubmitTransition(() => {
-        setSuccessMessage(null)
+      startTransition(() => {
         setErrorMessage(null)
       })
 
@@ -51,102 +65,155 @@ export function UniversityCreateForm() {
         })
 
         if (response.status === 409) {
-          startSubmitTransition(() => {
-            setErrorMessage("A university with this name already exists.")
-          })
-
+          setError("name", { message: "ამ სახელით უნივერსიტეტი უკვე არსებობს" }, { shouldFocus: true })
           return
         }
 
         if (!response.ok) {
-          startSubmitTransition(() => {
-            setErrorMessage("Could not create university. Please try again.")
+          startTransition(() => {
+            setErrorMessage(CREATE_ERROR)
           })
           return
         }
 
         reset(defaultValues)
-        startSubmitTransition(() => {
-          setSuccessMessage("University created successfully.")
-        })
+        setFocus("name")
+        toast.success("უნივერსიტეტი წარმატებით დაემატა")
       } catch {
-        startSubmitTransition(() => {
-          setErrorMessage("Could not create university. Please try again.")
+        startTransition(() => {
+          setErrorMessage(CREATE_ERROR)
         })
       }
     })
   })
 
   return (
-    <form className="space-y-6" onSubmit={onSubmit}>
-      <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="name">Name</FieldLabel>
-          <Input id="name" {...register("name")} aria-invalid={errors.name !== undefined} />
-          {errors.name !== undefined ? <FieldError errors={[errors.name]} /> : null}
-        </Field>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="street">Street</FieldLabel>
-            <Input id="street" {...register("street")} />
+    <form className="space-y-6" onSubmit={onSubmit} noValidate>
+      <FieldSet className={SECTION_CLASS_NAME}>
+        <FieldLegend>ძირითადი ინფორმაცია</FieldLegend>
+        <FieldGroup>
+          <Field data-invalid={errors.name !== undefined}>
+            <FieldLabel htmlFor="name">
+              სახელი
+              <span className="text-destructive" aria-hidden>
+                *
+              </span>
+            </FieldLabel>
+            <Input
+              id="name"
+              autoComplete="organization"
+              required
+              aria-invalid={errors.name !== undefined}
+              {...register("name")}
+            />
+            {errors.name !== undefined ? <FieldError errors={[errors.name]} /> : null}
           </Field>
+        </FieldGroup>
+      </FieldSet>
+
+      <FieldSet className={SECTION_CLASS_NAME}>
+        <FieldLegend>მისამართი</FieldLegend>
+        <FieldDescription>ყველა ველი არასავალდებულოა.</FieldDescription>
+        <FieldGroup>
+          <div className="grid grid-cols-[1fr_7rem] gap-4 md:grid-cols-[1fr_9rem]">
+            <Field>
+              <FieldLabel htmlFor="street">ქუჩა</FieldLabel>
+              <Input id="street" autoComplete="address-line1" {...register("street")} />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="streetNumber">ნომერი</FieldLabel>
+              <Input id="streetNumber" {...register("streetNumber")} />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-[10rem_1fr]">
+            <Field>
+              <FieldLabel htmlFor="postalCode">საფოსტო ინდექსი</FieldLabel>
+              <Input id="postalCode" autoComplete="postal-code" {...register("postalCode")} />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="city">ქალაქი</FieldLabel>
+              <Input id="city" autoComplete="address-level2" {...register("city")} />
+            </Field>
+          </div>
 
           <Field>
-            <FieldLabel htmlFor="streetNumber">Street number</FieldLabel>
-            <Input id="streetNumber" {...register("streetNumber")} />
+            <FieldLabel htmlFor="country">ქვეყანა</FieldLabel>
+            <Input id="country" autoComplete="country-name" {...register("country")} />
           </Field>
+        </FieldGroup>
+      </FieldSet>
+
+      <FieldSet className={SECTION_CLASS_NAME}>
+        <FieldLegend>საკონტაქტო ინფორმაცია</FieldLegend>
+        <FieldDescription>ყველა ველი არასავალდებულოა.</FieldDescription>
+        <FieldGroup>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Field>
+              <FieldLabel htmlFor="telephone">ტელეფონი</FieldLabel>
+              <Input
+                id="telephone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="+49 30 123456"
+                {...register("telephone")}
+              />
+            </Field>
+
+            <Field data-invalid={errors.email !== undefined}>
+              <FieldLabel htmlFor="email">ელ. ფოსტა</FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="info@example.edu"
+                aria-invalid={errors.email !== undefined}
+                {...register("email")}
+              />
+              {errors.email !== undefined ? <FieldError errors={[errors.email]} /> : null}
+            </Field>
+          </div>
+
+          <Field data-invalid={errors.website !== undefined}>
+            <FieldLabel htmlFor="website">ვებსაიტი</FieldLabel>
+            <Input
+              id="website"
+              type="url"
+              inputMode="url"
+              autoComplete="url"
+              placeholder="https://example.edu"
+              aria-invalid={errors.website !== undefined}
+              {...register("website")}
+            />
+            {errors.website !== undefined ? <FieldError errors={[errors.website]} /> : null}
+          </Field>
+        </FieldGroup>
+      </FieldSet>
+
+      {errorMessage !== null ? (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive"
+        >
+          <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
+          {errorMessage}
         </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="postalCode">Postal code</FieldLabel>
-            <Input id="postalCode" {...register("postalCode")} />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="city">City</FieldLabel>
-            <Input id="city" {...register("city")} />
-          </Field>
-        </div>
-
-        <Field>
-          <FieldLabel htmlFor="country">Country</FieldLabel>
-          <Input id="country" {...register("country")} />
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="telephone">Telephone</FieldLabel>
-          <Input id="telephone" {...register("telephone")} />
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" {...register("email")} aria-invalid={errors.email !== undefined} />
-          {errors.email !== undefined ? <FieldError errors={[errors.email]} /> : null}
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="website">Website</FieldLabel>
-          <Input
-            id="website"
-            type="url"
-            placeholder="https://example.edu"
-            {...register("website")}
-            aria-invalid={errors.website !== undefined}
-          />
-          {errors.website !== undefined ? <FieldError errors={[errors.website]} /> : null}
-        </Field>
-      </FieldGroup>
-
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Creating…" : "Create university"}
-      </Button>
-
-      {successMessage !== null ? (
-        <p className="text-center text-sm text-green-700">{successMessage}</p>
       ) : null}
-      {errorMessage !== null ? <p className="text-center text-sm text-destructive">{errorMessage}</p> : null}
+
+      <div className="flex justify-end">
+        <Button type="submit" size="lg" className="w-full md:w-auto" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <Plus className="size-4" aria-hidden />
+          )}
+          {isSubmitting ? "ემატება…" : "უნივერსიტეტის დამატება"}
+        </Button>
+      </div>
     </form>
   )
 }
