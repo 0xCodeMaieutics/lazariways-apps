@@ -3,8 +3,10 @@ import { Resend } from "resend"
 import { env } from "@/env"
 
 const ADMIN_EMAILS = ["annamalazonia1@gmail.com", "malazoniakristine@gmail.com"]
+const ADMIN_APP_URL = "https://application-admin.lazariways.eu"
 
 export async function sendNewApplicationEmailToAdmins(params: {
+  applicationId: string
   firstName: string
   lastName: string
   email: string
@@ -17,6 +19,8 @@ export async function sendNewApplicationEmailToAdmins(params: {
     `სახელი: ${applicant}`,
     `ელ. ფოსტა: ${params.email}`,
     ...(params.phone ? [`ტელეფონი: ${params.phone}`] : []),
+    "",
+    `განაცხადის ნახვა: ${ADMIN_APP_URL}/applications/${params.applicationId}/edit`,
   ]
 
   const email = {
