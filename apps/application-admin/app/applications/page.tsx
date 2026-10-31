@@ -140,6 +140,7 @@ export default async function ApplicationsPage({ searchParams }: ApplicationsPag
                     firstName={application.firstName}
                     lastName={application.lastName}
                     linkedUniversityName={application.linkedUniversity?.name ?? null}
+                    customUniversityName={application.university?.trim() || null}
                     germanLevel={application.germanLevel}
                     fotoUrl={fotoUrl}
                     instagram={application.instagram}
