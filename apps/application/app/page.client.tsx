@@ -475,6 +475,16 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
   }, [form])
 
   const isDirty = form.formState.isDirty
+  const formValues = useWatch({ control: form.control })
+  const currentStepFields: readonly string[] = formSteps[currentStep]?.fields ?? []
+  const formValidation = applicationFormSchema.safeParse(formValues)
+  const hasCurrentStepSchemaIssue =
+    !formValidation.success &&
+    formValidation.error.issues.some((issue) => currentStepFields.includes(String(issue.path[0])))
+  const hasCurrentStepFieldError = currentStepFields.some(
+    (fieldName) => form.formState.errors[fieldName as keyof ApplicationFormData]
+  )
+  const isCurrentStepValid = !hasCurrentStepSchemaIssue && !hasCurrentStepFieldError
   const acceptPrivacyPolicy = useWatch({
     control: form.control,
     name: "acceptPrivacyPolicy",
@@ -1745,9 +1755,23 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
               {isSubmitting ? "იგზავნება..." : "გაგზავნა"}
             </Button>
           ) : (
-            <Button key="next-step" type="button" size={"lg"} onClick={() => void goToNextStep()}>
-              შემდეგი
-            </Button>
+            <div className="flex flex-col gap-2 sm:items-end">
+              <Button
+                key="next-step"
+                type="button"
+                size={"lg"}
+                disabled={!isCurrentStepValid}
+                aria-describedby={isCurrentStepValid ? undefined : "next-step-hint"}
+                onClick={() => void goToNextStep()}
+              >
+                შემდეგი
+              </Button>
+              {!isCurrentStepValid && (
+                <p id="next-step-hint" className="text-sm text-muted-foreground">
+                  გასაგრძელებლად შეავსეთ ყველა სავალდებულო (*) ველი
+                </p>
+              )}
+            </div>
           )}
         </div>
       </form>
