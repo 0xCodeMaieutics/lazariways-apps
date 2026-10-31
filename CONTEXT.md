@@ -32,6 +32,50 @@ _Avoid_: Profession, role, job title
 The consultant-facing application PDF an Admin generates from a saved Application.
 _Avoid_: Remote application PDF, application PDF, Guili CV
 
+## Content Studio
+
+Standalone app where Content Editors create Social Posts for Lazari Ways' social media channels.
+
+**Content Editor**:
+A person allowed to log into Content Studio and create Social Posts. Distinct from Admin; one person may be both.
+_Avoid_: Admin, marketer, social media manager
+
+**Social Post**:
+A generated image, in Georgian and under the Lazari Ways brand, ready to publish on a social media platform. Not stored; it is fully determined by its Vacancy Template, Vacancy Details and Post Format.
+_Avoid_: Post, creative, banner
+
+**Vacancy Template**:
+One job at one kind of workplace, such as Bakery – Sales or Hotel – Housekeeping, that fixes a Social Post's design, Georgian wording and job title. Not stored; selected each time a Social Post is created.
+_Avoid_: Vacancy, post type, job, Bäcker, Hotel
+
+**Vacancy Details**:
+The values a Content Editor enters for one Social Post: Employment Duration, Wage, German Level and an optional Highlight. Not stored.
+_Avoid_: Vacancy, job data
+
+**Highlight**:
+An optional short line (about 40 characters) a Content Editor adds to one Social Post, such as an urgency note or a special perk. The only free text on a Social Post; all other wording is fixed by the Vacancy Template.
+_Avoid_: Custom text, caption, badge
+
+**Employment Duration**:
+How long the job lasts: a whole number of months from 1 to 24, or permanent.
+_Avoid_: Contract length, season, term
+
+**Wage**:
+A single gross amount in euros, per hour or per month.
+_Avoid_: Salary, pay, hourly wage, net pay
+
+**German Level**:
+The minimum German a worker needs for the vacancy: none, or a CEFR level from A1 to C1. The Vacancy Template turns it into the Georgian requirement sentence.
+_Avoid_: Language requirement, German knowledge
+
+**Post Format**:
+The shape a Social Post is drawn in: Story (9:16, Instagram and Facebook stories) or Feed (4:5, Instagram and Facebook feed). One Vacancy Template's content can be drawn in any Post Format. Story comes first.
+_Avoid_: Size, layout, platform
+
+**Link Sticker Area**:
+Empty space at the bottom of every Social Post, after all other content, where the Content Editor places the link to the application form before publishing (on a Story, Instagram's link sticker). The image itself never contains a clickable link.
+_Avoid_: Link, URL box, CTA
+
 ## Lazari Lingo
 
 Language-learning app where learners complete **Exams** within **Topics**.
