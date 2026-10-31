@@ -19,6 +19,7 @@
         "RESEND_API_KEY",
         "RESEND_FROM_EMAIL",
         "BEWERBER_APP_URL",
+        "APPLICATION_FORM_URL",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
         "BUCKET_AUDIOS_PATH",
