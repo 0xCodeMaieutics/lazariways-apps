@@ -22,6 +22,45 @@ export const VACANCY_TEMPLATES: readonly VacancyTemplate[] = [
       highlight: "",
     },
   },
+  {
+    id: "restaurant-chef",
+    name: "რესტორანი – მზარეული",
+    jobTitle: "რესტორანში მზარეულის პოზიცია",
+    icon: "👨‍🍳",
+    defaultDetails: {
+      employmentDuration: 8,
+      wageAmount: 16,
+      wagePeriod: "HOUR",
+      germanLevel: "A2",
+      highlight: "",
+    },
+  },
+  {
+    id: "restaurant-waiter",
+    name: "რესტორანი – ოფიციანტი",
+    jobTitle: "რესტორანში ოფიციანტის პოზიცია",
+    icon: "🍽️",
+    defaultDetails: {
+      employmentDuration: 8,
+      wageAmount: 14,
+      wagePeriod: "HOUR",
+      germanLevel: "A2",
+      highlight: "",
+    },
+  },
+  {
+    id: "hotel-masseuse",
+    name: "სასტუმრო – მასაჟისტი",
+    jobTitle: "სასტუმროში მასაჟისტის პოზიცია",
+    icon: "💆",
+    defaultDetails: {
+      employmentDuration: 8,
+      wageAmount: 15,
+      wagePeriod: "HOUR",
+      germanLevel: "A2",
+      highlight: "",
+    },
+  },
 ]
 
 export function findVacancyTemplate(id: string): VacancyTemplate | undefined {
