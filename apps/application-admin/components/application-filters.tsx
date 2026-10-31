@@ -2,20 +2,27 @@
 
 import type { GermanLevel } from "@workspace/database/browser"
 import { Input } from "@workspace/ui/components/input"
+import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
 import { cn } from "@workspace/ui/lib/utils"
 import { Loader2, Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"
 
-import { buildApplicationsHref, GERMAN_LEVELS, type ApplicationFilters } from "@/lib/application-filters"
+import {
+  buildApplicationsHref,
+  GERMAN_LEVELS,
+  UNIVERSITY_NOT_IN_LIST,
+  type ApplicationFilters,
+} from "@/lib/application-filters"
 
 const SEARCH_DEBOUNCE_MS = 300
 
 interface ApplicationFiltersBarProps {
   filters: ApplicationFilters
+  universities: { id: string; name: string }[]
 }
 
-export function ApplicationFiltersBar({ filters }: ApplicationFiltersBarProps) {
+export function ApplicationFiltersBar({ filters, universities }: ApplicationFiltersBarProps) {
   const router = useRouter()
   const [isNavigating, startNavigation] = useTransition()
   const [query, setQuery] = useState(filters.query)
@@ -51,6 +58,10 @@ export function ApplicationFiltersBar({ filters }: ApplicationFiltersBarProps) {
     navigate({ ...filters, query: query.trim(), germanLevel })
   }
 
+  function selectUniversity(university: string) {
+    navigate({ ...filters, query: query.trim(), university: university === "" ? null : university })
+  }
+
   const levelOptions: { value: GermanLevel | null; label: string }[] = [
     { value: null, label: "ყველა" },
     ...GERMAN_LEVELS.map((level) => ({ value: level, label: level })),
@@ -79,6 +90,21 @@ export function ApplicationFiltersBar({ filters }: ApplicationFiltersBarProps) {
           />
         ) : null}
       </div>
+
+      <NativeSelect
+        value={filters.university ?? ""}
+        onChange={(event) => selectUniversity(event.target.value)}
+        aria-label="უნივერსიტეტი"
+        className="w-full lg:w-64"
+      >
+        <NativeSelectOption value="">ყველა უნივერსიტეტი</NativeSelectOption>
+        <NativeSelectOption value={UNIVERSITY_NOT_IN_LIST}>⚠ სიიდან არ არის არჩეული</NativeSelectOption>
+        {universities.map((university) => (
+          <NativeSelectOption key={university.id} value={university.id}>
+            {university.name}
+          </NativeSelectOption>
+        ))}
+      </NativeSelect>
 
       <fieldset className="-mx-4 flex min-w-0 items-center gap-1.5 overflow-x-auto border-0 px-4 sm:mx-0 sm:px-0">
         <legend className="sr-only">Deutsch</legend>
