@@ -52,10 +52,10 @@ export async function createAndSendVerificationCode({
     data: { scope, code, expiresAt },
   })
 
-  const text = `Login code: ${code}\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`
+  const text = `Login code: <code>${code}</code>\n\nExpires in ${VERIFICATION_CODE_EXPIRY_MINUTES} minutes.`
 
   if (process.env.NODE_ENV === "development") {
-    console.log(`\n${text}\n`)
+    console.log(`\nLogin code: ${code}\n`)
   } else {
     await sendTelegramMessage({ text, chatId, token })
   }
@@ -113,6 +113,7 @@ async function sendTelegramMessage({ text, chatId, token }: { text: string; toke
   const body = new URLSearchParams({
     chat_id: chatId,
     text,
+    parse_mode: "HTML",
   })
 
   const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
