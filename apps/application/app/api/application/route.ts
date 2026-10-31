@@ -5,6 +5,7 @@ import { uploadFileToStorage } from "@workspace/file-upload/s3-client"
 import type { NextRequest } from "next/server"
 
 import { env } from "@/env"
+import { sendNewApplicationEmailToAdmins } from "@/lib/email"
 import { applicationFormSchema, type ApplicationFormData } from "@/utils/application-schema"
 import { generateBewerberChecklistPdf } from "@/utils/pdf"
 
@@ -90,6 +91,17 @@ export const POST = async (request: NextRequest) => {
   } catch (error) {
     console.error("APPLICATION_DB_INSERT_FAILED", error)
     return Response.json({ error: "Internal server error" }, { status: 500 })
+  }
+
+  try {
+    await sendNewApplicationEmailToAdmins({
+      firstName: parsed.data.firstName.trim(),
+      lastName: parsed.data.lastName.trim(),
+      email: parsed.data.email.trim(),
+      phone: optionalString(parsed.data.phone),
+    })
+  } catch (error) {
+    console.error("ADMIN_NOTIFICATION_EMAIL_FAILED", error)
   }
 
   return Response.json({ success: true }, { status: 200 })
