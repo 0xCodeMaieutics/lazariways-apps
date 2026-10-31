@@ -22,8 +22,8 @@ import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group
 import { XCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useCallback, useState, useTransition } from "react"
-import { Controller, useForm, useWatch } from "react-hook-form"
+import { useEffect, useCallback, useRef, useState, useTransition } from "react"
+import { Controller, type FieldPath, useForm, useWatch } from "react-hook-form"
 
 import {
   applicationFormSchema,
@@ -34,6 +34,94 @@ import {
 } from "@/utils/application-schema"
 
 const UNIVERSITY_NOT_IN_LIST = "__not_in_list__"
+
+const formSteps = [
+  {
+    title: "პირადი ინფორმაცია",
+    fields: [
+      "firstName",
+      "lastName",
+      "gender",
+      "birthDate",
+      "birthPlace",
+      "birthCountry",
+      "nationality",
+      "foto",
+    ],
+  },
+  {
+    title: "მისამართი და კონტაქტი",
+    fields: ["street", "postalCode", "city", "country", "email", "phone", "instagram", "taxId"],
+  },
+  {
+    title: "სწავლა",
+    fields: [
+      "isStudent",
+      "universityId",
+      "university",
+      "studySubject",
+      "standardStudyPeriodYears",
+      "enrolledSince",
+      "expectedStudyEnd",
+      "semesterBreakFrom",
+      "semesterBreakTo",
+      "studiesContinueAfterSemesterBreak",
+    ],
+  },
+  {
+    title: "კვალიფიკაცია და სამუშაო",
+    fields: ["germanLevel", "otherLanguages", "driverLicense", "canRideBike", "shiftWork", "workSector"],
+  },
+  {
+    title: "ჯანმრთელობა და გერმანიაში ყოფნა",
+    fields: [
+      "healthRestrictions",
+      "allergies",
+      "clothingSize",
+      "shoeSize",
+      "hasBeenInGermanyBefore",
+      "previousStayPlace",
+      "previousStayPeriodFrom",
+      "previousStayPeriodTo",
+    ],
+  },
+  {
+    title: "საგანგებო საკონტაქტო პირი",
+    fields: ["emergencyContactName", "emergencyPhone", "acceptPrivacyPolicy"],
+  },
+] as const satisfies readonly { title: string; fields: readonly FieldPath<ApplicationFormData>[] }[]
+
+const lastStepIndex = formSteps.length - 1
+
+function findStepIndexOfField(fieldName: string) {
+  return formSteps.findIndex((step) => (step.fields as readonly string[]).includes(fieldName))
+}
+
+function FormStepProgress({ currentStep }: { currentStep: number }) {
+  return (
+    <div className="space-y-3">
+      <p className="text-sm font-medium text-muted-foreground">
+        ნაბიჯი {currentStep + 1} / {formSteps.length}
+      </p>
+      <progress
+        className="sr-only"
+        aria-label="განაცხადის პროგრესი"
+        value={currentStep + 1}
+        max={formSteps.length}
+      />
+      <div aria-hidden className="flex gap-1.5">
+        {formSteps.map((step, index) => (
+          <div
+            key={step.title}
+            className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
+              index <= currentStep ? "bg-primary" : "bg-muted"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 type UniversityOption = {
   id: string
@@ -104,6 +192,9 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
   const [isSubmissionErrorOpen, setIsSubmissionErrorOpen] = useState(false)
   const [base64String, setBase64String] = useState<string | null>(null)
   const [showCustomUniversity, setShowCustomUniversity] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
+  const stepTitleRef = useRef<HTMLHeadingElement>(null)
+  const isLastStep = currentStep === lastStepIndex
 
   const submitApplication = async (input: ApplicationFormData) => {
     startTransition(async () => {
@@ -314,9 +405,35 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
   }, [form.formState.errors, form.formState.isSubmitted, scrollToFirstError])
 
   function onInvalid() {
+    const firstErrorField = Object.keys(form.formState.errors)[0]
+    const errorStepIndex = firstErrorField ? findStepIndexOfField(firstErrorField) : -1
+    if (errorStepIndex !== -1) {
+      setCurrentStep(errorStepIndex)
+    }
     setTimeout(() => {
       scrollToFirstError()
     }, 100)
+  }
+
+  function showStep(stepIndex: number) {
+    setCurrentStep(stepIndex)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    requestAnimationFrame(() => stepTitleRef.current?.focus({ preventScroll: true }))
+  }
+
+  async function goToNextStep() {
+    const isStepValid = await form.trigger(formSteps[currentStep]?.fields, { shouldFocus: true })
+    if (!isStepValid) {
+      setTimeout(() => {
+        scrollToFirstError()
+      }, 100)
+      return
+    }
+    showStep(Math.min(currentStep + 1, lastStepIndex))
+  }
+
+  function goToPreviousStep() {
+    showStep(Math.max(currentStep - 1, 0))
   }
 
   const hasBeenInGermanyBefore = useWatch({
@@ -411,20 +528,32 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
     <>
       <form
         id="application-form"
-        onSubmit={form.handleSubmit((data) => submitApplication(data), onInvalid)}
+        onSubmit={(event) => {
+          if (!isLastStep) {
+            event.preventDefault()
+            void goToNextStep()
+            return
+          }
+          void form.handleSubmit((data) => submitApplication(data), onInvalid)(event)
+        }}
         noValidate
-        className="p-6"
+        className="mx-auto w-full max-w-3xl p-6"
       >
+        <div className="mb-8 space-y-6">
+          <FormStepProgress currentStep={currentStep} />
+          {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- hidden shortcut that fills in test data */}
+          <h2
+            ref={stepTitleRef}
+            tabIndex={-1}
+            className="text-2xl font-semibold tracking-tight outline-none"
+            onDoubleClick={handleTestValuesClick}
+            title="ორჯერ დააჭირეთ ტესტური მონაცემების შესავსებად"
+          >
+            {formSteps[currentStep]?.title}
+          </h2>
+        </div>
         <div className="space-y-8">
-          <div>
-            {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- hidden shortcut that fills in test data */}
-            <h3
-              className="mb-4 flex items-center gap-2 text-lg font-semibold"
-              onDoubleClick={handleTestValuesClick}
-              title="ორჯერ დააჭირეთ ტესტური მონაცემების შესავსებად"
-            >
-              პირადი ინფორმაცია
-            </h3>
+          <section hidden={currentStep !== 0} className="space-y-8">
             <FieldGroup>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <Controller
@@ -504,187 +633,43 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
                 )}
               />
             </FieldGroup>
-          </div>
 
-          {/* Birth Information */}
-          <FieldGroup>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <Controller
-                name="birthDate"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="birthDate" className="text-sm font-medium">
-                      დაბადების თარიღი *
-                    </FieldLabel>
-                    <SafariInputDate field={field} id="birthDate" aria-invalid={fieldState.invalid} />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="birthPlace"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="birthPlace" className="text-sm font-medium">
-                      დაბადების ადგილი *
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="birthPlace"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="ქალაქი"
-                      className="transition-colors"
-                      onChange={(v) => {
-                        const value = v.target.value
-                        field.onChange(v.target.value)
-                        onValidateRomanCharacters({
-                          value,
-                          fieldName: "birthPlace",
-                        })
-                      }}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="birthCountry"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  const isGeorgien = field.value === "Georgien"
-
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel className="text-sm font-medium">დაბადების ქვეყანა *</FieldLabel>
-                      <RadioGroup
-                        value={isGeorgien ? "Georgien" : "Other"}
-                        onValueChange={(v) => field.onChange(v === "Georgien" ? "Georgien" : "")}
-                        className="mt-2 flex flex-row gap-6"
-                        aria-invalid={fieldState.invalid}
-                      >
-                        <FormRadioOption id="birthCountry-georgien" value="Georgien" label="Georgien" />
-                        <FormRadioOption id="birthCountry-other" value="Other" label="სხვა" />
-                      </RadioGroup>
-                      {!isGeorgien && (
-                        <Input
-                          {...field}
-                          id="birthCountry"
-                          aria-invalid={fieldState.invalid}
-                          placeholder="მაგ. Armenien"
-                          className="mt-2 transition-colors"
-                          onChange={(v) => {
-                            const value = v.target.value
-                            field.onChange(v.target.value)
-                            onValidateRomanCharacters({
-                              value,
-                              fieldName: "birthCountry",
-                            })
-                          }}
-                        />
-                      )}
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )
-                }}
-              />
-              <Controller
-                name="nationality"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  const isGeorgisch = field.value === "Georgisch"
-
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel className="text-sm font-medium">მოქალაქეობა *</FieldLabel>
-                      <RadioGroup
-                        value={isGeorgisch ? "Georgisch" : "Other"}
-                        onValueChange={(v) => field.onChange(v === "Georgisch" ? "Georgisch" : "")}
-                        className="mt-2 flex flex-row gap-6"
-                        aria-invalid={fieldState.invalid}
-                      >
-                        <FormRadioOption id="nationality-georgisch" value="Georgisch" label="Georgisch" />
-                        <FormRadioOption id="nationality-other" value="Other" label="სხვა" />
-                      </RadioGroup>
-                      {!isGeorgisch && (
-                        <Input
-                          {...field}
-                          id="nationality"
-                          aria-invalid={fieldState.invalid}
-                          placeholder="მაგ. Armenisch"
-                          className="mt-2 transition-colors"
-                          onChange={(v) => {
-                            const value = v.target.value
-                            field.onChange(v.target.value)
-                            onValidateRomanCharacters({
-                              value,
-                              fieldName: "nationality",
-                            })
-                          }}
-                        />
-                      )}
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )
-                }}
-              />
-            </div>
-          </FieldGroup>
-
-          {/* Address Information */}
-          <div className="border-t pt-8">
-            <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">მისამართი</h3>
+            {/* Birth Information */}
             <FieldGroup>
-              <Controller
-                name="street"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="street" className="text-sm font-medium">
-                      ქუჩა, სახლის ნომერი *
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="street"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="მაგ. Rustavelis gamziri 1"
-                      className="transition-colors"
-                      onChange={(v) => {
-                        const value = v.target.value
-                        field.onChange(v.target.value)
-                        onValidateRomanCharacters({
-                          value,
-                          fieldName: "street",
-                        })
-                      }}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <Controller
-                  name="postalCode"
+                  name="birthDate"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="postalCode" className="text-sm font-medium">
-                        საფოსტო ინდექსი *
+                      <FieldLabel htmlFor="birthDate" className="text-sm font-medium">
+                        დაბადების თარიღი *
+                      </FieldLabel>
+                      <SafariInputDate field={field} id="birthDate" aria-invalid={fieldState.invalid} />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="birthPlace"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="birthPlace" className="text-sm font-medium">
+                        დაბადების ადგილი *
                       </FieldLabel>
                       <Input
                         {...field}
-                        id="postalCode"
+                        id="birthPlace"
                         aria-invalid={fieldState.invalid}
-                        placeholder="12345"
+                        placeholder="ქალაქი"
                         className="transition-colors"
                         onChange={(v) => {
                           const value = v.target.value
                           field.onChange(v.target.value)
                           onValidateRomanCharacters({
                             value,
-                            fieldName: "postalCode",
+                            fieldName: "birthPlace",
                           })
                         }}
                       />
@@ -693,634 +678,624 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
                   )}
                 />
                 <Controller
-                  name="city"
+                  name="birthCountry"
                   control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="city" className="text-sm font-medium">
-                        ქალაქი *
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="city"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="Tiflis"
-                        className="transition-colors"
-                        onChange={(v) => {
-                          const value = v.target.value
-                          field.onChange(v.target.value)
-                          onValidateRomanCharacters({
-                            value,
-                            fieldName: "city",
-                          })
-                        }}
-                      />
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
+                  render={({ field, fieldState }) => {
+                    const isGeorgien = field.value === "Georgien"
+
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel className="text-sm font-medium">დაბადების ქვეყანა *</FieldLabel>
+                        <RadioGroup
+                          value={isGeorgien ? "Georgien" : "Other"}
+                          onValueChange={(v) => field.onChange(v === "Georgien" ? "Georgien" : "")}
+                          className="mt-2 flex flex-row gap-6"
+                          aria-invalid={fieldState.invalid}
+                        >
+                          <FormRadioOption id="birthCountry-georgien" value="Georgien" label="Georgien" />
+                          <FormRadioOption id="birthCountry-other" value="Other" label="სხვა" />
+                        </RadioGroup>
+                        {!isGeorgien && (
+                          <Input
+                            {...field}
+                            id="birthCountry"
+                            aria-invalid={fieldState.invalid}
+                            placeholder="მაგ. Armenien"
+                            className="mt-2 transition-colors"
+                            onChange={(v) => {
+                              const value = v.target.value
+                              field.onChange(v.target.value)
+                              onValidateRomanCharacters({
+                                value,
+                                fieldName: "birthCountry",
+                              })
+                            }}
+                          />
+                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )
+                  }}
                 />
                 <Controller
-                  name="country"
+                  name="nationality"
                   control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="country" className="text-sm font-medium">
-                        ქვეყანა *
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="country"
-                        aria-invalid={fieldState.invalid}
-                        className="transition-colors"
-                        value={"Georgien"}
-                        disabled
-                      />
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
+                  render={({ field, fieldState }) => {
+                    const isGeorgisch = field.value === "Georgisch"
+
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel className="text-sm font-medium">მოქალაქეობა *</FieldLabel>
+                        <RadioGroup
+                          value={isGeorgisch ? "Georgisch" : "Other"}
+                          onValueChange={(v) => field.onChange(v === "Georgisch" ? "Georgisch" : "")}
+                          className="mt-2 flex flex-row gap-6"
+                          aria-invalid={fieldState.invalid}
+                        >
+                          <FormRadioOption id="nationality-georgisch" value="Georgisch" label="Georgisch" />
+                          <FormRadioOption id="nationality-other" value="Other" label="სხვა" />
+                        </RadioGroup>
+                        {!isGeorgisch && (
+                          <Input
+                            {...field}
+                            id="nationality"
+                            aria-invalid={fieldState.invalid}
+                            placeholder="მაგ. Armenisch"
+                            className="mt-2 transition-colors"
+                            onChange={(v) => {
+                              const value = v.target.value
+                              field.onChange(v.target.value)
+                              onValidateRomanCharacters({
+                                value,
+                                fieldName: "nationality",
+                              })
+                            }}
+                          />
+                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )
+                  }}
                 />
               </div>
             </FieldGroup>
-          </div>
 
-          {/* Contact & Social Media Information */}
-          <div className="border-t pt-8">
-            <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-              კონტაქტი და სოციალური ქსელები
-            </h3>
-            <FieldGroup>
-              <Controller
-                name="email"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="email" className="text-sm font-medium">
-                      საფოსტო ემაილი *
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="email"
-                      type="email"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="საფოსტო ემაილი"
-                      className="transition-colors"
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="phone"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="phone" className="text-sm font-medium">
-                      ტელეფონის ნომერი (არასავალდებულო)
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="phone"
-                      type="tel"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="+49 123 456789"
-                      className="transition-colors"
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="border-t pt-8">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">პროფილის ფოტო</h3>
+              <FieldGroup>
                 <Controller
-                  name="instagram"
+                  name="foto"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="instagram" className="text-sm font-medium">
-                        Instagram (არასავალდებულო)
+                      <FieldLabel htmlFor="foto">ფოტოს ატვირთვა *</FieldLabel>
+                      <FileUpload
+                        id="foto"
+                        accept=".png,.jpg,.jpeg"
+                        value={field.value}
+                        onChange={(files) => {
+                          if (files === null) {
+                            field.onChange(undefined)
+                            setBase64String(null)
+                            return
+                          }
+                          const file = Array.isArray(files) ? files[0] : files
+
+                          const reader = new FileReader()
+                          reader.readAsDataURL(file as File)
+                          reader.onload = () => {
+                            const base64Encoded = reader.result as string
+                            setBase64String(base64Encoded)
+                          }
+
+                          reader.onerror = function (error) {
+                            console.log("Error: ", error)
+                          }
+                          field.onChange(file)
+                        }}
+                        placeholder="აირჩიეთ ფოტო"
+                        required
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      {base64String !== null && field.value instanceof File && (
+                        <ImageCropper
+                          base64Image={base64String}
+                          originalFile={field.value}
+                          onDismiss={() => setBase64String(null)}
+                          onCropComplete={(cropped) => {
+                            form.setValue("foto", cropped, {
+                              shouldDirty: true,
+                              shouldTouch: true,
+                              shouldValidate: true,
+                            })
+                            setBase64String(null)
+                          }}
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
+          </section>
+
+          <section hidden={currentStep !== 1} className="space-y-8">
+            {/* Address Information */}
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">მისამართი</h3>
+              <FieldGroup>
+                <Controller
+                  name="street"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="street" className="text-sm font-medium">
+                        ქუჩა, სახლის ნომერი *
                       </FieldLabel>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">@</span>
+                      <Input
+                        {...field}
+                        id="street"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="მაგ. Rustavelis gamziri 1"
+                        className="transition-colors"
+                        onChange={(v) => {
+                          const value = v.target.value
+                          field.onChange(v.target.value)
+                          onValidateRomanCharacters({
+                            value,
+                            fieldName: "street",
+                          })
+                        }}
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <Controller
+                    name="postalCode"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="postalCode" className="text-sm font-medium">
+                          საფოსტო ინდექსი *
+                        </FieldLabel>
                         <Input
                           {...field}
-                          id="instagram"
+                          id="postalCode"
                           aria-invalid={fieldState.invalid}
-                          placeholder="მომხმარებლის სახელი"
+                          placeholder="12345"
                           className="transition-colors"
                           onChange={(v) => {
                             const value = v.target.value
                             field.onChange(v.target.value)
                             onValidateRomanCharacters({
                               value,
-                              fieldName: "instagram",
+                              fieldName: "postalCode",
                             })
                           }}
                         />
-                      </div>
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="city"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="city" className="text-sm font-medium">
+                          ქალაქი *
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id="city"
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Tiflis"
+                          className="transition-colors"
+                          onChange={(v) => {
+                            const value = v.target.value
+                            field.onChange(v.target.value)
+                            onValidateRomanCharacters({
+                              value,
+                              fieldName: "city",
+                            })
+                          }}
+                        />
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="country"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="country" className="text-sm font-medium">
+                          ქვეყანა *
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id="country"
+                          aria-invalid={fieldState.invalid}
+                          className="transition-colors"
+                          value={"Georgien"}
+                          disabled
+                        />
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+                </div>
+              </FieldGroup>
+            </div>
+
+            {/* Contact & Social Media Information */}
+            <div className="border-t pt-8">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+                კონტაქტი და სოციალური ქსელები
+              </h3>
+              <FieldGroup>
+                <Controller
+                  name="email"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="email" className="text-sm font-medium">
+                        საფოსტო ემაილი *
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="email"
+                        type="email"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="საფოსტო ემაილი"
+                        className="transition-colors"
+                      />
                       {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                   )}
                 />
-              </div>
-
-              <Controller
-                name="taxId"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="taxId" className="text-sm font-medium">
-                      საგადასახადო იდენტიფიკაციის ნომერი (არასავალდებულო)
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="taxId"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="საგადასახადო იდენტიფიკაციის ნომერი"
-                      className="transition-colors"
-                      onChange={(v) => {
-                        const value = v.target.value
-                        field.onChange(v.target.value)
-                        onValidateRomanCharacters({
-                          value,
-                          fieldName: "taxId",
-                        })
-                      }}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </div>
-
-          <div className="border-t pt-8">
-            <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">პროფილის ფოტო</h3>
-            <FieldGroup>
-              <Controller
-                name="foto"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="foto">ფოტოს ატვირთვა *</FieldLabel>
-                    <FileUpload
-                      id="foto"
-                      accept=".png,.jpg,.jpeg"
-                      value={field.value}
-                      onChange={(files) => {
-                        if (files === null) {
-                          field.onChange(undefined)
-                          setBase64String(null)
-                          return
-                        }
-                        const file = Array.isArray(files) ? files[0] : files
-
-                        const reader = new FileReader()
-                        reader.readAsDataURL(file as File)
-                        reader.onload = () => {
-                          const base64Encoded = reader.result as string
-                          setBase64String(base64Encoded)
-                        }
-
-                        reader.onerror = function (error) {
-                          console.log("Error: ", error)
-                        }
-                        field.onChange(file)
-                      }}
-                      placeholder="აირჩიეთ ფოტო"
-                      required
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    {base64String !== null && field.value instanceof File && (
-                      <ImageCropper
-                        base64Image={base64String}
-                        originalFile={field.value}
-                        onDismiss={() => setBase64String(null)}
-                        onCropComplete={(cropped) => {
-                          form.setValue("foto", cropped, {
-                            shouldDirty: true,
-                            shouldTouch: true,
-                            shouldValidate: true,
-                          })
-                          setBase64String(null)
-                        }}
+                <Controller
+                  name="phone"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="phone" className="text-sm font-medium">
+                        ტელეფონის ნომერი (არასავალდებულო)
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="phone"
+                        type="tel"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="+49 123 456789"
+                        className="transition-colors"
                       />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </div>
-          <div>
-            <Controller
-              name="isStudent"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="isStudent" className="text-sm font-medium">
-                    ხართ სტუდენტი?
-                  </FieldLabel>
-                  <RadioGroup
-                    id="isStudent"
-                    value={booleanRadioGroupValue(field.value)}
-                    onValueChange={(value) => {
-                      const next = value === "true"
-                      field.onChange(next)
-                      if (!next) {
-                        clearStudentFields()
-                      }
-                    }}
-                    className="mt-2 flex flex-row gap-4"
-                    aria-invalid={fieldState.invalid}
-                  >
-                    <FormRadioOption id="is-student-yes" value="true" label="დიახ" />
-                    <FormRadioOption id="is-student-no" value="false" label="არა" />
-                  </RadioGroup>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-            {isStudent && (
-              <>
-                <h2 className="mt-6 mb-4 text-lg font-semibold">სწავლა</h2>
-                <FieldGroup>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <Field>
-                      <FieldLabel htmlFor="university">უნივერსიტეტი</FieldLabel>
-                      <NativeSelect
-                        id="university"
-                        className="w-full"
-                        value={universitySelectValue}
-                        onChange={(event) => onUniversitySelectChange(event.target.value)}
-                        aria-invalid={!!form.formState.errors.university}
-                      >
-                        <NativeSelectOption value="" disabled>
-                          აირჩიეთ უნივერსიტეტი
-                        </NativeSelectOption>
-                        {universities.map((university) => (
-                          <NativeSelectOption key={university.id} value={university.id}>
-                            {university.name}
-                          </NativeSelectOption>
-                        ))}
-                        <NativeSelectOption value={UNIVERSITY_NOT_IN_LIST}>
-                          ჩემი უნივერსიტეტი სიაში არ არის
-                        </NativeSelectOption>
-                      </NativeSelect>
-                      {showCustomUniversity && (
-                        <Controller
-                          name="university"
-                          control={form.control}
-                          render={({ field, fieldState }) => (
-                            <Field className="mt-2" data-invalid={fieldState.invalid}>
-                              <Input
-                                {...field}
-                                id="university-custom"
-                                aria-invalid={fieldState.invalid}
-                                placeholder="უნივერსიტეტის სახელი"
-                                onChange={(v) => {
-                                  const value = v.target.value
-                                  field.onChange(v.target.value)
-                                  onValidateRomanCharacters({
-                                    value,
-                                    fieldName: "university",
-                                  })
-                                }}
-                              />
-                              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                            </Field>
-                          )}
-                        />
-                      )}
-                      {!showCustomUniversity && form.formState.errors.university && (
-                        <FieldError errors={[form.formState.errors.university]} />
-                      )}
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
-                    <Controller
-                      name="studySubject"
-                      control={form.control}
-                      render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor="studySubject">სასწავლო სპეციალობა</FieldLabel>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <Controller
+                    name="instagram"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="instagram" className="text-sm font-medium">
+                          Instagram (არასავალდებულო)
+                        </FieldLabel>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">@</span>
                           <Input
                             {...field}
-                            id="studySubject"
+                            id="instagram"
                             aria-invalid={fieldState.invalid}
-                            placeholder="სასწავლო სპეციალობა"
+                            placeholder="მომხმარებლის სახელი"
+                            className="transition-colors"
                             onChange={(v) => {
                               const value = v.target.value
                               field.onChange(v.target.value)
                               onValidateRomanCharacters({
                                 value,
-                                fieldName: "studySubject",
+                                fieldName: "instagram",
                               })
                             }}
+                          />
+                        </div>
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+                </div>
+
+                <Controller
+                  name="taxId"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="taxId" className="text-sm font-medium">
+                        საგადასახადო იდენტიფიკაციის ნომერი (არასავალდებულო)
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="taxId"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="საგადასახადო იდენტიფიკაციის ნომერი"
+                        className="transition-colors"
+                        onChange={(v) => {
+                          const value = v.target.value
+                          field.onChange(v.target.value)
+                          onValidateRomanCharacters({
+                            value,
+                            fieldName: "taxId",
+                          })
+                        }}
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
+          </section>
+
+          <section hidden={currentStep !== 2} className="space-y-8">
+            <div>
+              <Controller
+                name="isStudent"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="isStudent" className="text-sm font-medium">
+                      ხართ სტუდენტი?
+                    </FieldLabel>
+                    <RadioGroup
+                      id="isStudent"
+                      value={booleanRadioGroupValue(field.value)}
+                      onValueChange={(value) => {
+                        const next = value === "true"
+                        field.onChange(next)
+                        if (!next) {
+                          clearStudentFields()
+                        }
+                      }}
+                      className="mt-2 flex flex-row gap-4"
+                      aria-invalid={fieldState.invalid}
+                    >
+                      <FormRadioOption id="is-student-yes" value="true" label="დიახ" />
+                      <FormRadioOption id="is-student-no" value="false" label="არა" />
+                    </RadioGroup>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+              {isStudent && (
+                <>
+                  <FieldGroup className="mt-6">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <Field>
+                        <FieldLabel htmlFor="university">უნივერსიტეტი</FieldLabel>
+                        <NativeSelect
+                          id="university"
+                          className="w-full"
+                          value={universitySelectValue}
+                          onChange={(event) => onUniversitySelectChange(event.target.value)}
+                          aria-invalid={!!form.formState.errors.university}
+                        >
+                          <NativeSelectOption value="" disabled>
+                            აირჩიეთ უნივერსიტეტი
+                          </NativeSelectOption>
+                          {universities.map((university) => (
+                            <NativeSelectOption key={university.id} value={university.id}>
+                              {university.name}
+                            </NativeSelectOption>
+                          ))}
+                          <NativeSelectOption value={UNIVERSITY_NOT_IN_LIST}>
+                            ჩემი უნივერსიტეტი სიაში არ არის
+                          </NativeSelectOption>
+                        </NativeSelect>
+                        {showCustomUniversity && (
+                          <Controller
+                            name="university"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                              <Field className="mt-2" data-invalid={fieldState.invalid}>
+                                <Input
+                                  {...field}
+                                  id="university-custom"
+                                  aria-invalid={fieldState.invalid}
+                                  placeholder="უნივერსიტეტის სახელი"
+                                  onChange={(v) => {
+                                    const value = v.target.value
+                                    field.onChange(v.target.value)
+                                    onValidateRomanCharacters({
+                                      value,
+                                      fieldName: "university",
+                                    })
+                                  }}
+                                />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                              </Field>
+                            )}
+                          />
+                        )}
+                        {!showCustomUniversity && form.formState.errors.university && (
+                          <FieldError errors={[form.formState.errors.university]} />
+                        )}
+                      </Field>
+                      <Controller
+                        name="studySubject"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="studySubject">სასწავლო სპეციალობა</FieldLabel>
+                            <Input
+                              {...field}
+                              id="studySubject"
+                              aria-invalid={fieldState.invalid}
+                              placeholder="სასწავლო სპეციალობა"
+                              onChange={(v) => {
+                                const value = v.target.value
+                                field.onChange(v.target.value)
+                                onValidateRomanCharacters({
+                                  value,
+                                  fieldName: "studySubject",
+                                })
+                              }}
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                          </Field>
+                        )}
+                      />
+                    </div>
+                    <Controller
+                      name="standardStudyPeriodYears"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="standardStudyPeriodYears">
+                            რეგულირებული სწავლის პერიოდი (წლებში)
+                          </FieldLabel>
+                          <Input
+                            id="standardStudyPeriodYears"
+                            type="number"
+                            step="0.5"
+                            min="0"
+                            aria-invalid={fieldState.invalid}
+                            placeholder="მაგ. 4"
+                            value={field.value ?? ""}
+                            onChange={(event) => {
+                              const raw = event.target.value
+                              if (raw === "") {
+                                field.onChange(undefined)
+                                return
+                              }
+                              const parsed = Number(raw.replace(",", "."))
+                              field.onChange(Number.isFinite(parsed) ? parsed : undefined)
+                            }}
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            ref={field.ref}
                           />
                           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                       )}
                     />
-                  </div>
-                  <Controller
-                    name="standardStudyPeriodYears"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="standardStudyPeriodYears">
-                          რეგულირებული სწავლის პერიოდი (წლებში)
-                        </FieldLabel>
-                        <Input
-                          id="standardStudyPeriodYears"
-                          type="number"
-                          step="0.5"
-                          min="0"
-                          aria-invalid={fieldState.invalid}
-                          placeholder="მაგ. 4"
-                          value={field.value ?? ""}
-                          onChange={(event) => {
-                            const raw = event.target.value
-                            if (raw === "") {
-                              field.onChange(undefined)
-                              return
-                            }
-                            const parsed = Number(raw.replace(",", "."))
-                            field.onChange(Number.isFinite(parsed) ? parsed : undefined)
-                          }}
-                          onBlur={field.onBlur}
-                          name={field.name}
-                          ref={field.ref}
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="enrolledSince"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="enrolledSince">სწავლის დაწყების თარიღი</FieldLabel>
-                        <SafariInputDate field={field} id="enrolledSince" aria-invalid={fieldState.invalid} />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="expectedStudyEnd"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="expectedStudyEnd">
-                          სწავლის დასრულების მოსალოდნელი თარიღი
-                        </FieldLabel>
-                        <SafariInputDate
-                          field={field}
-                          id="expectedStudyEnd"
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="semesterBreakFrom"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="semesterBreakFrom">არდადეგების დასაწყისი</FieldLabel>
-                        <SafariInputDate
-                          field={field}
-                          id="semesterBreakFrom"
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="semesterBreakTo"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="semesterBreakTo">არდადეგები დასასრული</FieldLabel>
-                        <SafariInputDate
-                          field={field}
-                          id="semesterBreakTo"
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="studiesContinueAfterSemesterBreak"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel
-                          htmlFor="studiesContinueAfterSemesterBreak"
-                          className="text-sm font-medium"
-                        >
-                          სწავლა გაგრძელდება არდადეგების შემდეგ?
-                        </FieldLabel>
-                        <RadioGroup
-                          id="studiesContinueAfterSemesterBreak"
-                          value={booleanRadioGroupValue(field.value)}
-                          onValueChange={(value) => {
-                            field.onChange(value === "true")
-                          }}
-                          className="mt-2 flex flex-row gap-4"
-                          aria-invalid={fieldState.invalid}
-                        >
-                          <FormRadioOption id="studies-continue-yes" value="true" label="დიახ" />
-                          <FormRadioOption id="studies-continue-no" value="false" label="არა" />
-                        </RadioGroup>
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                </FieldGroup>
-              </>
-            )}
-          </div>
+                    <Controller
+                      name="enrolledSince"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="enrolledSince">სწავლის დაწყების თარიღი</FieldLabel>
+                          <SafariInputDate
+                            field={field}
+                            id="enrolledSince"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      name="expectedStudyEnd"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="expectedStudyEnd">
+                            სწავლის დასრულების მოსალოდნელი თარიღი
+                          </FieldLabel>
+                          <SafariInputDate
+                            field={field}
+                            id="expectedStudyEnd"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      name="semesterBreakFrom"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="semesterBreakFrom">არდადეგების დასაწყისი</FieldLabel>
+                          <SafariInputDate
+                            field={field}
+                            id="semesterBreakFrom"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      name="semesterBreakTo"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="semesterBreakTo">არდადეგები დასასრული</FieldLabel>
+                          <SafariInputDate
+                            field={field}
+                            id="semesterBreakTo"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      name="studiesContinueAfterSemesterBreak"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel
+                            htmlFor="studiesContinueAfterSemesterBreak"
+                            className="text-sm font-medium"
+                          >
+                            სწავლა გაგრძელდება არდადეგების შემდეგ?
+                          </FieldLabel>
+                          <RadioGroup
+                            id="studiesContinueAfterSemesterBreak"
+                            value={booleanRadioGroupValue(field.value)}
+                            onValueChange={(value) => {
+                              field.onChange(value === "true")
+                            }}
+                            className="mt-2 flex flex-row gap-4"
+                            aria-invalid={fieldState.invalid}
+                          >
+                            <FormRadioOption id="studies-continue-yes" value="true" label="დიახ" />
+                            <FormRadioOption id="studies-continue-no" value="false" label="არა" />
+                          </RadioGroup>
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                  </FieldGroup>
+                </>
+              )}
+            </div>
+          </section>
 
-          <div>
-            <h2 className="mb-4 text-lg font-semibold">კვალიფიკაცია</h2>
-            <FieldGroup>
-              <Controller
-                name="germanLevel"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>გერმანულის დონე (არასავალდებულო)</FieldLabel>
-                    <RadioGroup
-                      value={field.value ?? ""}
-                      onValueChange={field.onChange}
-                      className="flex flex-row flex-wrap gap-4"
-                      aria-invalid={fieldState.invalid}
-                    >
-                      {["A1", "A2", "B1", "B2", "C1"].map((level) => (
-                        <FormRadioOption key={level} id={`german-${level}`} value={level} label={level} />
-                      ))}
-                    </RadioGroup>
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="otherLanguages"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="otherLanguages">
-                      სხვა ენების ცოდნა / ენის დონე (არასავალდებულო)
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="otherLanguages"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="მაგ. Englisch B2, Französisch A1"
-                      onChange={(v) => {
-                        const value = v.target.value
-                        field.onChange(v.target.value)
-                        onValidateRomanCharacters({
-                          value,
-                          fieldName: "otherLanguages",
-                        })
-                      }}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="driverLicense"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>მართვის მოწმობა (არასავალდებულო)</FieldLabel>
-                    <RadioGroup
-                      value={booleanRadioGroupValue(field.value)}
-                      onValueChange={(v) => field.onChange(v === "true")}
-                      className="flex flex-row gap-4"
-                      aria-invalid={fieldState.invalid}
-                    >
-                      <FormRadioOption id="driver-license-yes" value="true" label="დიახ" />
-                      <FormRadioOption id="driver-license-no" value="false" label="არა" />
-                    </RadioGroup>
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="canRideBike"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>შეგიძლიათ ველოსიპედის ტარება? (არასავალდებულო)</FieldLabel>
-                    <RadioGroup
-                      value={booleanRadioGroupValue(field.value)}
-                      onValueChange={(v) => field.onChange(v === "true")}
-                      className="flex flex-row gap-4"
-                      aria-invalid={fieldState.invalid}
-                    >
-                      <FormRadioOption id="bike-yes" value="true" label="დიახ" />
-                      <FormRadioOption id="bike-no" value="false" label="არა" />
-                    </RadioGroup>
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="shiftWork"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>მზადყოფნა ცვლებში მუშაობისთვის (არასავალდებულო)</FieldLabel>
-                    <RadioGroup
-                      value={booleanRadioGroupValue(field.value)}
-                      onValueChange={(v) => field.onChange(v === "true")}
-                      className="flex flex-row gap-4"
-                      aria-invalid={fieldState.invalid}
-                    >
-                      <FormRadioOption id="shift-yes" value="true" label="დიახ" />
-                      <FormRadioOption id="shift-no" value="false" label="არა" />
-                    </RadioGroup>
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </div>
-
-          <div>
-            <h2 className="mb-4 text-lg font-semibold" title="ორჯერ დააჭირეთ ტესტური მონაცემების შესავსებად">
-              ჯანმრთელობა და პირადი მონაცემები
-            </h2>
-            <FieldGroup>
-              <Controller
-                name="healthRestrictions"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="healthRestrictions">
-                      ჯანმრთელობის შეზღუდვები თუ არის (არასავალდებულო)
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="healthRestrictions"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="მაგ. Rückenschmerzen, Atemwegserkrankungen"
-                      onChange={(v) => {
-                        const value = v.target.value
-                        field.onChange(v.target.value)
-                        onValidateRomanCharacters({
-                          value,
-                          fieldName: "healthRestrictions",
-                        })
-                      }}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="allergies"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="allergies">ალერგიები (არასავალდებულო)</FieldLabel>
-                    <Input
-                      {...field}
-                      id="allergies"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="მაგ. Honig, Planzen, etc."
-                      onChange={(v) => {
-                        const value = v.target.value
-                        field.onChange(v.target.value)
-                        onValidateRomanCharacters({
-                          value,
-                          fieldName: "allergies",
-                        })
-                      }}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <section hidden={currentStep !== 3} className="space-y-8">
+            <div>
+              <FieldGroup>
                 <Controller
-                  name="clothingSize"
+                  name="germanLevel"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>ტანსაცმლის ზომა (არასავალდებულო)</FieldLabel>
+                      <FieldLabel>გერმანულის დონე (არასავალდებულო)</FieldLabel>
                       <RadioGroup
                         value={field.value ?? ""}
                         onValueChange={field.onChange}
                         className="flex flex-row flex-wrap gap-4"
                         aria-invalid={fieldState.invalid}
                       >
-                        {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
-                          <FormRadioOption key={size} id={`clothingSize-${size}`} value={size} label={size} />
+                        {["A1", "A2", "B1", "B2", "C1"].map((level) => (
+                          <FormRadioOption key={level} id={`german-${level}`} value={level} label={level} />
                         ))}
                       </RadioGroup>
                       {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -1328,27 +1303,114 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
                   )}
                 />
                 <Controller
-                  name="shoeSize"
+                  name="otherLanguages"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>ფეხსაცმლის ზომა (არასავალდებულო)</FieldLabel>
-                      <div className="flex flex-wrap gap-x-4 gap-y-2">
-                        {shoeSizeOptions.map((size) => {
-                          const id = `shoeSize-${size}`
-                          const selected = (field.value ?? []).includes(size)
+                      <FieldLabel htmlFor="otherLanguages">
+                        სხვა ენების ცოდნა / ენის დონე (არასავალდებულო)
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="otherLanguages"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="მაგ. Englisch B2, Französisch A1"
+                        onChange={(v) => {
+                          const value = v.target.value
+                          field.onChange(v.target.value)
+                          onValidateRomanCharacters({
+                            value,
+                            fieldName: "otherLanguages",
+                          })
+                        }}
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="driverLicense"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>მართვის მოწმობა (არასავალდებულო)</FieldLabel>
+                      <RadioGroup
+                        value={booleanRadioGroupValue(field.value)}
+                        onValueChange={(v) => field.onChange(v === "true")}
+                        className="flex flex-row gap-4"
+                        aria-invalid={fieldState.invalid}
+                      >
+                        <FormRadioOption id="driver-license-yes" value="true" label="დიახ" />
+                        <FormRadioOption id="driver-license-no" value="false" label="არა" />
+                      </RadioGroup>
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="canRideBike"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>შეგიძლიათ ველოსიპედის ტარება? (არასავალდებულო)</FieldLabel>
+                      <RadioGroup
+                        value={booleanRadioGroupValue(field.value)}
+                        onValueChange={(v) => field.onChange(v === "true")}
+                        className="flex flex-row gap-4"
+                        aria-invalid={fieldState.invalid}
+                      >
+                        <FormRadioOption id="bike-yes" value="true" label="დიახ" />
+                        <FormRadioOption id="bike-no" value="false" label="არა" />
+                      </RadioGroup>
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="shiftWork"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>მზადყოფნა ცვლებში მუშაობისთვის (არასავალდებულო)</FieldLabel>
+                      <RadioGroup
+                        value={booleanRadioGroupValue(field.value)}
+                        onValueChange={(v) => field.onChange(v === "true")}
+                        className="flex flex-row gap-4"
+                        aria-invalid={fieldState.invalid}
+                      >
+                        <FormRadioOption id="shift-yes" value="true" label="დიახ" />
+                        <FormRadioOption id="shift-no" value="false" label="არა" />
+                      </RadioGroup>
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
+
+            <div className="border-t pt-8">
+              <FieldGroup>
+                <Controller
+                  name="workSector"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>სასურველი სამუშაო სფერო</FieldLabel>
+                      <div className="flex flex-col gap-3">
+                        {workSectorOptions.map((option) => {
+                          const id = `work-sector-${option.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`
+                          const selected = field.value.includes(option)
 
                           return (
-                            <div key={size} className="flex items-center gap-2">
+                            <div key={option} className="flex items-center gap-2">
                               <Checkbox
                                 id={id}
                                 checked={selected}
                                 onCheckedChange={(checked) => {
-                                  const current = field.value ?? []
                                   if (checked) {
-                                    field.onChange([...current, size])
+                                    field.onChange([...field.value, option])
                                   } else {
-                                    field.onChange(current.filter((value) => value !== size))
+                                    field.onChange(field.value.filter((value) => value !== option))
                                   }
                                 }}
                               />
@@ -1356,7 +1418,7 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
                                 htmlFor={id}
                                 className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                               >
-                                {size}
+                                {workSectorLabels[option]}
                               </label>
                             </div>
                           )
@@ -1366,225 +1428,327 @@ export function ApplicationForm({ universities }: { universities: UniversityOpti
                     </Field>
                   )}
                 />
-              </div>
-            </FieldGroup>
-          </div>
-          <div>
-            <h2 className="mb-4 text-lg font-semibold">ყოფნა გერმანიაში</h2>
-            <FieldGroup>
-              <Controller
-                name="hasBeenInGermanyBefore"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>ყოფნა გერმანიაში (არასავალდებულო)</FieldLabel>
-                    <RadioGroup
-                      value={booleanRadioGroupValue(field.value)}
-                      onValueChange={(v) => field.onChange(v === "true")}
-                      className="flex flex-row gap-4"
-                      aria-invalid={fieldState.invalid}
-                    >
-                      <FormRadioOption id="germany-stay-yes" value="true" label="დიახ" />
-                      <FormRadioOption id="germany-stay-no" value="false" label="არა" />
-                    </RadioGroup>
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              {hasBeenInGermanyBefore && (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              </FieldGroup>
+            </div>
+          </section>
+
+          <section hidden={currentStep !== 4} className="space-y-8">
+            <div>
+              <h2 className="mb-4 text-lg font-semibold">ჯანმრთელობა და პირადი მონაცემები</h2>
+              <FieldGroup>
+                <Controller
+                  name="healthRestrictions"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="healthRestrictions">
+                        ჯანმრთელობის შეზღუდვები თუ არის (არასავალდებულო)
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="healthRestrictions"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="მაგ. Rückenschmerzen, Atemwegserkrankungen"
+                        onChange={(v) => {
+                          const value = v.target.value
+                          field.onChange(v.target.value)
+                          onValidateRomanCharacters({
+                            value,
+                            fieldName: "healthRestrictions",
+                          })
+                        }}
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="allergies"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="allergies">ალერგიები (არასავალდებულო)</FieldLabel>
+                      <Input
+                        {...field}
+                        id="allergies"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="მაგ. Honig, Planzen, etc."
+                        onChange={(v) => {
+                          const value = v.target.value
+                          field.onChange(v.target.value)
+                          onValidateRomanCharacters({
+                            value,
+                            fieldName: "allergies",
+                          })
+                        }}
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <Controller
-                    name="previousStayPlace"
+                    name="clothingSize"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="previousStayPlace">თუ კი, სად (არასავალდებულო)</FieldLabel>
-                        <Input
-                          {...field}
-                          id="previousStayPlace"
+                        <FieldLabel>ტანსაცმლის ზომა (არასავალდებულო)</FieldLabel>
+                        <RadioGroup
+                          value={field.value ?? ""}
+                          onValueChange={field.onChange}
+                          className="flex flex-row flex-wrap gap-4"
                           aria-invalid={fieldState.invalid}
-                          placeholder="ქალაქი/რეგიონი გერმანიაში"
-                          onChange={(v) => {
-                            const value = v.target.value
-                            field.onChange(v.target.value)
-                            onValidateRomanCharacters({
-                              value,
-                              fieldName: "previousStayPlace",
-                            })
-                          }}
-                        />
+                        >
+                          {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
+                            <FormRadioOption
+                              key={size}
+                              id={`clothingSize-${size}`}
+                              value={size}
+                              label={size}
+                            />
+                          ))}
+                        </RadioGroup>
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
                   <Controller
-                    name="previousStayPeriodFrom"
+                    name="shoeSize"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="previousStayPeriodFrom">
-                          პერიოდის დასაწყისი (არასავალდებულო)
-                        </FieldLabel>
-                        <SafariInputDate
-                          field={field}
-                          id="previousStayPeriodFrom"
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="previousStayPeriodTo"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="previousStayPeriodTo">
-                          პერიოდის დასასრული (არასავალდებულო)
-                        </FieldLabel>
-                        <SafariInputDate
-                          field={field}
-                          id="previousStayPeriodTo"
-                          aria-invalid={fieldState.invalid}
-                        />
+                        <FieldLabel>ფეხსაცმლის ზომა (არასავალდებულო)</FieldLabel>
+                        <div className="flex flex-wrap gap-x-4 gap-y-2">
+                          {shoeSizeOptions.map((size) => {
+                            const id = `shoeSize-${size}`
+                            const selected = (field.value ?? []).includes(size)
+
+                            return (
+                              <div key={size} className="flex items-center gap-2">
+                                <Checkbox
+                                  id={id}
+                                  checked={selected}
+                                  onCheckedChange={(checked) => {
+                                    const current = field.value ?? []
+                                    if (checked) {
+                                      field.onChange([...current, size])
+                                    } else {
+                                      field.onChange(current.filter((value) => value !== size))
+                                    }
+                                  }}
+                                />
+                                <label
+                                  htmlFor={id}
+                                  className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                  {size}
+                                </label>
+                              </div>
+                            )
+                          })}
+                        </div>
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
                 </div>
-              )}
-            </FieldGroup>
-          </div>
-          <div>
-            <h2 className="mb-4 text-lg font-semibold">საგანგებო საკონტაქტო პირი</h2>
-            <FieldGroup>
-              <Controller
-                name="emergencyContactName"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="emergencyContactName">საგანგებო საკონტაქტო პირი *</FieldLabel>
-                    <Input
-                      {...field}
-                      id="emergencyContactName"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="საკონტაქტო პირის სრული სახელი"
-                      onChange={(v) => {
-                        const value = v.target.value
-                        field.onChange(v.target.value)
-                        onValidateRomanCharacters({
-                          value,
-                          fieldName: "emergencyContactName",
-                        })
-                      }}
+              </FieldGroup>
+            </div>
+            <div className="border-t pt-8">
+              <h2 className="mb-4 text-lg font-semibold">ყოფნა გერმანიაში</h2>
+              <FieldGroup>
+                <Controller
+                  name="hasBeenInGermanyBefore"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>ყოფნა გერმანიაში (არასავალდებულო)</FieldLabel>
+                      <RadioGroup
+                        value={booleanRadioGroupValue(field.value)}
+                        onValueChange={(v) => field.onChange(v === "true")}
+                        className="flex flex-row gap-4"
+                        aria-invalid={fieldState.invalid}
+                      >
+                        <FormRadioOption id="germany-stay-yes" value="true" label="დიახ" />
+                        <FormRadioOption id="germany-stay-no" value="false" label="არა" />
+                      </RadioGroup>
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                {hasBeenInGermanyBefore && (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <Controller
+                      name="previousStayPlace"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="previousStayPlace">თუ კი, სად (არასავალდებულო)</FieldLabel>
+                          <Input
+                            {...field}
+                            id="previousStayPlace"
+                            aria-invalid={fieldState.invalid}
+                            placeholder="ქალაქი/რეგიონი გერმანიაში"
+                            onChange={(v) => {
+                              const value = v.target.value
+                              field.onChange(v.target.value)
+                              onValidateRomanCharacters({
+                                value,
+                                fieldName: "previousStayPlace",
+                              })
+                            }}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
                     />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="emergencyPhone"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="emergencyPhone">საგანგებო ტელეფონის ნომერი *</FieldLabel>
-                    <Input
-                      {...field}
-                      id="emergencyPhone"
-                      type="tel"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="+49 XXX XXXXXXX"
+                    <Controller
+                      name="previousStayPeriodFrom"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="previousStayPeriodFrom">
+                            პერიოდის დასაწყისი (არასავალდებულო)
+                          </FieldLabel>
+                          <SafariInputDate
+                            field={field}
+                            id="previousStayPeriodFrom"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
                     />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
+                    <Controller
+                      name="previousStayPeriodTo"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="previousStayPeriodTo">
+                            პერიოდის დასასრული (არასავალდებულო)
+                          </FieldLabel>
+                          <SafariInputDate
+                            field={field}
+                            id="previousStayPeriodTo"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                  </div>
                 )}
-              />
-            </FieldGroup>
-          </div>
-          <div>
-            <FieldGroup>
-              <Controller
-                name="workSector"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>სასურველი სამუშაო სფერო</FieldLabel>
-                    <div className="flex flex-col gap-3">
-                      {workSectorOptions.map((option) => {
-                        const id = `work-sector-${option.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`
-                        const selected = field.value.includes(option)
+              </FieldGroup>
+            </div>
+          </section>
 
-                        return (
-                          <div key={option} className="flex items-center gap-2">
-                            <Checkbox
-                              id={id}
-                              checked={selected}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  field.onChange([...field.value, option])
-                                } else {
-                                  field.onChange(field.value.filter((value) => value !== option))
-                                }
-                              }}
-                            />
-                            <label
-                              htmlFor={id}
-                              className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                              {workSectorLabels[option]}
-                            </label>
-                          </div>
-                        )
-                      })}
+          <section hidden={currentStep !== 5} className="space-y-8">
+            <div>
+              <FieldGroup>
+                <Controller
+                  name="emergencyContactName"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="emergencyContactName">საგანგებო საკონტაქტო პირი *</FieldLabel>
+                      <Input
+                        {...field}
+                        id="emergencyContactName"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="საკონტაქტო პირის სრული სახელი"
+                        onChange={(v) => {
+                          const value = v.target.value
+                          field.onChange(v.target.value)
+                          onValidateRomanCharacters({
+                            value,
+                            fieldName: "emergencyContactName",
+                          })
+                        }}
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="emergencyPhone"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="emergencyPhone">საგანგებო ტელეფონის ნომერი *</FieldLabel>
+                      <Input
+                        {...field}
+                        id="emergencyPhone"
+                        type="tel"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="+49 XXX XXXXXXX"
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
+            <div className="border-t pt-8">
+              <Controller
+                name="acceptPrivacyPolicy"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <div className="flex items-start gap-3">
+                      <Checkbox
+                        id="acceptPrivacyPolicy"
+                        checked={field.value === true}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked === true)
+                        }}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      <label
+                        htmlFor="acceptPrivacyPolicy"
+                        className="text-sm leading-relaxed text-muted-foreground"
+                      >
+                        ვეთანხმები Lazari Ways-ის{" "}
+                        <Link
+                          href="/privacy-policy"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground underline underline-offset-4 hover:text-foreground/80"
+                        >
+                          კონფიდენციალურობის პოლიტიკას
+                        </Link>
+                        .
+                      </label>
                     </div>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
-            </FieldGroup>
-          </div>
-        </div>
-        <div className="mt-8 border-t pt-8">
-          <Controller
-            name="acceptPrivacyPolicy"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="acceptPrivacyPolicy"
-                    checked={field.value === true}
-                    onCheckedChange={(checked) => {
-                      field.onChange(checked === true)
-                    }}
-                    aria-invalid={fieldState.invalid}
-                  />
-                  <label
-                    htmlFor="acceptPrivacyPolicy"
-                    className="text-sm leading-relaxed text-muted-foreground"
-                  >
-                    ვეთანხმები Lazari Ways-ის{" "}
-                    <Link
-                      href="/privacy-policy"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-foreground underline underline-offset-4 hover:text-foreground/80"
-                    >
-                      კონფიდენციალურობის პოლიტიკას
-                    </Link>
-                    .
-                  </label>
-                </div>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
+            </div>
+          </section>
         </div>
 
-        <div className="mt-8 flex flex-col-reverse gap-4 sm:flex-row">
-          <Button type="submit" size={"lg"} disabled={isSubmitting || !isDirty || !acceptPrivacyPolicy}>
-            {isSubmitting ? "იგზავნება..." : "გაგზავნა"}
-          </Button>
+        <div className="mt-10 flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:justify-between">
+          {currentStep > 0 ? (
+            <Button type="button" variant="outline" size={"lg"} onClick={goToPreviousStep}>
+              უკან
+            </Button>
+          ) : (
+            <span aria-hidden />
+          )}
+          {isLastStep ? (
+            <Button
+              key="submit"
+              type="submit"
+              size={"lg"}
+              disabled={isSubmitting || !isDirty || !acceptPrivacyPolicy}
+            >
+              {isSubmitting ? "იგზავნება..." : "გაგზავნა"}
+            </Button>
+          ) : (
+            <Button key="next-step" type="button" size={"lg"} onClick={() => void goToNextStep()}>
+              შემდეგი
+            </Button>
+          )}
         </div>
       </form>
 
