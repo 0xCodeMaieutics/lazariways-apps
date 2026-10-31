@@ -70,6 +70,7 @@ export const POST = async (request: NextRequest) => {
 
   try {
     await sendNewApplicationEmailToAdmins({
+      applicationId,
       firstName: parsed.data.firstName.trim(),
       lastName: parsed.data.lastName.trim(),
       email: parsed.data.email.trim(),
