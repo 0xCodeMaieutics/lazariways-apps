@@ -1,0 +1,78 @@
+{
+  "id": "kellner-the-bill",
+  "level": "A1",
+  "title": "ანგარიში",
+  "description": "ანგარიში: ერთად თუ ცალ-ცალკე, ნაღდი ფულით თუ ბარათით, ხურდა და ჩაის ფული.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Rechnung",
+      "options": ["ანგარიში", "მენიუ", "ჯავშანი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "das Trinkgeld",
+      "options": ["ხურდა", "ფასი", "ჩაის ფული"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Zusammen oder getrennt?",
+      "options": ["Bar oder mit Karte?", "Zusammen oder getrennt?", "Hier oder zum Mitnehmen?"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Kann ich mit Karte zahlen?",
+      "options": ["Kann ich bar zahlen?", "Kann ich die Karte sehen?", "Kann ich mit Karte zahlen?"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "bar", "meaning": "ნაღდი ფულით" },
+        { "term": "zahlen", "meaning": "გადახდა" },
+        { "term": "das Wechselgeld", "meaning": "ხურდა" },
+        { "term": "der Preis", "meaning": "ფასი" },
+        { "term": "die Quittung", "meaning": "ქვითარი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ანგარიში",
+      "correctInputs": ["Rechnung", "die Rechnung"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ჩაის ფული",
+      "correctInputs": ["Trinkgeld", "das Trinkgeld"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Das macht 24 Euro.",
+      "correctInputs": ["Das macht 24 Euro.", "Das macht vierundzwanzig Euro."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ანგარიში, თუ შეიძლება.",
+      "correctInputs": ["Die Rechnung, bitte.", "Bitte die Rechnung."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ნაღდი ფულით თუ ბარათით?",
+      "correctInputs": ["Bar oder mit Karte?", "Bar oder Karte?", "Zahlen Sie bar oder mit Karte?"]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "kellner-restaurant",
+  "level": "A1",
+  "title": "რესტორანი",
+  "description": "რესტორნის ძირითადი სიტყვები: მაგიდა, სკამი, მენიუ, ჭიქა და დანა-ჩანგალი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Speisekarte",
+      "options": ["მენიუ", "ანგარიში", "მაგიდა"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Stuhl",
+      "options": ["მაგიდა", "სკამი", "ჭიქა"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Tisch",
+      "options": ["der Fisch", "das Tuch", "der Tisch"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Glas",
+      "options": ["das Glas", "das Gras", "der Gast"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "das Besteck", "meaning": "დანა-ჩანგალი" },
+        { "term": "die Gabel", "meaning": "ჩანგალი" },
+        { "term": "der Löffel", "meaning": "კოვზი" },
+        { "term": "der Teller", "meaning": "თეფში" },
+        { "term": "die Serviette", "meaning": "ხელსახოცი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მაგიდა",
+      "correctInputs": ["Tisch", "der Tisch"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მენიუ",
+      "correctInputs": ["Speisekarte", "die Speisekarte", "Karte", "die Karte"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Hier ist die Speisekarte.",
+      "correctInputs": ["Hier ist die Speisekarte."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მაგიდა თავისუფალია.",
+      "correctInputs": ["Der Tisch ist frei."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ჭიქა მაგიდაზეა.",
+      "correctInputs": ["Das Glas ist auf dem Tisch.", "Das Glas steht auf dem Tisch."]
+    }
+  ]
+}

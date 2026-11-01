@@ -1,0 +1,82 @@
+{
+  "id": "kellner-food-and-allergens",
+  "level": "A1",
+  "title": "საკვები და ალერგენები",
+  "description": "საკვები და ალერგენები: ვეგეტარიანული, ცხარე, ხორცის გარეშე, თხილეულის გარეშე.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "vegetarisch",
+      "options": ["ვეგეტარიანული", "ცხარე", "ცივი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "scharf",
+      "options": ["ტკბილი", "ცხარე", "მარილიანი"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "ohne Nüsse",
+      "options": ["mit Nüssen", "ohne Soße", "ohne Nüsse"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Haben Sie Allergien?",
+      "options": ["Haben Sie Allergien?", "Haben Sie Hunger?", "Haben Sie Zeit?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "das Fleisch", "meaning": "ხორცი" },
+        { "term": "der Fisch", "meaning": "თევზი" },
+        { "term": "das Ei", "meaning": "კვერცხი" },
+        { "term": "die Nüsse", "meaning": "თხილეული" },
+        { "term": "glutenfrei", "meaning": "უგლუტენო" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ალერგია",
+      "correctInputs": ["Allergie", "die Allergie"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ხორცი",
+      "correctInputs": ["Fleisch", "das Fleisch"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Das Gericht ist vegetarisch.",
+      "correctInputs": ["Das Gericht ist vegetarisch."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ეს კერძი ხორცის გარეშეა.",
+      "correctInputs": ["Das Gericht ist ohne Fleisch.", "Dieses Gericht ist ohne Fleisch."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "თხილეულზე ალერგია მაქვს.",
+      "correctInputs": [
+        "Ich habe eine Nussallergie.",
+        "Ich habe eine Allergie gegen Nüsse.",
+        "Ich bin allergisch gegen Nüsse."
+      ]
+    }
+  ]
+}
