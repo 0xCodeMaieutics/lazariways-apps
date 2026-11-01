@@ -96,6 +96,14 @@ _Avoid_: Test, quiz, lesson
 The CEFR level an Exam teaches: A1 or A2. Within a Topic, every A1 Exam comes before every A2 Exam, so complexity rises through the Topic. Shown only through order and title, not stored.
 _Avoid_: Difficulty, German Level (that is the Content Studio vacancy requirement)
 
+**Matching Exercise**:
+An Exercise where the learner joins each German term to its Georgian meaning from two shuffled columns. It counts as correct only if every pair is joined without a wrong tap.
+_Avoid_: Matching patterns, select all, pairs game
+
+**Matching Pair**:
+One German term and its Georgian meaning in a Matching Exercise. A term or meaning appears only once per Exercise.
+_Avoid_: Option, answer
+
 **Unlocks exams**:
 The exams that become available to a learner after they fully pass this exam. Each exam has at most one unlocker. Configured on the target exam as Unlocked by (e.g. "Exam B is unlocked by Exam A").
 _Avoid_: unlockExams, prerequisites, dependencies

@@ -20,8 +20,27 @@ const inputFields = {
   correctInputs: z.array(nonEmptyText).min(1),
 }
 
+const MINIMUM_MATCHING_PAIR_COUNT = 2
+const MAXIMUM_MATCHING_PAIR_COUNT = 6
+
+const matchingPairsSchema = z
+  .array(z.strictObject({ term: nonEmptyText, meaning: nonEmptyText }))
+  .min(MINIMUM_MATCHING_PAIR_COUNT)
+  .max(MAXIMUM_MATCHING_PAIR_COUNT)
+  .refine(
+    (pairs) =>
+      new Set(pairs.map((pair) => pair.term)).size === pairs.length &&
+      new Set(pairs.map((pair) => pair.meaning)).size === pairs.length,
+    { message: "Each term and each meaning may appear only once" }
+  )
+
 const exerciseSchema = z
   .discriminatedUnion("type", [
+    z.strictObject({
+      type: z.literal(ExerciseType.CHOOSE_MATCHING_PATTERNS),
+      prompt: nonEmptyText,
+      matchingPairs: matchingPairsSchema,
+    }),
     z.strictObject({ type: z.literal(ExerciseType.CHOOSE_FROM_TEXT), text: nonEmptyText, ...chooseFields }),
     z.strictObject({
       type: z.literal(ExerciseType.CHOOSE_FROM_AUDIO),

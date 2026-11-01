@@ -26,15 +26,13 @@
   {
     "type": "CHOOSE_MATCHING_PATTERNS",
     "prompt": "დანიშნე შესატყვისი წყვილები",
-    "options": [
-      "Wie heißen Sie?",
-      "Woher kommen Sie?",
-      "Wie geht es Ihnen?",
-      "რა გქვიათ?",
-      "საიდან ხართ?",
-      "როგორ ბრძანდებით?"
-    ],
-    "correctOptionIndex": [0, 3, 1, 4, 2, 5],
-    "correctInputs": []
+    "options": [],
+    "correctOptionIndex": [],
+    "correctInputs": [],
+    "matchingPairs": [
+      { "term": "Wie heißen Sie?", "meaning": "რა გქვიათ?" },
+      { "term": "Woher kommen Sie?", "meaning": "საიდან ხართ?" },
+      { "term": "Wie geht es Ihnen?", "meaning": "როგორ ბრძანდებით?" }
+    ]
   }
 ]

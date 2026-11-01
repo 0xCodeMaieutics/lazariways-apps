@@ -221,9 +221,25 @@ model Exercise {
 
   correctInputs String[]
 
+  matchingPairs ExerciseMatchingPair[]
+
   order  Int
   examId String?
   exam   Exam?   @relation(fields: [examId], references: [id], onDelete: Cascade)
 
+  @@schema("lazari_lingo")
+}
+
+model ExerciseMatchingPair {
+  id String @id @default(nanoid())
+
+  term    String // German
+  meaning String // Georgian
+  order   Int
+
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@index([exerciseId])
   @@schema("lazari_lingo")
 }

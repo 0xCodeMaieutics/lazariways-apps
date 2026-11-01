@@ -28,6 +28,22 @@ const EXERCISE_TYPES = [
   "CHOOSE_MATCHING_PATTERNS",
 ] as const
 
+const MATCHING_PAIR_SEPARATOR = "="
+const MINIMUM_MATCHING_PAIR_COUNT = 2
+
+function parseMatchingPairs(text: string) {
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+  const pairs = lines.map((line) => {
+    const [term = "", ...meaningParts] = line.split(MATCHING_PAIR_SEPARATOR)
+    return { term: term.trim(), meaning: meaningParts.join(MATCHING_PAIR_SEPARATOR).trim() }
+  })
+  const hasInvalidLine = pairs.some((pair) => pair.term === "" || pair.meaning === "")
+  return { pairs, hasInvalidLine }
+}
+
 const exerciseSchema = z
   .object({
     type: z.enum(EXERCISE_TYPES),
@@ -40,16 +56,31 @@ const exerciseSchema = z
     correctOptionIndexText: z.string().optional(),
     allowsMultipleCorrectOptions: z.boolean().optional(),
     correctInputsText: z.string().optional(),
+    matchingPairsText: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     const options = (data.optionsText ?? "")
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean)
-    const needsOptions =
-      data.type === "CHOOSE_FROM_AUDIO" ||
-      data.type === "CHOOSE_FROM_TEXT" ||
-      data.type === "CHOOSE_MATCHING_PATTERNS"
+    const needsOptions = data.type === "CHOOSE_FROM_AUDIO" || data.type === "CHOOSE_FROM_TEXT"
+
+    if (data.type === "CHOOSE_MATCHING_PATTERNS") {
+      const { pairs, hasInvalidLine } = parseMatchingPairs(data.matchingPairsText ?? "")
+      if (hasInvalidLine) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Write each pair as "German ${MATCHING_PAIR_SEPARATOR} Georgian"`,
+          path: ["matchingPairsText"],
+        })
+      } else if (pairs.length < MINIMUM_MATCHING_PAIR_COUNT) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `At least ${MINIMUM_MATCHING_PAIR_COUNT} pairs are required`,
+          path: ["matchingPairsText"],
+        })
+      }
+    }
     const correctIndices = (data.correctOptionIndexText ?? "")
       .split(",")
       .map((s) => parseInt(s.trim(), 10))
@@ -102,7 +133,7 @@ const EXERCISE_TYPE_LABELS: Record<(typeof EXERCISE_TYPES)[number], string> = {
   CHOOSE_FROM_TEXT: "Choose from text",
   INPUT_FROM_TEXT: "Input from text",
   INPUT_SENTENCE_FROM_TEXT: "Input sentence from text",
-  CHOOSE_MATCHING_PATTERNS: "Choose matching patterns",
+  CHOOSE_MATCHING_PATTERNS: "Match pairs",
 }
 
 export function ExerciseForm({
@@ -134,6 +165,7 @@ export function ExerciseForm({
       correctOptionIndexText: "",
       allowsMultipleCorrectOptions: false,
       correctInputsText: "",
+      matchingPairsText: "",
       ...defaultValues,
     },
   })
@@ -143,10 +175,8 @@ export function ExerciseForm({
   const watchedText = useWatch({ control, name: "text" })
 
   const needsAudio = watchedType === "CHOOSE_FROM_AUDIO" || watchedType === "INPUT_FROM_AUDIO"
-  const needsOptions =
-    watchedType === "CHOOSE_FROM_AUDIO" ||
-    watchedType === "CHOOSE_FROM_TEXT" ||
-    watchedType === "CHOOSE_MATCHING_PATTERNS"
+  const needsOptions = watchedType === "CHOOSE_FROM_AUDIO" || watchedType === "CHOOSE_FROM_TEXT"
+  const needsMatchingPairs = watchedType === "CHOOSE_MATCHING_PATTERNS"
   const needsCorrectInputs =
     watchedType === "INPUT_FROM_TEXT" ||
     watchedType === "INPUT_FROM_AUDIO" ||
@@ -200,6 +230,8 @@ export function ExerciseForm({
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean)
+    const matchingPairs =
+      data.type === "CHOOSE_MATCHING_PATTERNS" ? parseMatchingPairs(data.matchingPairsText ?? "").pairs : []
 
     if (isEdit && exerciseId) {
       updateMutation.mutate({
@@ -215,6 +247,7 @@ export function ExerciseForm({
         correctOptionIndex,
         allowsMultipleCorrectOptions: data.allowsMultipleCorrectOptions,
         correctInputs,
+        matchingPairs,
       })
     } else {
       createMutation.mutate({
@@ -229,6 +262,7 @@ export function ExerciseForm({
         correctOptionIndex,
         allowsMultipleCorrectOptions: data.allowsMultipleCorrectOptions,
         correctInputs,
+        matchingPairs,
       })
     }
   }
@@ -394,6 +428,23 @@ export function ExerciseForm({
                   />
                 </Field>
               </>
+            ) : null}
+            {needsMatchingPairs ? (
+              <Field>
+                <FieldLabel htmlFor="matchingPairsText">Pairs (one per line)</FieldLabel>
+                <textarea
+                  id="matchingPairsText"
+                  rows={5}
+                  className={TEXTAREA_CLASSNAME}
+                  placeholder={"Brot = პური\nMehl = ფქვილი\nOfen = ღუმელი"}
+                  disabled={isPending}
+                  {...register("matchingPairsText")}
+                />
+                <FieldDescription>
+                  German {MATCHING_PAIR_SEPARATOR} Georgian. Learners see both columns shuffled.
+                </FieldDescription>
+                <FieldError errors={[formState.errors.matchingPairsText]} />
+              </Field>
             ) : null}
             {needsCorrectInputs ? (
               <Field>

@@ -24,6 +24,7 @@ Starter Topic (always unlocked)
 - 10 Exercises, estimated 5–10 minutes.
 - Order: recognise (`CHOOSE_FROM_TEXT`, `CHOOSE_FROM_AUDIO`) → match (`CHOOSE_MATCHING_PATTERNS`) → produce (`INPUT_FROM_TEXT`, `INPUT_FROM_AUDIO`, `INPUT_SENTENCE_FROM_TEXT`).
 - Prompts in Georgian, answers in German.
+- Matching Exercises (`CHOOSE_MATCHING_PATTERNS`) have 2–6 Matching Pairs (`matchingPairs: [{ "term": "Brot", "meaning": "პური" }]`), usually 4–5.
 - `minimumCorrectAnswerCount`: 8, `minimumPassedCount`: 2, `waitUntilPassAllowedInSeconds`: 14400.
 - Audio: normal speed via Narakeet (voice `monika`). `slowAudioUrl` left empty.
 

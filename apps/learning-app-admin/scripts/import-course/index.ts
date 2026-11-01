@@ -31,6 +31,12 @@ function toExerciseData(exercise: ExerciseFile, order: number, audioKeyByText: M
     allowsMultipleCorrectOptions: false,
     correctInputs: "correctInputs" in exercise ? exercise.correctInputs : [],
     order,
+    matchingPairs: {
+      create:
+        "matchingPairs" in exercise
+          ? exercise.matchingPairs.map((pair, pairOrder) => ({ ...pair, order: pairOrder }))
+          : [],
+    },
   }
 }
 
@@ -75,12 +81,11 @@ async function importExams(
     await tx.exam.upsert({ where: { id: exam.id }, create: { id: exam.id, ...data }, update: data })
 
     await tx.exercise.deleteMany({ where: { examId: exam.id } })
-    await tx.exercise.createMany({
-      data: exam.exercises.map((exercise, exerciseIndex) => ({
-        examId: exam.id,
-        ...toExerciseData(exercise, exerciseIndex, audioKeyByText),
-      })),
-    })
+    for (const [exerciseIndex, exercise] of exam.exercises.entries()) {
+      await tx.exercise.create({
+        data: { examId: exam.id, ...toExerciseData(exercise, exerciseIndex, audioKeyByText) },
+      })
+    }
 
     if (unlockedByExamId !== null) {
       await backfillUnlockedExamsForUnlocker(tx, unlockedByExamId, [exam.id])
