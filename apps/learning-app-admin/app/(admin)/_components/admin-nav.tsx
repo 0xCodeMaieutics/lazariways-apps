@@ -9,8 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@lazariways/ui/components/breadcrumb"
 import { Separator } from "@lazariways/ui/components/separator"
-import { cn } from "@lazariways/ui/lib/utils"
-import { LayoutDashboard } from "lucide-react"
+import { SidebarTrigger } from "@lazariways/ui/components/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import React from "react"
@@ -24,6 +23,10 @@ function buildBreadcrumbs(pathname: string): { href: string; label: string; isLa
 
   if (segments.length === 0) {
     return [{ href: "/topics", label: "Topics", isLast: true }]
+  }
+
+  if (segments[0] === "users") {
+    return [{ href: "/users", label: "Users", isLast: true }]
   }
 
   const items: { href: string; label: string; isLast: boolean }[] = []
@@ -64,48 +67,27 @@ export function AdminNav() {
   const breadcrumbs = buildBreadcrumbs(pathname)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="flex h-14 items-center gap-4 px-6">
-        <Link
-          href="/topics"
-          className="flex items-center gap-2 font-semibold text-foreground hover:text-foreground/80"
-        >
-          <LayoutDashboard className="size-5" />
-          <span>Admin</span>
-        </Link>
-        <Separator orientation="vertical" className="h-6" />
-        <nav className="flex items-center gap-4">
-          <Link
-            href="/topics"
-            className={cn(
-              "text-sm font-medium transition-colors hover:text-primary",
-              pathname.startsWith("/topics") ? "text-primary" : "text-muted-foreground"
-            )}
-          >
-            Programs
-          </Link>
-        </nav>
-      </div>
-      <div className="border-t px-6 py-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            {breadcrumbs.map((item, i) => (
-              <React.Fragment key={item.href + i}>
-                {i > 0 && <BreadcrumbSeparator />}
-                <BreadcrumbItem>
-                  {item.isLast ? (
-                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                  ) : (
-                    <BreadcrumbLink asChild>
-                      <Link href={item.href}>{item.label}</Link>
-                    </BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-              </React.Fragment>
-            ))}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
+      <SidebarTrigger className="-ml-1" aria-label="Toggle sidebar" />
+      <Separator orientation="vertical" className="data-vertical:h-5 data-vertical:self-center" />
+      <Breadcrumb>
+        <BreadcrumbList>
+          {breadcrumbs.map((item, i) => (
+            <React.Fragment key={item.href + i}>
+              {i > 0 && <BreadcrumbSeparator />}
+              <BreadcrumbItem>
+                {item.isLast ? (
+                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link href={item.href}>{item.label}</Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            </React.Fragment>
+          ))}
+        </BreadcrumbList>
+      </Breadcrumb>
     </header>
   )
 }

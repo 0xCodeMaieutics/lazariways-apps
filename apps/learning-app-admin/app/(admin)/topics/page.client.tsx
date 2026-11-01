@@ -149,9 +149,14 @@ export const TopicsList = ({ topics: topicsOuter }: { topics: TopicListItem[] })
   )
 
   return (
-    <div className="px-6 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <div></div>
+    <div className="px-4 py-8 md:px-6">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Topics</h1>
+          <p className="text-sm text-muted-foreground">
+            Drag rows to reorder. Click a topic to manage its exams.
+          </p>
+        </div>
         <div className="flex gap-2">
           <Button asChild>
             <Link href={"/topics/new"} className="flex items-center gap-2">
