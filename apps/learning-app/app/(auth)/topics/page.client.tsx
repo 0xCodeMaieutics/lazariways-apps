@@ -63,13 +63,19 @@ export function TopicsHub({
               <Link
                 key={topic.id}
                 href={`/topics/${topic.id}/exams`}
-                className={cn("block", isLocked && "pointer-events-none opacity-40")}
+                aria-disabled={isLocked}
+                tabIndex={isLocked ? -1 : undefined}
+                className={cn(
+                  "block rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                  isLocked && "pointer-events-none"
+                )}
               >
                 <Card
                   className={cn(
-                    "group relative gap-0 overflow-hidden py-0 transition-all",
+                    "group relative gap-0 overflow-hidden py-0 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md",
                     isAllExamsPassed &&
-                      "border-emerald-200 bg-linear-to-r from-emerald-50 via-green-50 to-teal-50 dark:border-emerald-800/40 dark:from-emerald-950/40 dark:via-green-950/30 dark:to-teal-950/40"
+                      "border-emerald-200 bg-linear-to-r from-emerald-50 via-green-50 to-teal-50 hover:border-emerald-300",
+                    isLocked && "bg-muted/60 shadow-none"
                   )}
                 >
                   <CardContent className="relative flex flex-col gap-3 px-4 py-4 pl-5">
@@ -80,16 +86,17 @@ export function TopicsHub({
                     ) : null}
                     <div
                       className={cn(
-                        "flex size-10 shrink-0 items-center justify-center rounded-full bg-primary",
-                        isAllExamsPassed && "bg-emerald-100 dark:bg-emerald-900/50"
+                        "flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground",
+                        isAllExamsPassed && "bg-emerald-100 text-emerald-700",
+                        isLocked && "bg-muted-foreground/15 text-muted-foreground"
                       )}
                     >
-                      <TopicIcon
-                        className={cn("size-4", isAllExamsPassed && "text-emerald-600 dark:text-emerald-400")}
-                      />
+                      <TopicIcon className="size-4" />
                     </div>
                     <div className="min-w-0 pr-6">
-                      <span className="text-sm leading-tight font-semibold">{topic.name}</span>
+                      <span className={cn("text-sm leading-tight font-semibold", isLocked && "text-muted-foreground")}>
+                        {topic.name}
+                      </span>
                       <p className="text-xxs mt-1 text-muted-foreground">
                         {topic.completedExams}/{topic.totalExams}
                       </p>

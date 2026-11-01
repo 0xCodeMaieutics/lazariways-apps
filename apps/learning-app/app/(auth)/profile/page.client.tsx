@@ -24,8 +24,8 @@ const ProfileAvatar = ({
   const displaySrc = previewUrl ?? image
 
   return (
-    <label htmlFor="picture" className="flex justify-center">
-      <div className="relative flex size-24 items-center justify-center rounded-full border-2 border-primary bg-muted">
+    <label htmlFor="picture" className="flex cursor-pointer justify-center">
+      <div className="relative flex size-24 items-center justify-center rounded-full border-2 border-primary bg-accent shadow-sm transition-shadow hover:shadow-md">
         {displaySrc !== null ? (
           previewUrl !== null ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -40,9 +40,9 @@ const ProfileAvatar = ({
             />
           )
         ) : (
-          <User className="size-12 text-primary-foreground" />
+          <User className="size-12 text-primary" />
         )}
-        <div className="absolute right-1 bottom-1 flex size-6 items-center justify-center rounded-full bg-primary">
+        <div className="absolute right-1 bottom-1 flex size-6 items-center justify-center rounded-full bg-primary ring-2 ring-background">
           <Plus className="size-4 stroke-primary-foreground"></Plus>
         </div>
       </div>
@@ -139,7 +139,7 @@ const StatCard = ({
   iconColor?: string
   iconBg?: string
 }) => (
-  <Card className="gap-0 py-4">
+  <Card className="gap-0 py-4 shadow-xs">
     <CardContent className="flex items-center gap-3 px-4">
       <div
         className={cn("flex size-9 shrink-0 items-center justify-center rounded-full", iconBg ?? "bg-muted")}
@@ -177,15 +177,15 @@ function ProfileStats({
           icon={Flame}
           value={profile.streakDays}
           label="სერიის დღეები"
-          iconColor="text-orange-500 dark:text-orange-400"
-          iconBg="bg-orange-100 dark:bg-orange-900/30"
+          iconColor="text-orange-600"
+          iconBg="bg-orange-100"
         />
         <StatCard
           icon={Zap}
           value={profile.totalXP}
           label="XP სულ"
-          iconColor="text-yellow-500 dark:text-yellow-400"
-          iconBg="bg-yellow-100 dark:bg-yellow-900/30"
+          iconColor="text-yellow-700"
+          iconBg="bg-yellow-100"
         />
         <StatCard
           icon={
@@ -205,16 +205,16 @@ function ProfileStats({
           label="საფეხური"
           iconColor={
             {
-              gold: "text-yellow-600 dark:text-yellow-400",
-              silver: "text-slate-500 dark:text-slate-300",
-              bronze: "text-amber-700 dark:text-amber-500",
+              gold: "text-yellow-700",
+              silver: "text-slate-600",
+              bronze: "text-amber-700",
             }[profile.classification]
           }
           iconBg={
             {
-              gold: "bg-yellow-100 dark:bg-yellow-900/30",
-              silver: "bg-slate-100 dark:bg-slate-800/50",
-              bronze: "bg-amber-100 dark:bg-amber-900/30",
+              gold: "bg-yellow-100",
+              silver: "bg-slate-100",
+              bronze: "bg-amber-100",
             }[profile.classification]
           }
         />
@@ -222,8 +222,8 @@ function ProfileStats({
           icon={Target}
           value={profile.totalExamsPassed}
           label="ჩაბარებული გამოცდები"
-          iconColor="text-emerald-500 dark:text-emerald-400"
-          iconBg="bg-emerald-100 dark:bg-emerald-900/30"
+          iconColor="text-emerald-600"
+          iconBg="bg-emerald-100"
         />
       </div>
     </div>

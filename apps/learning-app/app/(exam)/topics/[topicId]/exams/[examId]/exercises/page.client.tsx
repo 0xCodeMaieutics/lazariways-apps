@@ -34,7 +34,7 @@ function ExamTimer({ hasPassed, countdownTarget }: { hasPassed: boolean; countdo
   const { isComplete } = useCountdown(countdownTarget)
 
   if (!hasPassed && isComplete && countdownTarget !== null) {
-    return <span className="text-xxs text-emerald-400">ჩაგეთვლება</span>
+    return <span className="text-xxs font-semibold text-emerald-700">ჩაგეთვლება</span>
   }
 
   return (
@@ -334,9 +334,10 @@ function ExamTraining({
               />
               <button
                 onClick={playAudio}
+                aria-label="აუდიოს მოსმენა"
                 disabled={isAudioPlaying || currentExercise.audioUrl === undefined}
                 className={cn(
-                  "group mx-auto flex size-24 items-center justify-center rounded-2xl bg-gray-600 transition-transform",
+                  "group mx-auto flex size-24 items-center justify-center rounded-2xl bg-[color-mix(in_oklch,var(--primary),black_25%)] transition-transform focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
                   isAudioPlaying && "opacity-70"
                 )}
               >
@@ -367,17 +368,18 @@ function ExamTraining({
                   disabled={isOptionRevealed}
                   key={index}
                   className={cn(
-                    "h-12 w-full rounded-2xl border-2 bg-card py-2 font-medium",
+                    "h-12 w-full rounded-2xl border-2 border-b-4 bg-card py-2 font-medium transition-colors focus-visible:border-primary focus-visible:outline-none",
                     isOptionRevealed
                       ? {
-                          "border-green-300 bg-green-300/20 text-green-300":
+                          "border-emerald-500 bg-emerald-50 text-emerald-700":
                             selectedOptionIndex === index && isOptionCorrect,
-                          "border-red-300 bg-red-300/20 text-red-300":
+                          "border-red-500 bg-red-50 text-red-700":
                             selectedOptionIndex === index && !isOptionCorrect,
                           "opacity-70": selectedOptionIndex !== index && selectedOptionIndex !== null,
                         }
                       : {
-                          "border-primary bg-primary/10": selectedOptionIndex === index,
+                          "border-primary bg-primary/10 text-primary": selectedOptionIndex === index,
+                          "hover:border-primary/40 hover:bg-accent": selectedOptionIndex !== index,
                         }
                   )}
                 >
@@ -555,11 +557,15 @@ function MatchingExercise({
     isSelected: boolean
     isMismatched: boolean
   }) =>
-    cn("min-h-12 w-full rounded-2xl border-2 bg-card px-2 py-2 text-sm font-medium break-words", {
-      "border-primary bg-primary/10": isSelected,
-      "border-red-300 bg-red-300/20 text-red-300": isMismatched,
-      "border-green-300 bg-green-300/20 text-green-300 opacity-70": matchedPairIds.includes(pairId),
-    })
+    cn(
+      "min-h-12 w-full rounded-2xl border-2 border-b-4 bg-card px-2 py-2 text-sm font-medium break-words transition-colors focus-visible:border-primary focus-visible:outline-none",
+      {
+        "hover:border-primary/40 hover:bg-accent": !isSelected && !isMismatched && !matchedPairIds.includes(pairId),
+        "border-primary bg-primary/10 text-primary": isSelected,
+        "border-red-500 bg-red-50 text-red-700": isMismatched,
+        "border-emerald-500 bg-emerald-50 text-emerald-700 opacity-70": matchedPairIds.includes(pairId),
+      }
+    )
 
   return (
     <div className="flex h-dvh flex-col">
@@ -629,12 +635,12 @@ function ExerciseFeedback({
 }>) {
   return (
     <div
-      className={cn("space-y-8 bg-background p-4", {
-        "bg-green-200": isAnswered && isCorrect,
-        "bg-red-200": isAnswered && isCorrect === false,
+      className={cn("space-y-8 border-t border-border bg-background p-4 transition-colors", {
+        "border-emerald-200 bg-emerald-100 text-emerald-800": isAnswered && isCorrect,
+        "border-red-200 bg-red-100 text-red-800": isAnswered && isCorrect === false,
       })}
     >
-      <p className="text-lg font-bold text-foreground dark:text-black">
+      <p className="min-h-7 text-lg font-bold" aria-live="polite">
         {isAnswered && isCorrect && "სწორია"}
         {isAnswered && !isCorrect && "არასწორია"}
       </p>
@@ -657,7 +663,7 @@ function ContinueButton({
 >) {
   return (
     <button
-      className={cn("group h-12 w-full rounded-2xl bg-gray-600", {
+      className={cn("group h-12 w-full rounded-2xl bg-[color-mix(in_oklch,var(--primary),black_25%)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none", {
         "opacity-50": props.disabled,
       })}
       {...props}

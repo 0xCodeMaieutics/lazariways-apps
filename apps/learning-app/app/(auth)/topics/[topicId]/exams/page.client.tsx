@@ -25,14 +25,14 @@ function ExamCardTimer({ hasPassed, countdownTarget }: { hasPassed: boolean; cou
   const { hours, minutes, seconds, isComplete } = useCountdown(countdownTarget)
 
   if (!hasPassed && isComplete && countdownTarget !== null) {
-    return <span className="text-xxs text-emerald-400">ჩაბარება შესაძლებელია</span>
+    return <span className="text-xxs font-medium text-emerald-700">ჩაბარება შესაძლებელია</span>
   }
 
   return (
     !hasPassed &&
     !isComplete &&
     countdownTarget !== null && (
-      <span className="text-xxs flex items-center gap-0.5 text-amber-600 tabular-nums dark:text-amber-400">
+      <span className="text-xxs flex items-center gap-0.5 font-medium text-amber-700 tabular-nums">
         <Clock className="size-3" />
         {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
       </span>
@@ -67,30 +67,38 @@ function ExamCard({ exam }: { exam: ExamListItem }) {
   return (
     <Link
       href={`/topics/${topicId}/exams/${exam.id}/exercises`}
-      className={cn(isCardUnlocked === false && "pointer-events-none")}
+      aria-disabled={isCardUnlocked === false}
+      tabIndex={isCardUnlocked === false ? -1 : undefined}
+      className={cn(
+        "block rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        isCardUnlocked === false && "pointer-events-none"
+      )}
     >
       <Card
-        className={cn("group relative gap-0 overflow-hidden py-0 transition-all", {
-          "border-emerald-200 bg-linear-to-r from-emerald-50 via-green-50 to-teal-50 dark:border-emerald-800/40 dark:from-emerald-950/40 dark:via-green-950/30 dark:to-teal-950/40":
-            hasExamPassed,
-          "opacity-50": isCardUnlocked === false,
-        })}
+        className={cn(
+          "group relative gap-0 overflow-hidden py-0 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md",
+          {
+            "border-emerald-200 bg-linear-to-r from-emerald-50 via-green-50 to-teal-50 hover:border-emerald-300":
+              hasExamPassed,
+            "bg-muted/60 text-muted-foreground shadow-none": isCardUnlocked === false,
+          }
+        )}
       >
         <CardContent className="space-y-3 px-4 py-4 pl-5">
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 {hasExamPassed && isCardUnlocked ? (
-                  <CircleCheck className="size-4 text-emerald-400" />
+                  <CircleCheck className="size-4 text-emerald-600" />
                 ) : !hasExamPassed && isCardUnlocked ? (
-                  <Circle className="size-4" />
+                  <Circle className="size-4 text-primary" />
                 ) : (
-                  <Lock className="size-4" />
+                  <Lock className="size-4 text-muted-foreground" />
                 )}
 
                 <span
                   className={cn("transition-color text-sm leading-tight font-semibold", {
-                    "text-emerald-200": hasExamPassed,
+                    "text-emerald-800": hasExamPassed,
                   })}
                 >
                   {exam.title}
@@ -165,11 +173,11 @@ export function Exams({ exams, topic }: { exams: ExamListItem[]; topic: Pick<Top
         {isAllExamsPassed && (
           <Banner className="flex flex-col items-start gap-y-2">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/50">
-                <Flame className="size-5 text-violet-600 dark:text-violet-400" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-100">
+                <Flame className="size-5 text-violet-600" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-violet-900 dark:text-violet-100">
+                <p className="text-sm font-semibold text-violet-900">
                   გილოცავთ,{" "}
                   {
                     {
@@ -187,7 +195,7 @@ export function Exams({ exams, topic }: { exams: ExamListItem[]; topic: Pick<Top
             <Button
               size="sm"
               variant="link"
-              className="shrink-0 border-violet-300 text-violet-700 dark:text-violet-300"
+              className="shrink-0 border-violet-300 text-violet-700"
               asChild
             >
               <Link href="/profile">
