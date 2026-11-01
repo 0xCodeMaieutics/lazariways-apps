@@ -1,0 +1,78 @@
+{
+  "id": "koch-hygiene-allergens-safety",
+  "level": "A1",
+  "title": "ჰიგიენა, ალერგენები და უსაფრთხოება",
+  "description": "ჰიგიენა და უსაფრთხოება სამზარეულოში: ხელების დაბანა, ალერგენები და ბასრი დანა.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Vorsicht, scharf!",
+      "options": ["ფრთხილად, ცხელია!", "ფრთხილად, ბასრია!", "ფრთხილად, სველია!"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Allergie",
+      "options": ["ალერგია", "ავადმყოფობა", "წამალი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "ohne Nüsse",
+      "options": ["mit Nüssen", "ohne Milch", "ohne Nüsse"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "die Handschuhe",
+      "options": ["die Handschuhe", "die Hände", "das Handtuch"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Nüsse", "meaning": "თხილეული" },
+        { "term": "die Milch", "meaning": "რძე" },
+        { "term": "das Ei", "meaning": "კვერცხი" },
+        { "term": "sauber", "meaning": "სუფთა" },
+        { "term": "scharf", "meaning": "ბასრი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "სუფთა",
+      "correctInputs": ["sauber"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "კვერცხი",
+      "correctInputs": ["Ei", "das Ei"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Der Gast hat eine Allergie.",
+      "correctInputs": ["Der Gast hat eine Allergie."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ფრთხილად, დანა ბასრია!",
+      "correctInputs": ["Vorsicht, das Messer ist scharf!", "Achtung, das Messer ist scharf!"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ეს კერძი თხილეულის გარეშეა.",
+      "correctInputs": ["Das Gericht ist ohne Nüsse.", "Dieses Gericht ist ohne Nüsse."]
+    }
+  ]
+}

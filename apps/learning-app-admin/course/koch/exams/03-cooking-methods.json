@@ -1,0 +1,78 @@
+{
+  "id": "koch-cooking-methods",
+  "level": "A1",
+  "title": "მომზადების ხერხები",
+  "description": "როგორ ვამზადებთ საჭმელს: შეწვა, მოხარშვა, დაჭრა და გაფცქვნა.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "braten",
+      "options": ["მოხარშვა", "შეწვა", "დაჭრა"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "schälen",
+      "options": ["გაფცქვნა", "გარეცხვა", "მორევა"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "kochen",
+      "options": ["kommen", "backen", "kochen"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "schneiden",
+      "options": ["schneiden", "schreiben", "schneien"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "braten", "meaning": "შეწვა" },
+        { "term": "kochen", "meaning": "მოხარშვა" },
+        { "term": "schneiden", "meaning": "დაჭრა" },
+        { "term": "rühren", "meaning": "მორევა" },
+        { "term": "waschen", "meaning": "გარეცხვა" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "გაფცქვნა",
+      "correctInputs": ["schälen"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "შეწვა",
+      "correctInputs": ["braten", "anbraten"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Ich schäle die Kartoffeln.",
+      "correctInputs": ["Ich schäle die Kartoffeln."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მე ვჭრი ხახვს.",
+      "correctInputs": ["Ich schneide die Zwiebel.", "Ich schneide die Zwiebeln.", "Ich schneide Zwiebeln."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მე ვწვავ ხორცს.",
+      "correctInputs": ["Ich brate das Fleisch.", "Ich brate Fleisch."]
+    }
+  ]
+}

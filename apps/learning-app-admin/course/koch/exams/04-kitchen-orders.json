@@ -1,0 +1,78 @@
+{
+  "id": "koch-kitchen-orders",
+  "level": "A1",
+  "title": "შეკვეთები სამზარეულოში",
+  "description": "შეკვეთები სამზარეულოში: „ორი შნიცელი!“, „დიახ, შეფ!“, ახლავე და მზადაა.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Ja, Chef!",
+      "options": ["არა, შეფ!", "დიახ, შეფ!", "მადლობა, შეფ!"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "sofort",
+      "options": ["ახლავე", "მოგვიანებით", "ხვალ"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Zwei Schnitzel!",
+      "options": ["Zwei Suppen!", "Drei Schnitzel!", "Zwei Schnitzel!"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Ist das fertig?",
+      "options": ["Ist das fertig?", "Ist das frisch?", "Ist das heiß?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Bestellung", "meaning": "შეკვეთა" },
+        { "term": "fertig", "meaning": "მზადაა" },
+        { "term": "sofort", "meaning": "ახლავე" },
+        { "term": "noch zwei Minuten", "meaning": "კიდევ ორი წუთი" },
+        { "term": "die Suppe", "meaning": "წვნიანი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მზადაა",
+      "correctInputs": ["fertig"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "დიახ, შეფ!",
+      "correctInputs": ["Ja, Chef!"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Das Schnitzel ist fertig.",
+      "correctInputs": ["Das Schnitzel ist fertig."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ორი წვნიანი, ახლავე!",
+      "correctInputs": ["Zwei Suppen, sofort!"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "შეკვეთა მზადაა.",
+      "correctInputs": ["Die Bestellung ist fertig."]
+    }
+  ]
+}
