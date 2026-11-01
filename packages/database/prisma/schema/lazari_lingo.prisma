@@ -148,6 +148,7 @@ model Exam {
   unlockedExam Exam?   @relation("UnlocksExams", fields: [unlockedId], references: [id])
   unlocksExams Exam[]  @relation("UnlocksExams")
 
+  @@index([topicId, enabled])
   @@schema("lazari_lingo")
 }
 
@@ -240,6 +241,7 @@ model Exercise {
   examId String?
   exam   Exam?   @relation(fields: [examId], references: [id], onDelete: Cascade)
 
+  @@index([examId])
   @@schema("lazari_lingo")
 }
 
