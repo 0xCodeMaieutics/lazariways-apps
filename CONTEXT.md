@@ -80,9 +80,21 @@ _Avoid_: Link, URL box, CTA
 
 Language-learning app where learners complete **Exams** within **Topics**.
 
+**Starter Topic**:
+The Topic of Exams every learner shares, regardless of job. It is the first Topic and unlocks every Job Topic once the learner has fully passed all of its A1 Exams; its A2 Exams are not required.
+_Avoid_: Basics, intro, general topic
+
+**Job Topic**:
+A Topic of Exams for one job, such as Bäcker, Koch, Kellner or Masseur(in), unlocked by the Starter Topic. A learner who completes the Starter Topic gets every Job Topic, not only the one for their own job. Named after the job, not the workplace: Koch and Kellner are separate Job Topics even though both work in hotels.
+_Avoid_: Profession, workplace topic, Bäckerei, Hotel
+
 **Exam**:
 A practice unit in a Topic, made up of Exercises. Learners must reach a pass threshold (minimum correct answers × minimum pass count) before progression unlocks.
 _Avoid_: Test, quiz, lesson
+
+**Exam Level**:
+The CEFR level an Exam teaches: A1 or A2. Within a Topic, every A1 Exam comes before every A2 Exam, so complexity rises through the Topic. Shown only through order and title, not stored.
+_Avoid_: Difficulty, German Level (that is the Content Studio vacancy requirement)
 
 **Unlocks exams**:
 The exams that become available to a learner after they fully pass this exam. Each exam has at most one unlocker. Configured on the target exam as Unlocked by (e.g. "Exam B is unlocked by Exam A").
