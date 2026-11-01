@@ -1,0 +1,90 @@
+{
+  "id": "kellner-taking-orders",
+  "level": "A1",
+  "title": "შეკვეთის მიღება",
+  "description": "შეკვეთის მიღება: „რას ინებებთ?“, „კიდევ რამე?“, წასახემსებელი, მთავარი კერძი და დესერტი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Was möchten Sie?",
+      "options": ["რას ინებებთ?", "სად ცხოვრობთ?", "როგორ ხართ?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Sonst noch etwas?",
+      "options": ["ანგარიში, თუ შეიძლება.", "კიდევ რამე?", "გემრიელი იყო?"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Haben Sie schon gewählt?",
+      "options": ["Haben Sie schon bezahlt?", "Haben Sie reserviert?", "Haben Sie schon gewählt?"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Ich nehme die Suppe.",
+      "options": ["Ich nehme die Suppe.", "Ich nehme die Soße.", "Ich mache die Suppe."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Vorspeise", "meaning": "წასახემსებელი" },
+        { "term": "die Hauptspeise", "meaning": "მთავარი კერძი" },
+        { "term": "die Nachspeise", "meaning": "დესერტი" },
+        { "term": "die Suppe", "meaning": "სუპი" },
+        { "term": "der Salat", "meaning": "სალათი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "სუპი",
+      "correctInputs": ["Suppe", "die Suppe"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "დესერტი",
+      "correctInputs": [
+        "Nachspeise",
+        "die Nachspeise",
+        "Nachtisch",
+        "der Nachtisch",
+        "Dessert",
+        "das Dessert"
+      ]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Kommt sofort.",
+      "correctInputs": ["Kommt sofort."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მე სალათს ავიღებ.",
+      "correctInputs": ["Ich nehme den Salat.", "Ich nehme einen Salat."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "რას ინებებთ მთავარ კერძად?",
+      "correctInputs": [
+        "Was möchten Sie als Hauptspeise?",
+        "Was nehmen Sie als Hauptspeise?",
+        "Was möchten Sie als Hauptgericht?",
+        "Was nehmen Sie als Hauptgericht?"
+      ]
+    }
+  ]
+}

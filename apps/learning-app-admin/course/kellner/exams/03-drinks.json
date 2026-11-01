@@ -1,0 +1,83 @@
+{
+  "id": "kellner-drinks",
+  "level": "A1",
+  "title": "სასმელები",
+  "description": "სასმელები: წყალი, წვენი, ყავა, ჩაი, ლუდი, ღვინო და ბოთლი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Saft",
+      "options": ["წვენი", "წყალი", "ღვინო"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Wein",
+      "options": ["ლუდი", "ჩაი", "ღვინო"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Bier",
+      "options": ["das Tier", "das Bier", "der Brief"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Ein Glas Wasser, bitte.",
+      "options": ["Eine Flasche Wasser, bitte.", "Ein Glas Wein, bitte.", "Ein Glas Wasser, bitte."],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "der Kaffee", "meaning": "ყავა" },
+        { "term": "der Tee", "meaning": "ჩაი" },
+        { "term": "die Milch", "meaning": "რძე" },
+        { "term": "die Flasche", "meaning": "ბოთლი" },
+        { "term": "kalt", "meaning": "ცივი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "წყალი",
+      "correctInputs": ["Wasser", "das Wasser"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ყავა",
+      "correctInputs": ["Kaffee", "der Kaffee"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Möchten Sie etwas trinken?",
+      "correctInputs": ["Möchten Sie etwas trinken?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "წყალი გაზიანი თუ უგაზო?",
+      "correctInputs": [
+        "Wasser mit oder ohne Kohlensäure?",
+        "Mit oder ohne Kohlensäure?",
+        "Wasser still oder mit Kohlensäure?",
+        "Still oder mit Kohlensäure?"
+      ]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ერთი ბოთლი ღვინო, თუ შეიძლება.",
+      "correctInputs": ["Eine Flasche Wein, bitte.", "Bitte eine Flasche Wein."]
+    }
+  ]
+}
