@@ -26,6 +26,7 @@ import { ProgressBar } from "@/components/ui/progress-bar"
 import { useTRPC } from "@/lib/trpc/react"
 import type { AppRouter } from "@/lib/trpc/router"
 import { cn } from "@/lib/utils"
+import { isAnswerAccepted } from "@/utils/is-answer-accepted"
 import { useExamLogic } from "@/utils/use-exam-logic"
 import { useCountdown } from "@/utils/useCountdown"
 
@@ -446,7 +447,7 @@ function ExamTraining({
           isCorrect={isInputCorrect ?? false}
           onContinue={() => {
             if (isInputCorrect === null) {
-              const isAnswerCorrect = currentExercise.correctInputs.includes(input)
+              const isAnswerCorrect = isAnswerAccepted(input, currentExercise.correctInputs)
               setIsInputCorrect(isAnswerCorrect)
               if (isAnswerCorrect) increaseCorrectCount()
             } else {
