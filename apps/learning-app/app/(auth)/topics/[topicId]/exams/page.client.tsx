@@ -192,12 +192,7 @@ export function Exams({ exams, topic }: { exams: ExamListItem[]; topic: Pick<Top
                 </p>
               </div>
             </div>
-            <Button
-              size="sm"
-              variant="link"
-              className="shrink-0 border-violet-300 text-violet-700"
-              asChild
-            >
+            <Button size="sm" variant="link" className="shrink-0 border-violet-300 text-violet-700" asChild>
               <Link href="/profile">
                 <ChevronLeft className="animate-bounce-left size-4" />
                 გადადით პროფილზე

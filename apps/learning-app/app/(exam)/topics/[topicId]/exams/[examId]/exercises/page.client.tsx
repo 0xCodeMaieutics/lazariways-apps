@@ -560,7 +560,8 @@ function MatchingExercise({
     cn(
       "min-h-12 w-full rounded-2xl border-2 border-b-4 bg-card px-2 py-2 text-sm font-medium break-words transition-colors focus-visible:border-primary focus-visible:outline-none",
       {
-        "hover:border-primary/40 hover:bg-accent": !isSelected && !isMismatched && !matchedPairIds.includes(pairId),
+        "hover:border-primary/40 hover:bg-accent":
+          !isSelected && !isMismatched && !matchedPairIds.includes(pairId),
         "border-primary bg-primary/10 text-primary": isSelected,
         "border-red-500 bg-red-50 text-red-700": isMismatched,
         "border-emerald-500 bg-emerald-50 text-emerald-700 opacity-70": matchedPairIds.includes(pairId),
@@ -663,9 +664,12 @@ function ContinueButton({
 >) {
   return (
     <button
-      className={cn("group h-12 w-full rounded-2xl bg-[color-mix(in_oklch,var(--primary),black_25%)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none", {
-        "opacity-50": props.disabled,
-      })}
+      className={cn(
+        "group h-12 w-full rounded-2xl bg-[color-mix(in_oklch,var(--primary),black_25%)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
+        {
+          "opacity-50": props.disabled,
+        }
+      )}
       {...props}
     >
       <span
