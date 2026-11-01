@@ -1,10 +1,14 @@
-import { headers } from "next/headers"
+import { prisma } from "@lazariways/database/client"
+import { SidebarInset, SidebarProvider } from "@lazariways/ui/components/sidebar"
+import { TooltipProvider } from "@lazariways/ui/components/tooltip"
+import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
 import React from "react"
 
 import { auth } from "@/lib/auth.server"
 
 import { AdminNav } from "./_components/admin-nav"
+import { AdminSidebar } from "./_components/admin-sidebar"
 
 export default async function AdminLayout({ children }: React.PropsWithChildren) {
   const session = await auth.api.getSession({
@@ -19,10 +23,23 @@ export default async function AdminLayout({ children }: React.PropsWithChildren)
     redirect("/")
   }
 
+  const [cookieStore, topics] = await Promise.all([
+    cookies(),
+    prisma.topic.findMany({
+      orderBy: { order: "asc" },
+      select: { id: true, name: true, enabled: true },
+    }),
+  ])
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <AdminNav />
-      <main className="flex-1">{children}</main>
-    </div>
+    <TooltipProvider>
+      <SidebarProvider defaultOpen={cookieStore.get("sidebar_state")?.value !== "false"}>
+        <AdminSidebar topics={topics} user={{ name: session.user.name, email: session.user.email }} />
+        <SidebarInset>
+          <AdminNav />
+          <div className="flex-1">{children}</div>
+        </SidebarInset>
+      </SidebarProvider>
+    </TooltipProvider>
   )
 }

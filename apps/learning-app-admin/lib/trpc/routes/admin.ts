@@ -5,6 +5,7 @@ import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 
 import { env } from "@/env"
+import { auth } from "@/lib/auth.server"
 import { backfillUnlockedTopicsForUnlocker } from "@/lib/backfill-unlocked-topics"
 import { generateAudio } from "@/lib/narakeet"
 import { syncExamUnlocks } from "@/lib/sync-exam-unlocks"
@@ -498,6 +499,28 @@ export const adminRouter = router({
 
           return tx.topic.findUniqueOrThrow({ where: { id } })
         })
+      }),
+  },
+  users: {
+    sendPasswordReset: adminProcedure
+      .input(z.object({ id: z.string().min(1) }))
+      .mutation(async ({ input }) => {
+        const user = await prisma.user.findUnique({
+          where: { id: input.id },
+          select: { email: true, disabledAt: true },
+        })
+
+        if (!user) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "User not found" })
+        }
+
+        if (user.disabledAt) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Disabled users cannot reset their password" })
+        }
+
+        await auth.api.requestPasswordReset({ body: { email: user.email } })
+
+        return { success: true }
       }),
   },
 })

@@ -1,0 +1,15 @@
+:root {
+  --primary: #383d6d;
+  --primary-foreground: #ffffff;
+  --accent: #f1f3ff;
+  --accent-foreground: #383d6d;
+  --ring: #6e8cfc;
+  --sidebar: #383d6d;
+  --sidebar-foreground: #f1f3ff;
+  --sidebar-primary: #6e8cfc;
+  --sidebar-primary-foreground: #14163a;
+  --sidebar-accent: #4a5088;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(241 243 255 / 12%);
+  --sidebar-ring: #6e8cfc;
+}

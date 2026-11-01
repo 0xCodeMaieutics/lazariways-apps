@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import "@lazariways/ui/globals.css"
 import "./animations.css"
+import "./brand.css"
 import { Providers } from "./providers"
 import { ThemeProvider } from "./theme-provider"
 
@@ -17,9 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={"dark antialiased"}>
+      <body className="antialiased">
         <Providers>
-          <ThemeProvider attribute="class">{children}</ThemeProvider>
+          <ThemeProvider attribute="class" forcedTheme="light">
+            {children}
+          </ThemeProvider>
         </Providers>
       </body>
     </html>
