@@ -5,6 +5,7 @@ import { Separator } from "@lazariways/ui/components/separator"
 import { useMutation } from "@tanstack/react-query"
 import { Award, Calendar, Flame, Plus, Target, Trophy, User, Zap } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
 import { useTRPC } from "@/lib/trpc/react"
@@ -99,7 +100,10 @@ function ProfileHeader({
   }, [])
 
   const trpc = useTRPC()
-  const uploadImage = useMutation(trpc.user.uploadImage.mutationOptions())
+  const router = useRouter()
+  const uploadImage = useMutation(
+    trpc.user.uploadImage.mutationOptions({ onSuccess: () => router.refresh() })
+  )
 
   const clearPendingImage = () => {
     if (pendingUrlRef.current) URL.revokeObjectURL(pendingUrlRef.current)
