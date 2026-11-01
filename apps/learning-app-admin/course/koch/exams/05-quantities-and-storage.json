@@ -1,0 +1,78 @@
+{
+  "id": "koch-quantities-and-storage",
+  "level": "A1",
+  "title": "რაოდენობა და შენახვა",
+  "description": "პროდუქტების შენახვა: მაცივარი, საყინულე, ახალი და ვადაგასული.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Kühlschrank",
+      "options": ["ღუმელი", "მაცივარი", "კარადა"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "abgelaufen",
+      "options": ["ვადაგასული", "ახალი", "გაყინული"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "frisch",
+      "options": ["Fisch", "fertig", "frisch"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "zwei Kilo",
+      "options": ["zwei Kilo", "drei Kilo", "zwei Liter"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "der Gefrierschrank", "meaning": "საყინულე" },
+        { "term": "das Lager", "meaning": "საწყობი" },
+        { "term": "kalt", "meaning": "ცივი" },
+        { "term": "gefroren", "meaning": "გაყინული" },
+        { "term": "das Datum", "meaning": "თარიღი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მაცივარი",
+      "correctInputs": ["Kühlschrank", "der Kühlschrank"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ახალი (პროდუქტი)",
+      "correctInputs": ["frisch"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Die Milch ist abgelaufen.",
+      "correctInputs": ["Die Milch ist abgelaufen."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ხორცი მაცივარშია.",
+      "correctInputs": ["Das Fleisch ist im Kühlschrank.", "Das Fleisch liegt im Kühlschrank."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "გვჭირდება ორი კილო კარტოფილი.",
+      "correctInputs": ["Wir brauchen zwei Kilo Kartoffeln."]
+    }
+  ]
+}

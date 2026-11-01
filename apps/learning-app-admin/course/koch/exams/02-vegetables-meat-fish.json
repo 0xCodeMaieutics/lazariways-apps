@@ -1,0 +1,78 @@
+{
+  "id": "koch-vegetables-meat-fish",
+  "level": "A1",
+  "title": "ბოსტნეული, ხორცი და თევზი",
+  "description": "სამზარეულოს პროდუქტები: ბოსტნეული, ხორცი და თევზი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "das Gemüse",
+      "options": ["ხილი", "ბოსტნეული", "ხორცი"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Zwiebel",
+      "options": ["ხახვი", "ნიორი", "კარტოფილი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Fisch",
+      "options": ["der Tisch", "das Fleisch", "der Fisch"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "die Kartoffel",
+      "options": ["die Kartoffel", "die Karotte", "die Tomate"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "das Fleisch", "meaning": "ხორცი" },
+        { "term": "das Hähnchen", "meaning": "ქათამი" },
+        { "term": "das Rindfleisch", "meaning": "საქონლის ხორცი" },
+        { "term": "die Karotte", "meaning": "სტაფილო" },
+        { "term": "die Tomate", "meaning": "პომიდორი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "თევზი",
+      "correctInputs": ["Fisch", "der Fisch"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ხორცი",
+      "correctInputs": ["Fleisch", "das Fleisch"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Der Fisch ist frisch.",
+      "correctInputs": ["Der Fisch ist frisch."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მე მჭირდება ხახვი.",
+      "correctInputs": ["Ich brauche Zwiebeln.", "Ich brauche eine Zwiebel.", "Ich brauche die Zwiebel."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "დღეს გვაქვს ქათამი.",
+      "correctInputs": ["Heute haben wir Hähnchen.", "Wir haben heute Hähnchen."]
+    }
+  ]
+}

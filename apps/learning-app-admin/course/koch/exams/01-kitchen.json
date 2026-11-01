@@ -1,0 +1,78 @@
+{
+  "id": "koch-kitchen",
+  "level": "A1",
+  "title": "სამზარეულო",
+  "description": "სამზარეულოს ძირითადი სიტყვები: ქურა, ტაფა, ქვაბი, დანა და საჭრელი დაფა.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Pfanne",
+      "options": ["ქვაბი", "ტაფა", "თეფში"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "das Messer",
+      "options": ["დანა", "ჩანგალი", "კოვზი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Topf",
+      "options": ["der Kopf", "der Tisch", "der Topf"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Herd",
+      "options": ["der Herd", "das Herz", "das Hemd"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Küche", "meaning": "სამზარეულო" },
+        { "term": "das Schneidebrett", "meaning": "საჭრელი დაფა" },
+        { "term": "der Löffel", "meaning": "კოვზი" },
+        { "term": "der Teller", "meaning": "თეფში" },
+        { "term": "die Schüssel", "meaning": "ჯამი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "დანა",
+      "correctInputs": ["Messer", "das Messer"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ქვაბი",
+      "correctInputs": ["Topf", "der Topf"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Die Pfanne ist heiß.",
+      "correctInputs": ["Die Pfanne ist heiß."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "დანა საჭრელ დაფაზეა.",
+      "correctInputs": ["Das Messer ist auf dem Schneidebrett.", "Das Messer liegt auf dem Schneidebrett."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ქვაბი ქურაზეა.",
+      "correctInputs": ["Der Topf ist auf dem Herd.", "Der Topf steht auf dem Herd."]
+    }
+  ]
+}
