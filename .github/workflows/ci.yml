@@ -20,6 +20,7 @@ jobs:
           - { name: Lint, script: lint }
           - { name: Format, script: format:check }
           - { name: Typecheck, script: typecheck }
+          - { name: Turbo env, script: turbo-env:check }
     steps:
       - uses: actions/checkout@v4
 
