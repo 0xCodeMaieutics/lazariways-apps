@@ -10,6 +10,8 @@ export const env = createEnv({
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),
     S3_BUCKET_NAME: z.string(),
+    TELEGRAM_BOT_TOKEN: z.string().optional(),
+    TELEGRAM_ERROR_CHAT_ID: z.string().optional(),
   },
   client: {},
   runtimeEnv: {
@@ -20,6 +22,8 @@ export const env = createEnv({
     S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
     S3_SECRET_KEY: process.env.S3_SECRET_KEY,
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+    TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
+    TELEGRAM_ERROR_CHAT_ID: process.env.TELEGRAM_ERROR_CHAT_ID,
   },
   emptyStringAsUndefined: true,
   skipValidation: Boolean(process.env.SKIP_ENV_VALIDATION),
