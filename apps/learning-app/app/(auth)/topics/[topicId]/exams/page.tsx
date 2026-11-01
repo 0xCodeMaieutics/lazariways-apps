@@ -1,8 +1,7 @@
 import { prisma } from "@lazariways/database/client"
-import { headers } from "next/headers"
 import { notFound, redirect } from "next/navigation"
 
-import { auth } from "@/lib/auth.server"
+import { getSession } from "@/lib/auth.server"
 import { isExamUnlockedForUser } from "@/lib/exam-access"
 import { isTopicUnlockedForUser } from "@/lib/topic-access"
 
@@ -11,41 +10,62 @@ import { Exams } from "./page.client"
 export default async function TopicExamsPage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId } = await params
 
-  const user = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const user = await getSession()
   if (user === null) redirect("/login")
 
-  const dbUser = await prisma.user.findUnique({
-    where: {
-      id: user.user.id,
-    },
-  })
-  if (dbUser === null) redirect("/login")
-
-  const topic = await prisma.topic.findFirst({
-    where: {
-      id: topicId,
-      enabled: true,
-    },
-    select: {
-      id: true,
-      type: true,
-      name: true,
-      isAlwaysUnlocked: true,
-    },
-  })
-  if (topic === null) notFound()
-
-  const userUnlockedTopic = await prisma.userUnlockedTopic.findUnique({
-    where: {
-      userId_topicId: {
-        userId: user.user.id,
-        topicId: topic.id,
+  const [topic, userUnlockedTopic, exams] = await Promise.all([
+    prisma.topic.findFirst({
+      where: {
+        id: topicId,
+        enabled: true,
       },
-    },
-    select: { topicId: true },
-  })
+      select: {
+        id: true,
+        type: true,
+        name: true,
+        isAlwaysUnlocked: true,
+      },
+    }),
+    prisma.userUnlockedTopic.findUnique({
+      where: {
+        userId_topicId: {
+          userId: user.user.id,
+          topicId,
+        },
+      },
+      select: { topicId: true },
+    }),
+    prisma.exam.findMany({
+      where: {
+        topicId,
+        enabled: true,
+      },
+      include: {
+        userExamAggregation: {
+          where: {
+            userId: user.user.id,
+          },
+        },
+        _count: {
+          select: {
+            exercises: true,
+          },
+        },
+        userUnlockedExams: {
+          where: {
+            userId: user.user.id,
+          },
+          select: {
+            examId: true,
+          },
+        },
+      },
+      orderBy: {
+        order: "asc",
+      },
+    }),
+  ])
+  if (topic === null) notFound()
 
   const isUnlocked = isTopicUnlockedForUser({
     isAlwaysUnlocked: topic.isAlwaysUnlocked,
@@ -55,35 +75,6 @@ export default async function TopicExamsPage({ params }: { params: Promise<{ top
 
   if (!isUnlocked) redirect("/topics")
 
-  const exams = await prisma.exam.findMany({
-    where: {
-      topicId,
-      enabled: true,
-    },
-    include: {
-      userExamAggregation: {
-        where: {
-          userId: user.user.id,
-        },
-      },
-      _count: {
-        select: {
-          exercises: true,
-        },
-      },
-      userUnlockedExams: {
-        where: {
-          userId: dbUser.id,
-        },
-        select: {
-          examId: true,
-        },
-      },
-    },
-    orderBy: {
-      order: "asc",
-    },
-  })
   const { id, ...propsTopic } = topic
 
   const examsWithAccess = exams.map((exam) => {

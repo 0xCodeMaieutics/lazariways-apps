@@ -1,23 +1,15 @@
 import type { TopicType } from "@lazariways/database/browser"
 import { prisma } from "@lazariways/database/client"
-import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
-import { auth } from "@/lib/auth.server"
+import { getSession } from "@/lib/auth.server"
 import { isTopicUnlockedForUser } from "@/lib/topic-access"
 
 import { TopicsHub } from "./page.client"
 
 export default async function TopicsPage() {
-  const user = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const user = await getSession()
   if (user === null) redirect("/login")
-
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.user.id },
-  })
-  if (dbUser === null) redirect("/login")
 
   const [topics, userUnlockedTopics] = await Promise.all([
     prisma.topic.findMany({

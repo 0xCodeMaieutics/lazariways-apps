@@ -1,10 +1,9 @@
 import { prisma } from "@lazariways/database/client"
 import { getSignedUrlForDownload } from "@lazariways/file-upload/s3-client"
-import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { env } from "@/env"
-import { auth } from "@/lib/auth.server"
+import { getSession } from "@/lib/auth.server"
 
 import { ProfileClient } from "./page.client"
 
@@ -17,10 +16,9 @@ function getClassification(xp: number): "bronze" | "silver" | "gold" {
   return "bronze"
 }
 
-function calculateStreakDays(completionDates: Date[]): number {
-  if (completionDates.length === 0) return 0
-
-  const uniqueDays = [...new Set(completionDates.map((d) => d.toISOString().split("T")[0]))].sort()
+// `uniqueDays` are distinct UTC dates formatted as YYYY-MM-DD, sorted ascending.
+function calculateStreakDays(uniqueDays: string[]): number {
+  if (uniqueDays.length === 0) return 0
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -47,23 +45,23 @@ function calculateStreakDays(completionDates: Date[]): number {
 }
 
 export default async function ProfilePage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getSession()
   if (session === null) redirect("/login")
 
-  const [dbUser, aggregations, completions] = await Promise.all([
+  const [dbUser, aggregations, completionDays] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
     }),
     prisma.userExamAggregation.findMany({
       where: { userId: session.user.id },
+      select: { attemptedCount: true, passedCount: true },
     }),
-    prisma.userExam.findMany({
-      where: { userId: session.user.id },
-      select: { createdAt: true },
-      orderBy: { createdAt: "desc" },
-    }),
+    prisma.$queryRaw<{ day: string }[]>`
+      SELECT DISTINCT to_char("createdAt"::date, 'YYYY-MM-DD') AS day
+      FROM "lazari_lingo"."UserExam"
+      WHERE "userId" = ${session.user.id}
+      ORDER BY day ASC
+    `,
   ])
 
   if (dbUser === null) redirect("/login")
@@ -72,7 +70,7 @@ export default async function ProfilePage() {
   const totalPassed = aggregations.reduce((sum, a) => sum + a.passedCount, 0)
   const totalXP = totalAttempts * XP_PER_ATTEMPT + totalPassed * XP_PER_PASS
   const classification = getClassification(totalXP)
-  const streakDays = calculateStreakDays(completions.map((c) => c.createdAt))
+  const streakDays = calculateStreakDays(completionDays.map((row) => row.day))
 
   const signedImageUrl = dbUser.image
     ? await getSignedUrlForDownload({

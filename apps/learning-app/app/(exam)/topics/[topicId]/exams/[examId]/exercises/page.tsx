@@ -2,12 +2,11 @@ import { prisma } from "@lazariways/database/client"
 import { getSignedUrlForDownload } from "@lazariways/file-upload/s3-client"
 import { Button } from "@lazariways/ui/components/button"
 import { BookOpenCheck, ChevronLeft } from "lucide-react"
-import { headers } from "next/headers"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 
 import { env } from "@/env"
-import { auth } from "@/lib/auth.server"
+import { getSession } from "@/lib/auth.server"
 
 import { Exam } from "./page.client"
 
@@ -21,9 +20,7 @@ export default async function ExamDetailPage({
 }) {
   const { examId } = await params
 
-  const user = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const user = await getSession()
 
   if (user === null) return redirect("/login")
 

@@ -14,6 +14,8 @@ export function createLearningAppAuth(
     cookiePrefix: string
     plugins?: AuthPlugin[]
     sendResetPassword?: SendResetPassword
+    // Revoked sessions and disabled users stay valid until the cached cookie expires.
+    sessionCookieCacheMaxAgeInSeconds?: number
   }
 ) {
   return betterAuth({
@@ -50,6 +52,12 @@ export function createLearningAppAuth(
     },
     session: {
       modelName: "Session",
+      ...(options.sessionCookieCacheMaxAgeInSeconds !== undefined && {
+        cookieCache: {
+          enabled: true,
+          maxAge: options.sessionCookieCacheMaxAgeInSeconds,
+        },
+      }),
     },
     account: {
       modelName: "Account",
