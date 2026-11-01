@@ -1,4 +1,4 @@
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 
 import { requireAdminSessionForApi } from "@/lib/auth"
 import { normalizeUniversityInput, optionalUniversityString } from "@/lib/normalize-university-input"

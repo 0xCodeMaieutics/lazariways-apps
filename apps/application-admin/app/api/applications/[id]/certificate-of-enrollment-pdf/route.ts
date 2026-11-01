@@ -1,5 +1,5 @@
 import { generateCertificateOfEnrollmentPdf } from "@lazariways/application/pdf"
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 
 import { requireAdminSessionForApi } from "@/lib/auth"
 

@@ -1,4 +1,4 @@
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { Button } from "@lazariways/ui/components/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"

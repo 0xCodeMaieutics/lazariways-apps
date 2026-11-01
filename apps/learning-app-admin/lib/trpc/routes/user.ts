@@ -1,4 +1,4 @@
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { uploadToStorage } from "@lazariways/file-upload/s3-client"
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"

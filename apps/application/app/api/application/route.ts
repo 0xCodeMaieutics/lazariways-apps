@@ -1,6 +1,6 @@
 import crypto from "crypto"
 
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { uploadFileToStorage } from "@lazariways/file-upload/s3-client"
 import type { NextRequest } from "next/server"
 

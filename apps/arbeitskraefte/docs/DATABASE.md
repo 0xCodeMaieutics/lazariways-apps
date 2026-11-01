@@ -5,7 +5,7 @@ This project uses `@lazariways/database` package to handle database queries.
 # import client
 
 ```ts
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 
 const [applications, totalCount] = await Promise.all([
   prisma.application.findMany({
