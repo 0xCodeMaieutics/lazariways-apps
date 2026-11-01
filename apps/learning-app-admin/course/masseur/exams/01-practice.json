@@ -1,0 +1,83 @@
+{
+  "id": "masseur-practice",
+  "level": "A1",
+  "title": "მასაჟის კაბინეტი",
+  "description": "მასაჟის კაბინეტის ძირითადი სიტყვები: საწოლი, პირსახოცი, ზეთი და ვიზიტის დრო.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Liege",
+      "options": ["მასაჟის საწოლი", "პირსახოცი", "ბალიში"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Termin",
+      "options": ["ფასი", "ვიზიტის დრო", "კლიენტი"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Handtuch",
+      "options": ["das Handtuch", "das Handy", "der Handschuh"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Öl",
+      "options": ["das Ohr", "das Öl", "die Uhr"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Praxis", "meaning": "კაბინეტი" },
+        { "term": "das Kissen", "meaning": "ბალიში" },
+        { "term": "die Creme", "meaning": "კრემი" },
+        { "term": "die Massage", "meaning": "მასაჟი" },
+        { "term": "der Kunde", "meaning": "კლიენტი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "პირსახოცი",
+      "correctInputs": ["Handtuch", "das Handtuch"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ზეთი",
+      "correctInputs": ["Öl", "das Öl"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Ich habe einen Termin.",
+      "correctInputs": ["Ich habe einen Termin."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "აქ არის სუფთა პირსახოცი.",
+      "correctInputs": ["Hier ist ein sauberes Handtuch.", "Hier ist ein frisches Handtuch."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მასაჟის საწოლი მზადაა.",
+      "correctInputs": [
+        "Die Liege ist fertig.",
+        "Die Liege ist bereit.",
+        "Die Massageliege ist fertig.",
+        "Die Massageliege ist bereit."
+      ]
+    }
+  ]
+}

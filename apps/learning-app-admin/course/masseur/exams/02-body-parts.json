@@ -1,0 +1,78 @@
+{
+  "id": "masseur-body-parts",
+  "level": "A1",
+  "title": "სხეულის ნაწილები დეტალურად",
+  "description": "სხეულის ნაწილები, რომლებიც მასაჟის დროს გჭირდებათ: მხარი, ხერხემალი, კუნთები და სახსრები.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Schulter",
+      "options": ["მხარი", "მუხლი", "კისერი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Muskel",
+      "options": ["ძვალი", "სახსარი", "კუნთი"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Nacken",
+      "options": ["der Rücken", "der Nacken", "die Nase"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Knie",
+      "options": ["das Knie", "das Kinn", "der Kiefer"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Wirbelsäule", "meaning": "ხერხემალი" },
+        { "term": "die Hüfte", "meaning": "თეძო" },
+        { "term": "die Wade", "meaning": "წვივი" },
+        { "term": "der Oberschenkel", "meaning": "ბარძაყი" },
+        { "term": "das Gelenk", "meaning": "სახსარი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მუხლი",
+      "correctInputs": ["Knie", "das Knie"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "კუნთი",
+      "correctInputs": ["Muskel", "der Muskel"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Meine Schultern sind verspannt.",
+      "correctInputs": ["Meine Schultern sind verspannt."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მხარი მტკივა.",
+      "correctInputs": ["Meine Schulter tut weh.", "Die Schulter tut mir weh.", "Ich habe Schulterschmerzen."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მუხლი მტკივა.",
+      "correctInputs": ["Mein Knie tut weh.", "Das Knie tut mir weh.", "Ich habe Knieschmerzen."]
+    }
+  ]
+}

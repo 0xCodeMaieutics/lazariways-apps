@@ -3,7 +3,7 @@
   "name": "მასაჟისტი (Masseur/in)",
   "type": "MASSEUR",
   "order": 5,
-  "enabled": false,
+  "enabled": true,
   "isAlwaysUnlocked": false,
   "unlockedByTopicId": "starter",
   "minimumCompletedExamsToUnlock": null

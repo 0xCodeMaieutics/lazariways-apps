@@ -1,0 +1,78 @@
+{
+  "id": "masseur-massage-types",
+  "level": "A1",
+  "title": "მასაჟის სახეები და ხანგრძლივობა",
+  "description": "მასაჟის სახეები და რამდენ ხანს გრძელდება: 30 წუთი, ერთი საათი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Rückenmassage",
+      "options": ["ზურგის მასაჟი", "ტერფის მასაჟი", "სახის მასაჟი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "eine Stunde",
+      "options": ["ერთი წუთი", "ერთი საათი", "ერთი დღე"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "dreißig Minuten",
+      "options": ["dreizehn Minuten", "dreißig Minuten", "drei Minuten"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "die Ganzkörpermassage",
+      "options": ["die Fußmassage", "die Kopfmassage", "die Ganzkörpermassage"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Nackenmassage", "meaning": "კისრის მასაჟი" },
+        { "term": "die Fußmassage", "meaning": "ტერფის მასაჟი" },
+        { "term": "die Sportmassage", "meaning": "სპორტული მასაჟი" },
+        { "term": "die Entspannungsmassage", "meaning": "რელაქსაციური მასაჟი" },
+        { "term": "eine halbe Stunde", "meaning": "ნახევარი საათი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ერთი საათი",
+      "correctInputs": ["eine Stunde", "1 Stunde"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ზურგის მასაჟი",
+      "correctInputs": ["Rückenmassage", "die Rückenmassage"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Die Massage dauert dreißig Minuten.",
+      "correctInputs": ["Die Massage dauert dreißig Minuten.", "Die Massage dauert 30 Minuten."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "რამდენ ხანს გრძელდება მასაჟი?",
+      "correctInputs": ["Wie lange dauert die Massage?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "გნებავთ ზურგის მასაჟი?",
+      "correctInputs": ["Möchten Sie eine Rückenmassage?", "Wollen Sie eine Rückenmassage?"]
+    }
+  ]
+}
