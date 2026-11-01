@@ -10,6 +10,7 @@ import {
 } from "@lazariways/ui/components/table"
 import { Users } from "lucide-react"
 
+import { InviteUserDialog } from "./invite-user-dialog"
 import { ResetPasswordButton } from "./reset-password-button"
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" })
@@ -25,23 +26,27 @@ export default async function AdminUsers() {
       disabledAt: true,
       createdAt: true,
       _count: { select: { userExamCompletions: true } },
+      accounts: { where: { providerId: "credential" }, select: { id: true } },
     },
   })
 
   return (
     <div className="px-4 py-8 md:px-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
-        <p className="text-sm text-muted-foreground">
-          {users.length} {users.length === 1 ? "account" : "accounts"}
-        </p>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+          <p className="text-sm text-muted-foreground">
+            {users.length} {users.length === 1 ? "account" : "accounts"}
+          </p>
+        </div>
+        <InviteUserDialog />
       </div>
 
       {users.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed py-16 text-center">
           <Users className="size-8 text-muted-foreground" aria-hidden />
           <p className="font-medium">No users yet</p>
-          <p className="text-sm text-muted-foreground">Accounts appear here once learners sign up.</p>
+          <p className="text-sm text-muted-foreground">Invite a learner to get started.</p>
         </div>
       ) : (
         <div className="rounded-lg border">
@@ -58,35 +63,44 @@ export default async function AdminUsers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={user.role === "ADMIN" ? "default" : "outline"}>
-                      {user.role === "ADMIN" ? "Admin" : "Learner"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {user.disabledAt ? (
-                      <Badge variant="destructive">Disabled</Badge>
-                    ) : (
-                      <Badge variant="secondary">Active</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">{user._count.userExamCompletions}</TableCell>
-                  <TableCell className="text-muted-foreground tabular-nums">
-                    {dateFormatter.format(user.createdAt)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <ResetPasswordButton
-                      userId={user.id}
-                      email={user.email}
-                      disabled={user.disabledAt !== null}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
+              {users.map((user) => {
+                const isInvited = user.accounts.length === 0
+
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">{user.name}</TableCell>
+                    <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                    <TableCell>
+                      <Badge variant={user.role === "ADMIN" ? "default" : "outline"}>
+                        {user.role === "ADMIN" ? "Admin" : "Learner"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {user.disabledAt ? (
+                        <Badge variant="destructive">Disabled</Badge>
+                      ) : isInvited ? (
+                        <Badge variant="outline">Invited</Badge>
+                      ) : (
+                        <Badge variant="secondary">Active</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {user._count.userExamCompletions}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground tabular-nums">
+                      {dateFormatter.format(user.createdAt)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <ResetPasswordButton
+                        userId={user.id}
+                        email={user.email}
+                        disabled={user.disabledAt !== null}
+                        invited={isInvited}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </div>

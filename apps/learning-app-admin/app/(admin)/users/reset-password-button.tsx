@@ -13,7 +13,7 @@ import {
 } from "@lazariways/ui/components/alert-dialog"
 import { Button } from "@lazariways/ui/components/button"
 import { useMutation } from "@tanstack/react-query"
-import { KeyRound, Loader2 } from "lucide-react"
+import { KeyRound, Loader2, Mail } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -23,9 +23,15 @@ type ResetPasswordButtonProps = {
   userId: string
   email: string
   disabled?: boolean
+  invited?: boolean
 }
 
-export function ResetPasswordButton({ userId, email, disabled = false }: ResetPasswordButtonProps) {
+export function ResetPasswordButton({
+  userId,
+  email,
+  disabled = false,
+  invited = false,
+}: ResetPasswordButtonProps) {
   const [open, setOpen] = useState(false)
   const trpc = useTRPC()
 
@@ -33,7 +39,7 @@ export function ResetPasswordButton({ userId, email, disabled = false }: ResetPa
     trpc.admin.users.sendPasswordReset.mutationOptions({
       onSuccess: () => {
         setOpen(false)
-        toast.success(`Password reset email sent to ${email}`)
+        toast.success(invited ? `Invitation resent to ${email}` : `Password reset email sent to ${email}`)
       },
       onError: (error) => {
         toast.error(error.message)
@@ -45,16 +51,19 @@ export function ResetPasswordButton({ userId, email, disabled = false }: ResetPa
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="outline" size="sm" disabled={disabled}>
-          <KeyRound className="size-4" />
-          Reset password
+          {invited ? <Mail className="size-4" /> : <KeyRound className="size-4" />}
+          {invited ? "Resend invite" : "Reset password"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Send password reset email?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {invited ? "Resend invitation email?" : "Send password reset email?"}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            {email} will receive a link to set a new password. The link expires after 72 hours, and their
-            current sessions are signed out once the new password is set.
+            {invited
+              ? `${email} will receive a new link to set their password. The link expires after 72 hours.`
+              : `${email} will receive a link to set a new password. The link expires after 72 hours, and their current sessions are signed out once the new password is set.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
