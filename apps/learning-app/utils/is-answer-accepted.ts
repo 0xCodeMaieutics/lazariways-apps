@@ -2,9 +2,9 @@ const UMLAUT_SPELLINGS: Record<string, string> = { ä: "ae", ö: "oe", ü: "ue",
 
 function normalizeAnswer(answer: string) {
   return answer
-    .trim()
+    .replace(/[.,!?;:]/g, " ")
     .replace(/\s+/g, " ")
-    .replace(/\s*[.!?]+$/, "")
+    .trim()
     .toLowerCase()
     .replace(/[äöüß]/g, (letter) => UMLAUT_SPELLINGS[letter] ?? letter)
 }
