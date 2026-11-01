@@ -81,8 +81,8 @@ Starter Topic (always unlocked)
 
 Content lives in `apps/learning-app-admin/course/<topic-id>/`: one `topic.json` and one file per Exam in `exams/`, ordered by file name (`01-greetings.json`, …).
 
-- `pnpm --filter @lazariways/learning-app-admin course:check` validates the content without touching the database or audio.
-- `pnpm --filter @lazariways/learning-app-admin course:import` imports it:
+- `pnpm --filter @lazariways/learning-app-admin course:check` validates the content without touching the database or audio. CI runs it on every PR ("Course content").
+- `pnpm --filter @lazariways/learning-app-admin course:import` imports it. CI runs it on every push to `main` after "Migrate database" ("Import course"), so merging a content PR puts it live:
   - Topics and Exams are upserted by their `id`; never change an `id` once imported, or learner progress on that Exam is lost.
   - Exams in a Topic are chained by file order: the first is always unlocked, each unlocks the next.
   - Exercises of each imported Exam are replaced.

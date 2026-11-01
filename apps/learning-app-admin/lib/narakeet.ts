@@ -1,5 +1,3 @@
-import { env } from "@/env"
-
 const POLL_INTERVAL_MS = 3_000
 const MAX_POLL_MS = 30_000
 
@@ -15,12 +13,12 @@ interface StatusResponse {
   message?: string
 }
 
-export async function generateAudio(text: string, voice: string): Promise<Buffer> {
+export async function generateAudio(text: string, voice: string, apiKey: string): Promise<Buffer> {
   const res = await fetch(`https://api.narakeet.com/text-to-speech/m4a?voice=${encodeURIComponent(voice)}`, {
     method: "POST",
     headers: {
       "Content-Type": "text/plain",
-      "x-api-key": env.NARAKEET_API_KEY,
+      "x-api-key": apiKey,
     },
     body: text,
   })

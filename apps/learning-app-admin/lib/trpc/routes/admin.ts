@@ -142,7 +142,7 @@ export const adminRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const buffer = await generateAudio(input.text, input.voice)
+        const buffer = await generateAudio(input.text, input.voice, env.NARAKEET_API_KEY)
         const key = `${env.BUCKET_AUDIOS_PATH}/${sanitizeForFilename(input.text)}-${Date.now()}.m4a`
         await uploadToStorage({
           file: buffer,
