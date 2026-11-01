@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js"
 import { sendSetPasswordEmail } from "@/lib/email"
 
 export const auth = createLearningAppAuth(prisma, {
+  cookiePrefix: "lazarilingo-admin",
   plugins: [nextCookies()],
   sendResetPassword: async ({ user, token }) => {
     const credentialAccount = await prisma.account.findFirst({

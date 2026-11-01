@@ -9,7 +9,12 @@ export const SET_PASSWORD_TOKEN_EXPIRES_IN_SECONDS = 72 * 60 * 60
 
 export function createLearningAppAuth(
   prisma: Parameters<typeof prismaAdapter>[0],
-  options: { plugins?: AuthPlugin[]; sendResetPassword?: SendResetPassword } = {}
+  options: {
+    // Must differ per app: cookies ignore the port, so apps sharing a host would overwrite each other's session.
+    cookiePrefix: string
+    plugins?: AuthPlugin[]
+    sendResetPassword?: SendResetPassword
+  }
 ) {
   return betterAuth({
     database: prismaAdapter(prisma, {
@@ -25,7 +30,7 @@ export function createLearningAppAuth(
       revokeSessionsOnPasswordReset: true,
     },
     advanced: {
-      cookiePrefix: "learning-platform",
+      cookiePrefix: options.cookiePrefix,
     },
     user: {
       modelName: "User",
