@@ -46,6 +46,7 @@ export async function sendSetPasswordEmail(params: {
 
   if (process.env.VERCEL_ENV !== "production") {
     console.log("SET_PASSWORD_EMAIL (only sent in production)", email)
+    console.log(`SET_PASSWORD_URL ${url}`)
     return
   }
 
