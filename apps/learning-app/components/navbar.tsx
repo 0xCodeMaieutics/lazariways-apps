@@ -64,8 +64,8 @@ export function Navbar() {
         <Link href={"/topics"} className="block">
           <Image
             src="/logo.svg"
-            alt="Lazari Ways"
-            width={254}
+            alt="Lazari Lingo"
+            width={258}
             height={60}
             className="h-8 w-auto"
             loading="eager"
