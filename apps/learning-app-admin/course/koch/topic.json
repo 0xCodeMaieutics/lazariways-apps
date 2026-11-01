@@ -1,0 +1,10 @@
+{
+  "id": "koch",
+  "name": "მზარეული (Koch)",
+  "type": "KOCH",
+  "order": 3,
+  "enabled": false,
+  "isAlwaysUnlocked": false,
+  "unlockedByTopicId": "starter",
+  "minimumCompletedExamsToUnlock": null
+}

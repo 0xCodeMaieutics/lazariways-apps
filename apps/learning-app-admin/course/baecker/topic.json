@@ -1,0 +1,10 @@
+{
+  "id": "baecker",
+  "name": "მცხობელი (Bäcker)",
+  "type": "BAECKER",
+  "order": 2,
+  "enabled": false,
+  "isAlwaysUnlocked": false,
+  "unlockedByTopicId": "starter",
+  "minimumCompletedExamsToUnlock": null
+}
