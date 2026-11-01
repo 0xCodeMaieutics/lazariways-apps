@@ -1,4 +1,4 @@
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { nanoid } from "nanoid"
 
 import { env } from "@/env"

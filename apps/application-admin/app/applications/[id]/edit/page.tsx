@@ -1,5 +1,5 @@
 import { prismaToAdminEditData } from "@lazariways/application/prisma"
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { getSignedUrlForDownload } from "@lazariways/file-upload/s3-client"
 import { notFound } from "next/navigation"
 

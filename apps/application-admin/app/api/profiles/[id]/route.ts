@@ -1,4 +1,4 @@
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { deleteFileFromStorage } from "@lazariways/file-upload/s3-client"
 import { profileLanguagesToPrismaCreate, profileToPrismaData } from "@lazariways/profile/prisma"
 import { adminProfileEditSchema } from "@lazariways/profile/schema"

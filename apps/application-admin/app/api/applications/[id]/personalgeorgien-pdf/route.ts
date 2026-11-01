@@ -1,6 +1,6 @@
 import { generatePersonalGeorgienPdf, personalGeorgienProfessionOptions } from "@lazariways/application/pdf"
 import { adminEditDataToApplicationFormData, prismaToAdminEditData } from "@lazariways/application/prisma"
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { z } from "zod"
 
 import { env } from "@/env"

@@ -1,6 +1,6 @@
 import { applicationToPrismaData } from "@lazariways/application/prisma"
 import { adminApplicationEditSchema } from "@lazariways/application/schema"
-import prisma from "@lazariways/database/client"
+import { prisma } from "@lazariways/database/client"
 import { deleteFileFromStorage } from "@lazariways/file-upload/s3-client"
 
 import { env } from "@/env"
