@@ -1,0 +1,88 @@
+{
+  "id": "baecker-ingredients",
+  "level": "A1",
+  "title": "ინგრედიენტები და რაოდენობა",
+  "description": "ინგრედიენტები და რაოდენობა: გრამი, კილო, ლიტრი, საფუარი, შაქარი და მარილი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Hefe",
+      "options": ["საფუარი", "შაქარი", "მარილი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "ein Kilo Mehl",
+      "options": ["ერთი ლიტრი რძე", "ერთი კილო ფქვილი", "ერთი გრამი მარილი"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Zucker",
+      "options": ["der Zucker", "die Butter", "der Becher"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "zwei Liter Milch",
+      "options": ["drei Liter Milch", "zwei Kilo Mehl", "zwei Liter Milch"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "das Salz", "meaning": "მარილი" },
+        { "term": "die Butter", "meaning": "კარაქი" },
+        { "term": "die Milch", "meaning": "რძე" },
+        { "term": "das Ei", "meaning": "კვერცხი" },
+        { "term": "das Wasser", "meaning": "წყალი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "საფუარი",
+      "correctInputs": ["Hefe", "die Hefe"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "შაქარი",
+      "correctInputs": ["Zucker", "der Zucker"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "fünfhundert Gramm Zucker",
+      "correctInputs": ["fünfhundert Gramm Zucker", "500 Gramm Zucker", "500 g Zucker"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ერთი კილო ფქვილი გვჭირდება.",
+      "correctInputs": [
+        "Wir brauchen ein Kilo Mehl.",
+        "Wir brauchen 1 Kilo Mehl.",
+        "Wir brauchen ein Kilogramm Mehl."
+      ]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მომეცი შაქარი, გთხოვ.",
+      "correctInputs": [
+        "Gib mir bitte den Zucker.",
+        "Gib mir den Zucker, bitte.",
+        "Bitte gib mir den Zucker.",
+        "Gib mir bitte Zucker.",
+        "Bitte gib mir Zucker."
+      ]
+    }
+  ]
+}

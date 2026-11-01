@@ -1,0 +1,78 @@
+{
+  "id": "baecker-bread-and-pastries",
+  "level": "A1",
+  "title": "პური და ნამცხვრები",
+  "description": "საცხობის პროდუქცია: პური, ფუნთუშა, ბრეცელი და ნამცხვარი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "das Brötchen",
+      "options": ["პური", "ფუნთუშა", "ნამცხვარი"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Kuchen",
+      "options": ["ნამცხვარი", "პური", "ფქვილი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "die Brezel",
+      "options": ["der Becher", "die Brezel", "die Birne"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Vollkornbrot",
+      "options": ["das Weißbrot", "das Roggenbrot", "das Vollkornbrot"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "das Brot", "meaning": "პური" },
+        { "term": "das Weißbrot", "meaning": "თეთრი პური" },
+        { "term": "das Croissant", "meaning": "კრუასანი" },
+        { "term": "die Torte", "meaning": "ტორტი" },
+        { "term": "der Keks", "meaning": "ორცხობილა" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "პური",
+      "correctInputs": ["Brot", "das Brot"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ფუნთუშა",
+      "correctInputs": ["Brötchen", "das Brötchen"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Zehn Brötchen, bitte.",
+      "correctInputs": ["Zehn Brötchen, bitte.", "10 Brötchen, bitte."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "პური ახალია.",
+      "correctInputs": ["Das Brot ist frisch."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ნამცხვარი ჯერ კიდევ ცხელია.",
+      "correctInputs": ["Der Kuchen ist noch heiß."]
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "name": "მცხობელი (Bäcker)",
   "type": "BAECKER",
   "order": 2,
-  "enabled": false,
+  "enabled": true,
   "isAlwaysUnlocked": false,
   "unlockedByTopicId": "starter",
   "minimumCompletedExamsToUnlock": null

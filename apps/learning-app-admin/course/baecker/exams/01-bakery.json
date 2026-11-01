@@ -1,0 +1,78 @@
+{
+  "id": "baecker-bakery",
+  "level": "A1",
+  "title": "საცხობი",
+  "description": "საცხობის ძირითადი სიტყვები: ღუმელი, საცხობი ფირფიტა, ცომი და ფქვილი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Ofen",
+      "options": ["ღუმელი", "მაცივარი", "მაგიდა"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Teig",
+      "options": ["ფქვილი", "ცომი", "პური"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Mehl",
+      "options": ["das Meer", "das Messer", "das Mehl"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Blech",
+      "options": ["das Blech", "das Buch", "das Brot"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Bäckerei", "meaning": "საცხობი" },
+        { "term": "die Backstube", "meaning": "საამქრო" },
+        { "term": "die Waage", "meaning": "სასწორი" },
+        { "term": "die Schüssel", "meaning": "ჯამი" },
+        { "term": "die Schürze", "meaning": "წინსაფარი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ღუმელი",
+      "correctInputs": ["Ofen", "der Ofen"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ფქვილი",
+      "correctInputs": ["Mehl", "das Mehl"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Der Teig ist fertig.",
+      "correctInputs": ["Der Teig ist fertig."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ღუმელი ცხელია.",
+      "correctInputs": ["Der Ofen ist heiß."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ფქვილი აქ არის.",
+      "correctInputs": ["Das Mehl ist hier.", "Hier ist das Mehl."]
+    }
+  ]
+}
