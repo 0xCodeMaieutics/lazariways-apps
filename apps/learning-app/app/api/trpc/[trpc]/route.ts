@@ -1,6 +1,9 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch"
+import { getHTTPStatusCodeFromError } from "@trpc/server/http"
+import { after } from "next/server"
 
 import { auth } from "@/lib/auth.server"
+import { reportError } from "@/lib/error-report"
 import { appRouter } from "@/lib/trpc/router"
 
 const handler = (req: Request) =>
@@ -14,7 +17,7 @@ const handler = (req: Request) =>
         headers: req.headers,
       }
     },
-    onError: ({ error, path, input }) => {
+    onError: ({ error, path, input, type }) => {
       console.error("tRPC Error:", {
         path,
         input,
@@ -24,6 +27,16 @@ const handler = (req: Request) =>
           cause: error.cause,
         },
       })
+
+      if (getHTTPStatusCodeFromError(error) < 500) return
+
+      after(() =>
+        reportError({
+          location: `trpc ${type} ${path ?? "<unknown path>"}`,
+          message: `${error.code}: ${error.message}`,
+          error,
+        })
+      )
     },
   })
 
