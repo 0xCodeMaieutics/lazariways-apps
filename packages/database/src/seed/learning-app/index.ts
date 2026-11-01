@@ -7,7 +7,7 @@ import { insertLearningData } from "./learning-seed"
 const DEV_EMAIL = "dev@lazaryways.ge"
 const DEV_PASSWORD = "!Dev$LazaryIsAwesome"
 
-const auth = createLearningAppAuth(prisma)
+const auth = createLearningAppAuth(prisma, { cookiePrefix: "lazarilingo-app" })
 
 export const learningAppSeed = async function () {
   console.log("Creating user...")
