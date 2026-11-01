@@ -1,7 +1,7 @@
 "use client"
 
 import type { Topic } from "@lazariways/database/browser"
-import { useState } from "react"
+import { useId, useState } from "react"
 
 interface TopicListItem extends Topic {
   unlockedTopic: { name: string } | null
@@ -111,6 +111,7 @@ export const TopicsList = ({ topics: topicsOuter }: { topics: TopicListItem[] })
   const router = useRouter()
   const trpc = useTRPC()
   const [topics, setTopics] = useState([...topicsOuter])
+  const dndContextId = useId()
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -168,6 +169,7 @@ export const TopicsList = ({ topics: topicsOuter }: { topics: TopicListItem[] })
       </div>
       <div className="rounded-lg border">
         <DndContext
+          id={dndContextId}
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={(event: DragEndEvent) => {
