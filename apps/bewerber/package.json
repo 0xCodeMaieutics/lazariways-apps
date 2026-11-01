@@ -1,5 +1,5 @@
 {
-  "name": "bewerber",
+  "name": "@lazariways/bewerber",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,11 +8,11 @@
     "start": "next start"
   },
   "dependencies": {
+    "@lazariways/application": "workspace:*",
+    "@lazariways/database": "workspace:*",
+    "@lazariways/file-upload": "workspace:*",
+    "@lazariways/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.11",
-    "@workspace/application": "workspace:*",
-    "@workspace/database": "workspace:*",
-    "@workspace/file-upload": "workspace:*",
-    "@workspace/ui": "workspace:*",
     "nanoid": "6.0.1",
     "next": "16.2.9",
     "react": "19.2.4",

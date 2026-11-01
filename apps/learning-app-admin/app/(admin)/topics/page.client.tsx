@@ -1,6 +1,6 @@
 "use client"
 
-import type { Topic } from "@workspace/database/browser"
+import type { Topic } from "@lazariways/database/browser"
 import { useState } from "react"
 
 interface TopicListItem extends Topic {
@@ -17,10 +17,17 @@ import {
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { Button } from "@lazariways/ui/components/button"
+import { Switch } from "@lazariways/ui/components/switch"
+import {
+  Table,
+  TableHeader,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@lazariways/ui/components/table"
 import { useMutation } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
-import { Switch } from "@workspace/ui/components/switch"
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@workspace/ui/components/table"
 import { Edit2, GripVertical, Loader2, Plus } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"

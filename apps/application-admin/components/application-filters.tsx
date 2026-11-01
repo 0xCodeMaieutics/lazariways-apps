@@ -1,9 +1,9 @@
 "use client"
 
-import type { GermanLevel } from "@workspace/database/browser"
-import { Input } from "@workspace/ui/components/input"
-import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
-import { cn } from "@workspace/ui/lib/utils"
+import type { GermanLevel } from "@lazariways/database/browser"
+import { Input } from "@lazariways/ui/components/input"
+import { NativeSelect, NativeSelectOption } from "@lazariways/ui/components/native-select"
+import { cn } from "@lazariways/ui/lib/utils"
 import { Loader2, Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"

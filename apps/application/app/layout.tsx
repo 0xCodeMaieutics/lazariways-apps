@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import "@workspace/ui/globals.css"
+import "@lazariways/ui/globals.css"
 import Image from "next/image"
 
 import { Providers } from "./providers"

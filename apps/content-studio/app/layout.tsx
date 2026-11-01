@@ -1,8 +1,8 @@
-import { Toaster } from "@workspace/ui/components/sonner"
+import { Toaster } from "@lazariways/ui/components/sonner"
 import type { Metadata } from "next"
 import { Manrope, Noto_Sans_Georgian } from "next/font/google"
 
-import "@workspace/ui/globals.css"
+import "@lazariways/ui/globals.css"
 
 const manrope = Manrope({
   subsets: ["latin"],

@@ -1,6 +1,6 @@
-import type { GermanLevel } from "@workspace/database/browser"
-import { Badge } from "@workspace/ui/components/badge"
-import { cn } from "@workspace/ui/lib/utils"
+import type { GermanLevel } from "@lazariways/database/browser"
+import { Badge } from "@lazariways/ui/components/badge"
+import { cn } from "@lazariways/ui/lib/utils"
 import { TriangleAlertIcon } from "lucide-react"
 import Link from "next/link"
 

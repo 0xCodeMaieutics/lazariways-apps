@@ -1,9 +1,9 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { SafariInputDate } from "@workspace/ui/components//safari-date-component"
-import { Button } from "@workspace/ui/components/button"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+import { SafariInputDate } from "@lazariways/ui/components//safari-date-component"
+import { Button } from "@lazariways/ui/components/button"
+import { Checkbox } from "@lazariways/ui/components/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -11,14 +11,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
-import { FileUpload } from "@workspace/ui/components/file-upload"
-import { ImageCropper } from "@workspace/ui/components/image-cropper"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
-import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
+} from "@lazariways/ui/components/dialog"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@lazariways/ui/components/field"
+import { FileUpload } from "@lazariways/ui/components/file-upload"
+import { ImageCropper } from "@lazariways/ui/components/image-cropper"
+import { Input } from "@lazariways/ui/components/input"
+import { Label } from "@lazariways/ui/components/label"
+import { NativeSelect, NativeSelectOption } from "@lazariways/ui/components/native-select"
+import { RadioGroup, RadioGroupItem } from "@lazariways/ui/components/radio-group"
 import { XCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"

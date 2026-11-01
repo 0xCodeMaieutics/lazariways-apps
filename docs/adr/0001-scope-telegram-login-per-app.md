@@ -1,6 +1,6 @@
 # Scope Telegram login per app
 
-Social media content is created in a standalone app, separate from `application-admin`, so that people who make posts never get access to workers' applications. Because both apps use the shared Telegram code login in `@workspace/verification`, verification codes and sessions carry an app scope, and each app sends codes to its own Telegram chat. Membership in that chat is what grants access to the app.
+Social media content is created in a standalone app, separate from `application-admin`, so that people who make posts never get access to workers' applications. Because both apps use the shared Telegram code login in `@lazariways/verification`, verification codes and sessions carry an app scope, and each app sends codes to its own Telegram chat. Membership in that chat is what grants access to the app.
 
 ## Considered Options
 

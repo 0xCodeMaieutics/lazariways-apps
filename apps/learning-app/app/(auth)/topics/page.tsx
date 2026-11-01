@@ -1,5 +1,5 @@
-import type { TopicType } from "@workspace/database/browser"
-import { prisma } from "@workspace/database/client"
+import type { TopicType } from "@lazariways/database/browser"
+import { prisma } from "@lazariways/database/client"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 

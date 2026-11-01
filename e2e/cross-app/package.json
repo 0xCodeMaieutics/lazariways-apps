@@ -1,14 +1,14 @@
 {
-  "name": "@workspace/cross-app-e2e",
+  "name": "@lazariways/cross-app-e2e",
   "private": true,
   "type": "module",
   "scripts": {
     "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@lazariways/database": "workspace:*",
+    "@lazariways/typescript-config": "workspace:*",
     "@playwright/test": "^1.63.0",
-    "@workspace/database": "workspace:*",
-    "@workspace/typescript-config": "workspace:*",
     "dotenv": "^17.2.3"
   }
 }

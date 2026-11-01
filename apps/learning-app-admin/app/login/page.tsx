@@ -1,10 +1,10 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "@lazariways/ui/components/button"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@lazariways/ui/components/field"
+import { Input } from "@lazariways/ui/components/input"
 import { useMutation } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"

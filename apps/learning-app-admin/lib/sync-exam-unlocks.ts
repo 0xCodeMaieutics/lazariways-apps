@@ -1,5 +1,5 @@
+import type prisma from "@lazariways/database/client"
 import { TRPCError } from "@trpc/server"
-import type prisma from "@workspace/database/client"
 
 import { backfillUnlockedExamsForUnlocker } from "@/lib/backfill-unlocked-exams"
 

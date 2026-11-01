@@ -3,9 +3,9 @@
 import {
   personalGeorgienProfessionOptions,
   type PersonalGeorgienProfession,
-} from "@workspace/application/pdf"
-import { Button } from "@workspace/ui/components/button"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+} from "@lazariways/application/pdf"
+import { Button } from "@lazariways/ui/components/button"
+import { Checkbox } from "@lazariways/ui/components/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -13,11 +13,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@lazariways/ui/components/dialog"
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@lazariways/ui/components/field"
+import { Input } from "@lazariways/ui/components/input"
+import { Label } from "@lazariways/ui/components/label"
+import { cn } from "@lazariways/ui/lib/utils"
 import { useState } from "react"
 
 interface GeneratePersonalgeorgienProfileButtonProps {

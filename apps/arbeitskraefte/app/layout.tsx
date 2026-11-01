@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import "@workspace/ui/globals.css"
+import "@lazariways/ui/globals.css"
 
 export const metadata: Metadata = {
   title: "Lazari Ways - Arbeitskräfte",

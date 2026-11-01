@@ -1,5 +1,5 @@
-import prisma from "@workspace/database/client"
-import { Button } from "@workspace/ui/components/button"
+import prisma from "@lazariways/database/client"
+import { Button } from "@lazariways/ui/components/button"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 

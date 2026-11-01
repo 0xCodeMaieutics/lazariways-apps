@@ -1,9 +1,9 @@
-import prisma from "@workspace/database/client"
+import prisma from "@lazariways/database/client"
 import {
   deleteFileFromStorage,
   getSignedUrlForDownload,
   uploadFileToStorage,
-} from "@workspace/file-upload/s3-client"
+} from "@lazariways/file-upload/s3-client"
 
 import { env } from "@/env"
 import { requireAdminSessionForApi } from "@/lib/auth"

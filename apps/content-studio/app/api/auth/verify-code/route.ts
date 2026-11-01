@@ -1,4 +1,4 @@
-import { verifyCodeAndCreateSession } from "@workspace/verification"
+import { verifyCodeAndCreateSession } from "@lazariways/verification"
 import { cookies } from "next/headers"
 import { z } from "zod"
 

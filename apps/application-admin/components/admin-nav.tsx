@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@lazariways/ui/lib/utils"
 import { FileText, GraduationCap, type LucideIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"

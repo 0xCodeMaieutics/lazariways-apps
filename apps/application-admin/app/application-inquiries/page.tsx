@@ -1,6 +1,6 @@
-import prisma from "@workspace/database/client"
-import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
-import { Button } from "@workspace/ui/components/button"
+import prisma from "@lazariways/database/client"
+import { getSignedUrlForDownload } from "@lazariways/file-upload/s3-client"
+import { Button } from "@lazariways/ui/components/button"
 import Link from "next/link"
 
 import { ApplicationInquiryCard } from "@/components/application-inquiry-card"

@@ -41,7 +41,7 @@ export default defineConfig({
   // Run your local dev server before starting the tests.
   webServer: [
     {
-      command: "pnpm --filter learning-app-admin dev",
+      command: "pnpm --filter @lazariways/learning-app-admin dev",
       url: "http://localhost:3008",
       reuseExistingServer: false,
       env: {
@@ -49,7 +49,7 @@ export default defineConfig({
       },
     },
     {
-      command: "pnpm --filter learning-app dev",
+      command: "pnpm --filter @lazariways/learning-app dev",
       url: "http://localhost:3007",
       reuseExistingServer: false,
       env: {

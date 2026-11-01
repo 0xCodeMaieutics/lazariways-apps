@@ -1,8 +1,8 @@
 "use client"
 
-import type { AdminApplicationEditData } from "@workspace/application/schema"
-import { Button } from "@workspace/ui/components/button"
-import { ImageCropper } from "@workspace/ui/components/image-cropper"
+import type { AdminApplicationEditData } from "@lazariways/application/schema"
+import { Button } from "@lazariways/ui/components/button"
+import { ImageCropper } from "@lazariways/ui/components/image-cropper"
 import { Loader2, Pencil } from "lucide-react"
 import { useRef, useState, useTransition } from "react"
 

@@ -4,9 +4,9 @@ APPS := $(patsubst apps/%/package.json,%,$(wildcard apps/*/package.json))
 
 setup:
 	@docker compose up --build --remove-orphans -d
-	@pnpm --filter database exec prisma migrate reset --force
-	@pnpm --filter database exec prisma migrate dev
-	@pnpm --filter database exec prisma db seed
+	@pnpm --filter @lazariways/database exec prisma migrate reset --force
+	@pnpm --filter @lazariways/database exec prisma migrate dev
+	@pnpm --filter @lazariways/database exec prisma db seed
 
 dev: $(filter-out dev build setup create-next,$(MAKECMDGOALS))
 	@APP="$(firstword $(filter-out dev build setup create-next,$(MAKECMDGOALS)))"; \
@@ -19,7 +19,7 @@ dev: $(filter-out dev build setup create-next,$(MAKECMDGOALS))
 		echo "Error: ./apps/$$APP does not exist"; \
 		exit 1; \
 	fi; \
-	pnpm turbo --filter $$APP dev
+	pnpm turbo --filter ./apps/$$APP dev
 
 build: $(filter-out build dev setup create-next,$(MAKECMDGOALS))
 	@APP="$(firstword $(filter-out build dev setup create-next,$(MAKECMDGOALS)))"; \
@@ -32,7 +32,7 @@ build: $(filter-out build dev setup create-next,$(MAKECMDGOALS))
 		echo "Error: ./apps/$$APP does not exist"; \
 		exit 1; \
 	fi; \
-	pnpm turbo --filter $$APP build
+	pnpm turbo --filter ./apps/$$APP build
 
 create-next: $(filter-out create-next,$(MAKECMDGOALS))
 	@APP="$(firstword $(filter-out create-next,$(MAKECMDGOALS)))"; \

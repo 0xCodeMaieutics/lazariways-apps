@@ -7,7 +7,7 @@ import {
   shoeSizeOptions,
   workSectorLabels,
   workSectorOptions,
-} from "@workspace/application/schema"
+} from "@lazariways/application/schema"
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -16,9 +16,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
-import { Button } from "@workspace/ui/components/button"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+} from "@lazariways/ui/components/alert-dialog"
+import { Button } from "@lazariways/ui/components/button"
+import { Checkbox } from "@lazariways/ui/components/checkbox"
 import {
   Field,
   FieldError,
@@ -26,13 +26,13 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { NativeSelect, NativeSelectOption } from "@workspace/ui/components/native-select"
-import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
-import { SafariInputDate } from "@workspace/ui/components/safari-date-component"
-import { toast } from "@workspace/ui/components/sonner"
+} from "@lazariways/ui/components/field"
+import { Input } from "@lazariways/ui/components/input"
+import { Label } from "@lazariways/ui/components/label"
+import { NativeSelect, NativeSelectOption } from "@lazariways/ui/components/native-select"
+import { RadioGroup, RadioGroupItem } from "@lazariways/ui/components/radio-group"
+import { SafariInputDate } from "@lazariways/ui/components/safari-date-component"
+import { toast } from "@lazariways/ui/components/sonner"
 import { useRouter } from "next/navigation"
 import { startTransition, useState, useTransition, type ReactNode } from "react"
 import { Controller, useForm, useWatch, type Control } from "react-hook-form"

@@ -1,6 +1,6 @@
 "use client"
 
-import type { Topic } from "@workspace/database/browser"
+import type { Topic } from "@lazariways/database/browser"
 
 import { TopicForm } from "../../../_components/forms/topic-form"
 

@@ -1,5 +1,5 @@
-import { Input } from "@workspace/ui/components/input"
-import { cn } from "@workspace/ui/lib/utils"
+import { Input } from "@lazariways/ui/components/input"
+import { cn } from "@lazariways/ui/lib/utils"
 import { Calendar } from "lucide-react"
 import type { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form"
 

@@ -1,4 +1,4 @@
-import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Skeleton } from "@lazariways/ui/components/skeleton"
 
 import { AdminNav } from "@/components/admin-nav"
 

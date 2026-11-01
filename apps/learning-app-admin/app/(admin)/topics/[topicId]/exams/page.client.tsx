@@ -11,17 +11,24 @@ import {
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { useMutation } from "@tanstack/react-query"
-import type { Exam } from "@workspace/database/browser"
-import { Button } from "@workspace/ui/components/button"
+import type { Exam } from "@lazariways/database/browser"
+import { Button } from "@lazariways/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { Switch } from "@workspace/ui/components/switch"
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@workspace/ui/components/table"
+} from "@lazariways/ui/components/dropdown-menu"
+import { Switch } from "@lazariways/ui/components/switch"
+import {
+  Table,
+  TableHeader,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@lazariways/ui/components/table"
+import { useMutation } from "@tanstack/react-query"
 import { ArrowLeft, GripVertical, Loader2, Lock, LockOpen, MoreHorizontal, Pencil, Plus } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"

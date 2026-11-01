@@ -1,7 +1,7 @@
+import { TopicType } from "@lazariways/database/browser"
+import prisma from "@lazariways/database/client"
+import { uploadToStorage } from "@lazariways/file-upload/s3-client"
 import { TRPCError } from "@trpc/server"
-import { TopicType } from "@workspace/database/browser"
-import prisma from "@workspace/database/client"
-import { uploadToStorage } from "@workspace/file-upload/s3-client"
 import { z } from "zod"
 
 import { env } from "@/env"

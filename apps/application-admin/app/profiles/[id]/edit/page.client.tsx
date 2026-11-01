@@ -8,9 +8,9 @@ import {
   desiredSalaryOptions,
   languageLevelOptions,
   workSectorOptions,
-} from "@workspace/profile/schema"
-import { Button } from "@workspace/ui/components/button"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+} from "@lazariways/profile/schema"
+import { Button } from "@lazariways/ui/components/button"
+import { Checkbox } from "@lazariways/ui/components/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -18,13 +18,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
-import { SafariInputDate } from "@workspace/ui/components/safari-date-component"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@lazariways/ui/components/dialog"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@lazariways/ui/components/field"
+import { Input } from "@lazariways/ui/components/input"
+import { Label } from "@lazariways/ui/components/label"
+import { RadioGroup, RadioGroupItem } from "@lazariways/ui/components/radio-group"
+import { SafariInputDate } from "@lazariways/ui/components/safari-date-component"
+import { cn } from "@lazariways/ui/lib/utils"
 import { Plus, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { startTransition, useState, useTransition, type ReactNode } from "react"

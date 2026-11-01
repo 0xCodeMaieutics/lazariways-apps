@@ -1,6 +1,6 @@
-import { prismaToAdminEditData } from "@workspace/application/prisma"
-import prisma from "@workspace/database/client"
-import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { prismaToAdminEditData } from "@lazariways/application/prisma"
+import prisma from "@lazariways/database/client"
+import { getSignedUrlForDownload } from "@lazariways/file-upload/s3-client"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 

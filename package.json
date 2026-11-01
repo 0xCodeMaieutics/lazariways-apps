@@ -8,13 +8,13 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "typecheck": "turbo typecheck",
-    "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@workspace/database exec prisma",
+    "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@lazariways/database exec prisma",
     "lint:fix": "oxlint --fix",
     "format:check": "oxfmt --check"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.61.0",
-    "@workspace/typescript-config": "workspace:*",
+    "@lazariways/typescript-config": "workspace:*",
     "oxfmt": "^0.74.0",
     "oxlint": "^1.89.0",
     "turbo": "^2.9.15",

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import "@workspace/ui/globals.css"
+import "@lazariways/ui/globals.css"
 import "./animations.css"
 import { Providers } from "./providers"
 import { ThemeProvider } from "./theme-provider"

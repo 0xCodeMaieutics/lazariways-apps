@@ -1,7 +1,7 @@
 "use client"
-import type { Exam, Topic, UserExamAggregation } from "@workspace/database/browser"
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
+import type { Exam, Topic, UserExamAggregation } from "@lazariways/database/browser"
+import { Button } from "@lazariways/ui/components/button"
+import { Card, CardContent } from "@lazariways/ui/components/card"
 import {
   BookOpen,
   ChevronLeft,

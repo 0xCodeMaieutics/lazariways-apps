@@ -1,7 +1,7 @@
 import crypto from "node:crypto"
 
-import type { AdminSession, AuthScope } from "@workspace/database/browser"
-import prisma from "@workspace/database/client"
+import type { AdminSession, AuthScope } from "@lazariways/database/browser"
+import prisma from "@lazariways/database/client"
 
 const VERIFICATION_CODE_EXPIRY_MINUTES = 10
 const VERIFICATION_CODE_COOLDOWN_MINUTES = 1

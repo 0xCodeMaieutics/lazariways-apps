@@ -1,4 +1,4 @@
-import { downloadFileFromStorage } from "@workspace/file-upload/s3-client"
+import { downloadFileFromStorage } from "@lazariways/file-upload/s3-client"
 
 import { env } from "@/env"
 

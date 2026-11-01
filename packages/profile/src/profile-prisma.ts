@@ -1,4 +1,4 @@
-import type { Profile, ProfileLanguage } from "@workspace/database/browser"
+import type { Profile, ProfileLanguage } from "@lazariways/database/browser"
 
 import type { AdminProfileEditData } from "./profile-schema"
 import { workSectorOptions } from "./profile-schema"

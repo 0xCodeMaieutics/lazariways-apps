@@ -1,8 +1,8 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
+import { Button } from "@lazariways/ui/components/button"
+import { Input } from "@lazariways/ui/components/input"
+import { Label } from "@lazariways/ui/components/label"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 

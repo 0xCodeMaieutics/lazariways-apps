@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/profile",
+  "name": "@lazariways/profile",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -8,11 +8,11 @@
     "./prisma": "./src/profile-prisma.ts"
   },
   "dependencies": {
-    "@workspace/database": "workspace:*",
+    "@lazariways/database": "workspace:*",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@workspace/typescript-config": "workspace:*",
+    "@lazariways/typescript-config": "workspace:*",
     "typescript": "^5"
   }
 }

@@ -1,7 +1,7 @@
 "use client"
 
-import type { TopicType } from "@workspace/database/browser"
-import { Card, CardContent } from "@workspace/ui/components/card"
+import type { TopicType } from "@lazariways/database/browser"
+import { Card, CardContent } from "@lazariways/ui/components/card"
 import { BookOpen, ChevronRight, Croissant, Lock, Puzzle, Rocket } from "lucide-react"
 import Link from "next/link"
 

@@ -1,5 +1,5 @@
+import type prisma from "@lazariways/database/client"
 import { TRPCError } from "@trpc/server"
-import type prisma from "@workspace/database/client"
 
 type TransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
 

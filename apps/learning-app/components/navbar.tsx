@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@lazariways/ui/components/button"
 import { Moon, Sun, Monitor, User } from "lucide-react"
 import { useTheme } from "next-themes"
 import Image from "next/image"

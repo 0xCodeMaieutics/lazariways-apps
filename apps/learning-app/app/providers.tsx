@@ -1,7 +1,7 @@
 "use client"
 
+import { Toaster } from "@lazariways/ui/components/sonner"
 import { QueryClientProvider } from "@tanstack/react-query"
-import { Toaster } from "@workspace/ui/components/sonner"
 import { useState } from "react"
 
 import { getQueryClient } from "@/lib/query-client"

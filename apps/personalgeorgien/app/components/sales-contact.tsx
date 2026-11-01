@@ -1,4 +1,4 @@
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@lazariways/ui/components/button"
 import Image from "next/image"
 
 import { SALES_CONTACT } from "../../lib/site"

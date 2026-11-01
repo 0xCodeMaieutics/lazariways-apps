@@ -1,6 +1,6 @@
-import { generateBewerberChecklistPdf } from "@workspace/application/pdf"
-import { adminEditDataToApplicationFormData, prismaToAdminEditData } from "@workspace/application/prisma"
-import prisma from "@workspace/database/client"
+import { generateBewerberChecklistPdf } from "@lazariways/application/pdf"
+import { adminEditDataToApplicationFormData, prismaToAdminEditData } from "@lazariways/application/prisma"
+import prisma from "@lazariways/database/client"
 
 import { requireAdminSessionForApi } from "@/lib/auth"
 import { downloadFotoAsFile } from "@/lib/foto"

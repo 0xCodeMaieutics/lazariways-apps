@@ -1,5 +1,5 @@
-import { prisma } from "@workspace/database/client"
-import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
+import { prisma } from "@lazariways/database/client"
+import { getSignedUrlForDownload } from "@lazariways/file-upload/s3-client"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 

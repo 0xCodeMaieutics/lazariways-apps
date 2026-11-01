@@ -34,7 +34,7 @@ jobs:
 
       - name: Generate Prisma client
         if: matrix.check.script == 'typecheck'
-        run: pnpm --filter @workspace/database generate
+        run: pnpm --filter @lazariways/database generate
         env:
           # prisma.config.ts requires a URL; generate never connects to it.
           DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
@@ -73,7 +73,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Apply migrations to an empty database
-        run: pnpm --filter @workspace/database db:migrate:deploy
+        run: pnpm --filter @lazariways/database db:migrate:deploy
 
       - name: Fail if schema has unmigrated changes
         working-directory: packages/database
@@ -110,6 +110,6 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm --filter @workspace/database db:migrate:deploy
+      - run: pnpm --filter @lazariways/database db:migrate:deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

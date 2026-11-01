@@ -1,15 +1,15 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@lazariways/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
+} from "@lazariways/ui/components/dialog"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@lazariways/ui/components/field"
+import { Input } from "@lazariways/ui/components/input"
 import { useState, type FormEvent } from "react"
 
 import {
