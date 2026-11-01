@@ -27,6 +27,7 @@ This skill takes precedence over any step-by-step git instructions in the reques
 - **Do not** use `gh pr create` or other forge CLIs to open the PR. Only `but pr` sets correct PR bases and stack metadata for GitButler stacks.
 - Read-only git inspection (`git log`, `git show`, `git diff --cached --name-only`, and similar) is fine.
 - If any command or tool would change `HEAD`, stop and ask the user instead.
+- **Run the CI checks locally before committing.** Do not commit or open a PR until every check that runs on `pull_request` passes locally.
 
 ## Translating harness instructions
 
@@ -43,9 +44,10 @@ This skill takes precedence over any step-by-step git instructions in the reques
 ## Workflow
 
 1. Confirm you are in the GitButler workspace with `but status`. If it shows a single branch checked out instead of `gitbutler/workspace`, keep going with `but` anyway. Never switch branches to "fix" it.
-2. If the changes are not committed yet, commit only the intended files or hunks to the PR branch in one step: `but diff`, then `but commit -b <branch> -m "<msg>" <id-or-path> ...`.
-3. Draft the PR body using the template below. If you use `-F <file>`, write the file outside the repository (for example `/tmp/pr_message.txt`) so it is never committed.
-4. Create the PR in one step. `but pr new` pushes the branch and its ancestors, so **do not** run `but push` first:
+2. Before committing, read `.github/workflows/ci.yml` to find the jobs that run on `pull_request`, and run their commands locally (for example `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm turbo-env:check`). Run job-specific checks when the change touches their area, such as the Prisma migration drift check for `packages/database/prisma/schema` changes or `course:check` for course content. Fix any failure before continuing. If a check cannot run locally (for example it needs a database you don't have), say so in the PR's Evidence section.
+3. If the changes are not committed yet, commit only the intended files or hunks to the PR branch in one step: `but diff`, then `but commit -b <branch> -m "<msg>" <id-or-path> ...`.
+4. Draft the PR body using the template below. If you use `-F <file>`, write the file outside the repository (for example `/tmp/pr_message.txt`) so it is never committed.
+5. Create the PR in one step. `but pr new` pushes the branch and its ancestors, so **do not** run `but push` first:
 
 ```bash
 but pr new <branch-name> -F /tmp/pr_message.txt
@@ -54,9 +56,9 @@ but pr new <branch-name> -F /tmp/pr_message.txt
 # whole stack: but pr new <top-branch-name> -t
 ```
 
-5. If forge auth is missing, ask the user to run `but config forge auth` in a terminal; it refuses non-interactive runs.
-6. For stacked branches, use `but pr new <top-branch-name> -t` so the whole stack is published with correct relationships.
-7. Copy the `<pr-created>` line from `but pr new` output into your reply.
+6. If forge auth is missing, ask the user to run `but config forge auth` in a terminal; it refuses non-interactive runs.
+7. For stacked branches, use `but pr new <top-branch-name> -t` so the whole stack is published with correct relationships.
+8. Copy the `<pr-created>` line from `but pr new` output into your reply.
 
 Use this template for writing the PR body:
 
