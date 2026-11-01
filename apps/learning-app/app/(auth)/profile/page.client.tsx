@@ -10,6 +10,8 @@ import { useEffect, useRef, useState } from "react"
 import { useTRPC } from "@/lib/trpc/react"
 import { cn } from "@/lib/utils"
 
+import { AvatarCropDialog } from "./avatar-crop-dialog"
+
 const ProfileAvatar = ({
   image,
   previewUrl,
@@ -49,6 +51,7 @@ const ProfileAvatar = ({
       <input
         onChange={(event) => {
           const file = event.target.files?.[0]
+          event.target.value = ""
           if (file !== undefined) onAvatarPick?.(file)
         }}
         className="invisible absolute"
@@ -84,18 +87,36 @@ function ProfileHeader({
   )
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [pendingImage, setPendingImage] = useState<{ src: string; fileName: string } | null>(null)
   const prevUrlRef = useRef<string | null>(null)
+  const pendingUrlRef = useRef<string | null>(null)
 
   useEffect(() => {
     return () => {
       if (prevUrlRef.current) URL.revokeObjectURL(prevUrlRef.current)
+      if (pendingUrlRef.current) URL.revokeObjectURL(pendingUrlRef.current)
     }
   }, [])
 
   const trpc = useTRPC()
   const uploadImage = useMutation(trpc.user.uploadImage.mutationOptions())
 
-  const handleAvatarPick = async (file: File) => {
+  const clearPendingImage = () => {
+    if (pendingUrlRef.current) URL.revokeObjectURL(pendingUrlRef.current)
+    pendingUrlRef.current = null
+    setPendingImage(null)
+  }
+
+  const handleAvatarPick = (file: File) => {
+    if (pendingUrlRef.current) URL.revokeObjectURL(pendingUrlRef.current)
+    const src = URL.createObjectURL(file)
+    pendingUrlRef.current = src
+    setPendingImage({ src, fileName: file.name })
+  }
+
+  const handleAvatarCropped = async (file: File) => {
+    clearPendingImage()
+
     if (prevUrlRef.current) URL.revokeObjectURL(prevUrlRef.current)
     const url = URL.createObjectURL(file)
     prevUrlRef.current = url
@@ -114,6 +135,15 @@ function ProfileHeader({
         name={profile.name}
         onAvatarPick={handleAvatarPick}
       />
+      {pendingImage !== null && (
+        <AvatarCropDialog
+          key={pendingImage.src}
+          imageSrc={pendingImage.src}
+          fileName={pendingImage.fileName}
+          onCancel={clearPendingImage}
+          onCropped={handleAvatarCropped}
+        />
+      )}
       <div className="flex flex-col items-center gap-1">
         <h1 className="text-2xl font-bold">{profile.name}</h1>
         <p className="text-sm text-muted-foreground">{profile.email}</p>
