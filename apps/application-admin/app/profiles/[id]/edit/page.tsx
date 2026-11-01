@@ -1,6 +1,6 @@
-import prisma from "@workspace/database/client"
-import { getSignedUrlForDownload } from "@workspace/file-upload/s3-client"
-import { prismaToAdminEditData } from "@workspace/profile/prisma"
+import prisma from "@lazariways/database/client"
+import { getSignedUrlForDownload } from "@lazariways/file-upload/s3-client"
+import { prismaToAdminEditData } from "@lazariways/profile/prisma"
 import { notFound } from "next/navigation"
 
 import { BackLink } from "@/components/back-link"

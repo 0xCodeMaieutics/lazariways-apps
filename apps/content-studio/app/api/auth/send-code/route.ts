@@ -1,4 +1,4 @@
-import { createAndSendVerificationCode } from "@workspace/verification"
+import { createAndSendVerificationCode } from "@lazariways/verification"
 
 import { env } from "@/env"
 

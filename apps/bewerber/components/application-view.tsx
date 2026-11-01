@@ -1,4 +1,4 @@
-import type { AdminApplicationEditData } from "@workspace/application/schema"
+import type { AdminApplicationEditData } from "@lazariways/application/schema"
 import type { ReactNode } from "react"
 
 import { ReadOnlyField } from "@/components/read-only-field"

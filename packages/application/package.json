@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/application",
+  "name": "@lazariways/application",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -9,13 +9,13 @@
     "./prisma": "./src/application-prisma.ts"
   },
   "dependencies": {
+    "@lazariways/database": "workspace:*",
     "@pdf-lib/fontkit": "^1.1.1",
-    "@workspace/database": "workspace:*",
     "pdf-lib": "^1.17.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@workspace/typescript-config": "workspace:*",
+    "@lazariways/typescript-config": "workspace:*",
     "typescript": "^5"
   }
 }

@@ -1,8 +1,8 @@
 "use client"
 
+import { Card, CardContent } from "@lazariways/ui/components/card"
+import { Separator } from "@lazariways/ui/components/separator"
 import { useMutation } from "@tanstack/react-query"
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { Separator } from "@workspace/ui/components/separator"
 import { Award, Calendar, Flame, Plus, Target, Trophy, User, Zap } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"

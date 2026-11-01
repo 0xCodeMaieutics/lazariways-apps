@@ -1,4 +1,4 @@
-import { type Exam, type UserExamAggregation } from "@workspace/database/browser"
+import { type Exam, type UserExamAggregation } from "@lazariways/database/browser"
 import { useState } from "react"
 
 export const useExamLogic = ({

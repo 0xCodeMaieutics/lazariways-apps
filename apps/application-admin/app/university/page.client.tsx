@@ -1,7 +1,7 @@
 "use client"
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@lazariways/ui/components/button"
 import {
   Field,
   FieldDescription,
@@ -10,9 +10,9 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { toast } from "@workspace/ui/components/sonner"
+} from "@lazariways/ui/components/field"
+import { Input } from "@lazariways/ui/components/input"
+import { toast } from "@lazariways/ui/components/sonner"
 import { CircleAlert, Loader2, Plus } from "lucide-react"
 import { startTransition, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"

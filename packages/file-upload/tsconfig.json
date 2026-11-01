@@ -9,8 +9,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@workspace/shared/*": ["./node_modules/@workspace/shared/src/*"],
-      "@workspace/file-upload/*": ["./src/*"]
+      "@lazariways/shared/*": ["./node_modules/@lazariways/shared/src/*"],
+      "@lazariways/file-upload/*": ["./src/*"]
     }
   },
   "exclude": ["node_modules", "scripts"]

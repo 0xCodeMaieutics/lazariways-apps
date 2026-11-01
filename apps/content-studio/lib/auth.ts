@@ -1,5 +1,5 @@
-import type { AdminSession } from "@workspace/database/browser"
-import { findSession } from "@workspace/verification"
+import type { AdminSession } from "@lazariways/database/browser"
+import { findSession } from "@lazariways/verification"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 

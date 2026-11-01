@@ -1,4 +1,4 @@
-import { GermanLevel, type Prisma } from "@workspace/database/browser"
+import { GermanLevel, type Prisma } from "@lazariways/database/browser"
 
 export const UNIVERSITY_NOT_IN_LIST = "__not_in_list__"
 

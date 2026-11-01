@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@lazariways/ui/lib/utils"
 import { useEffect, useState } from "react"
 
 import { HERO_TITLE } from "../../lib/site"

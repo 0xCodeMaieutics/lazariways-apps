@@ -11,7 +11,7 @@ importers:
       '@dotenvx/dotenvx':
         specifier: ^1.61.0
         version: 1.69.2
-      '@workspace/typescript-config':
+      '@lazariways/typescript-config':
         specifier: workspace:*
         version: link:packages/typescript-config
       oxfmt:
@@ -32,18 +32,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.77.0(react@19.2.4))
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/file-upload
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@5.5.4)(valibot@1.2.0(typescript@5.5.4))(zod@4.4.3)
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/file-upload
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       lucide-react:
         specifier: ^1.17.0
         version: 1.17.0(react@19.2.4)
@@ -69,6 +69,9 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@lazariways/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.0
@@ -81,9 +84,6 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.15)
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       typescript:
         specifier: ^5
         version: 5.5.4
@@ -93,27 +93,27 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.77.0(react@19.2.4))
+      '@lazariways/application':
+        specifier: workspace:*
+        version: link:../../packages/application
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/file-upload
+      '@lazariways/profile':
+        specifier: workspace:*
+        version: link:../../packages/profile
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@lazariways/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@5.5.4)(valibot@1.2.0(typescript@5.5.4))(zod@4.4.3)
-      '@workspace/application':
-        specifier: workspace:*
-        version: link:../../packages/application
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/file-upload
-      '@workspace/profile':
-        specifier: workspace:*
-        version: link:../../packages/profile
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@workspace/verification':
-        specifier: workspace:*
-        version: link:../../packages/verification
       lucide-react:
         specifier: ^1.17.0
         version: 1.17.0(react@19.2.4)
@@ -157,18 +157,18 @@ importers:
 
   apps/arbeitskraefte:
     dependencies:
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/file-upload
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@5.5.4)(valibot@1.2.0(typescript@5.5.4))(zod@4.4.3)
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/file-upload
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       next:
         specifier: 16.2.7
         version: 16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -203,21 +203,21 @@ importers:
 
   apps/bewerber:
     dependencies:
+      '@lazariways/application':
+        specifier: workspace:*
+        version: link:../../packages/application
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/file-upload
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@5.5.4)(valibot@1.2.0(typescript@5.5.4))(zod@4.4.3)
-      '@workspace/application':
-        specifier: workspace:*
-        version: link:../../packages/application
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/file-upload
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       nanoid:
         specifier: 6.0.1
         version: 6.0.1
@@ -267,18 +267,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.77.0(react@19.2.4))
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@lazariways/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@5.5.4)(valibot@1.2.0(typescript@5.5.4))(zod@4.4.3)
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@workspace/verification':
-        specifier: workspace:*
-        version: link:../../packages/verification
       lucide-react:
         specifier: ^1.17.0
         version: 1.17.0(react@19.2.4)
@@ -325,6 +325,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.77.0(react@19.2.8))
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/file-upload
+      '@lazariways/learning-app-auth':
+        specifier: workspace:*
+        version: link:../../packages/learning-app-auth
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@sentry/nextjs':
         specifier: ^10.70.0
         version: 10.70.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(next@16.3.1(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(@types/node@20.19.41)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(webpack@5.109.2)
@@ -343,18 +355,6 @@ importers:
       '@trpc/tanstack-react-query':
         specifier: ^11.18.0
         version: 11.18.0(@tanstack/react-query@5.101.4(react@19.2.8))(@trpc/client@11.18.0(@trpc/server@11.18.0(typescript@5.5.4))(typescript@5.5.4))(@trpc/server@11.18.0(typescript@5.5.4))(react@19.2.8)(typescript@5.5.4)
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/file-upload
-      '@workspace/learning-app-auth':
-        specifier: workspace:*
-        version: link:../../packages/learning-app-auth
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       better-auth:
         specifier: ^1.7.0
         version: 1.7.0(@opentelemetry/api@1.9.1)(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4))(typescript@5.5.4))(mysql2@3.15.3)(next@16.3.1(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(@types/node@20.19.41)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(pg@8.21.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vitest@4.1.8(@opentelemetry/api@1.9.1)(@types/node@20.19.41))
@@ -419,6 +419,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.77.0(react@19.2.8))
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/file-upload
+      '@lazariways/learning-app-auth':
+        specifier: workspace:*
+        version: link:../../packages/learning-app-auth
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@sentry/nextjs':
         specifier: ^10.70.0
         version: 10.70.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(next@16.3.2(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(@types/node@20.19.41)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(webpack@5.109.2)
@@ -437,18 +449,6 @@ importers:
       '@trpc/tanstack-react-query':
         specifier: ^11.18.0
         version: 11.18.0(@tanstack/react-query@5.101.4(react@19.2.8))(@trpc/client@11.18.0(@trpc/server@11.18.0(typescript@5.5.4))(typescript@5.5.4))(@trpc/server@11.18.0(typescript@5.5.4))(react@19.2.8)(typescript@5.5.4)
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/file-upload
-      '@workspace/learning-app-auth':
-        specifier: workspace:*
-        version: link:../../packages/learning-app-auth
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       better-auth:
         specifier: ^1.7.0
         version: 1.7.0(@opentelemetry/api@1.9.1)(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4))(typescript@5.5.4))(mysql2@3.15.3)(next@16.3.2(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(@types/node@20.19.41)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(pg@8.21.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vitest@4.1.8(@opentelemetry/api@1.9.1)(@types/node@20.19.41))
@@ -504,7 +504,7 @@ importers:
 
   apps/personalgeorgien:
     dependencies:
-      '@workspace/ui':
+      '@lazariways/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:
@@ -541,18 +541,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.77.0(react@19.2.4))
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/file-upload
+      '@lazariways/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@5.5.4)(valibot@1.2.0(typescript@5.5.4))(zod@4.4.3)
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/file-upload
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       lucide-react:
         specifier: ^1.17.0
         version: 1.17.0(react@19.2.4)
@@ -593,27 +593,27 @@ importers:
 
   e2e/cross-app:
     devDependencies:
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lazariways/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@playwright/test':
         specifier: ^1.63.0
         version: 1.63.0
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       dotenv:
         specifier: ^17.2.3
         version: 17.4.2
 
   packages/application:
     dependencies:
+      '@lazariways/database':
+        specifier: workspace:*
+        version: link:../database
       '@pdf-lib/fontkit':
         specifier: ^1.1.1
         version: 1.1.1
-      '@workspace/database':
-        specifier: workspace:*
-        version: link:../database
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
@@ -621,7 +621,7 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
-      '@workspace/typescript-config':
+      '@lazariways/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
@@ -630,15 +630,15 @@ importers:
 
   packages/database:
     dependencies:
+      '@lazariways/file-upload':
+        specifier: workspace:*
+        version: link:../file-upload
       '@prisma/adapter-pg':
         specifier: ^7.8.0
         version: 7.8.0
       '@prisma/client':
         specifier: latest
         version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4))(typescript@5.5.4)
-      '@workspace/file-upload':
-        specifier: workspace:*
-        version: link:../file-upload
       dotenv:
         specifier: ^17.2.3
         version: 17.4.2
@@ -646,15 +646,15 @@ importers:
         specifier: ^8.16.3
         version: 8.21.0
     devDependencies:
+      '@lazariways/learning-app-auth':
+        specifier: workspace:*
+        version: link:../learning-app-auth
+      '@lazariways/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@types/pg':
         specifier: ^8.16.0
         version: 8.20.0
-      '@workspace/learning-app-auth':
-        specifier: workspace:*
-        version: link:../learning-app-auth
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       prisma:
         specifier: latest
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4)
@@ -727,26 +727,26 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0(@opentelemetry/api@1.9.1)(@prisma/client@7.8.0(prisma@7.8.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4))(typescript@5.5.4))(mysql2@3.15.3)(next@16.3.2(@opentelemetry/api@1.9.1)(@types/node@20.19.41)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(pg@8.21.0)(prisma@7.8.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.5.4))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vitest@4.1.8(@opentelemetry/api@1.9.1)(@types/node@20.19.41))
     devDependencies:
+      '@lazariways/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@types/node':
         specifier: ^20.19.9
         version: 20.19.41
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       typescript:
         specifier: 5.5.4
         version: 5.5.4
 
   packages/profile:
     dependencies:
-      '@workspace/database':
+      '@lazariways/database':
         specifier: workspace:*
         version: link:../database
       zod:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
-      '@workspace/typescript-config':
+      '@lazariways/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
@@ -797,6 +797,9 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@lazariways/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.0
@@ -812,9 +815,6 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.15)
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       react-hook-form:
         specifier: ^7.77.0
         version: 7.77.0(react@19.2.4)
@@ -827,11 +827,11 @@ importers:
 
   packages/verification:
     dependencies:
-      '@workspace/database':
+      '@lazariways/database':
         specifier: workspace:*
         version: link:../database
     devDependencies:
-      '@workspace/typescript-config':
+      '@lazariways/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
 

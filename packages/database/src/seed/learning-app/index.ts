@@ -1,4 +1,4 @@
-import { createLearningAppAuth } from "@workspace/learning-app-auth"
+import { createLearningAppAuth } from "@lazariways/learning-app-auth"
 
 import { UserRole } from "../../../prisma/generated/enums"
 import { prisma } from "../../client"

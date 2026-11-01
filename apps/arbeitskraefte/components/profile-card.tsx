@@ -1,4 +1,4 @@
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@lazariways/ui/components/button"
 
 import { formatAgeLabel, formatLanguages, formatMaskedName } from "@/lib/profile-display"
 

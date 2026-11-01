@@ -1,5 +1,5 @@
 {
-  "name": "personalgeorgien",
+  "name": "@lazariways/personalgeorgien",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@workspace/ui": "workspace:*",
+    "@lazariways/ui": "workspace:*",
     "next": "16.2.7",
     "react": "19.2.4",
     "react-dom": "19.2.4"

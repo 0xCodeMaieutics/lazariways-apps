@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/verification",
+  "name": "@lazariways/verification",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,9 +8,9 @@
     "test": "echo 'Add test script here'"
   },
   "dependencies": {
-    "@workspace/database": "workspace:*"
+    "@lazariways/database": "workspace:*"
   },
   "devDependencies": {
-    "@workspace/typescript-config": "workspace:*"
+    "@lazariways/typescript-config": "workspace:*"
   }
 }

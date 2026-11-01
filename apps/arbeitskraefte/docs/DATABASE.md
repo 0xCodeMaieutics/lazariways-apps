@@ -1,11 +1,11 @@
 # Database conventions
 
-This project uses `@workspace/database` package to handle database queries.
+This project uses `@lazariways/database` package to handle database queries.
 
 # import client
 
 ```ts
-import prisma from "@workspace/database/client"
+import prisma from "@lazariways/database/client"
 
 const [applications, totalCount] = await Promise.all([
   prisma.application.findMany({

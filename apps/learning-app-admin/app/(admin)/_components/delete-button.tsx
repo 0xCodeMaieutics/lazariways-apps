@@ -1,6 +1,5 @@
 "use client"
 
-import { useMutation } from "@tanstack/react-query"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +10,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@workspace/ui/components/alert-dialog"
-import { Button } from "@workspace/ui/components/button"
+} from "@lazariways/ui/components/alert-dialog"
+import { Button } from "@lazariways/ui/components/button"
+import { useMutation } from "@tanstack/react-query"
 import { Loader2, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"

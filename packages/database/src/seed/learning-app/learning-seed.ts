@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
-import { uploadFilePathToStorage } from "@workspace/file-upload/s3-client"
+import { uploadFilePathToStorage } from "@lazariways/file-upload/s3-client"
 
 import type { ExerciseType, TopicType, PrismaClient } from "../../../prisma/generated/client"
 import topicsJson from "./assets/dev/topics.json"

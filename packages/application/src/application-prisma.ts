@@ -1,4 +1,4 @@
-import type { Application } from "@workspace/database/browser"
+import type { Application } from "@lazariways/database/browser"
 
 import type { AdminApplicationEditData, ApplicationFormData } from "./application-schema"
 import { shoeSizeOptions, workSectorOptions } from "./application-schema"

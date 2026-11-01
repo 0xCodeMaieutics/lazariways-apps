@@ -11,8 +11,7 @@ import {
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { useMutation } from "@tanstack/react-query"
-import type { Exercise } from "@workspace/database/browser"
+import type { Exercise } from "@lazariways/database/browser"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,16 +21,24 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+} from "@lazariways/ui/components/alert-dialog"
+import { Badge } from "@lazariways/ui/components/badge"
+import { Button } from "@lazariways/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table"
+} from "@lazariways/ui/components/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@lazariways/ui/components/table"
+import { useMutation } from "@tanstack/react-query"
 import { Loader2, MoreHorizontal, Pencil, Trash2, GripVertical } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"

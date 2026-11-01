@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
-import "@workspace/ui/globals.css"
+import "@lazariways/ui/globals.css"
 import { Providers } from "./providers"
 
 export const metadata: Metadata = {

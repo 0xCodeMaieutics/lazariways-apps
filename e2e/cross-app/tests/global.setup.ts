@@ -7,7 +7,7 @@ import "dotenv/config"
 
 setup("create new database", async () => {
   console.log("creating new database...", process.env.DATABASE_URL)
-  await execAsync("pnpm --filter @workspace/database exec prisma migrate")
-  await execAsync("pnpm --filter @workspace/database exec prisma generate")
-  await execAsync("pnpm --filter @workspace/database exec prisma db seed")
+  await execAsync("pnpm --filter @lazariways/database exec prisma migrate")
+  await execAsync("pnpm --filter @lazariways/database exec prisma generate")
+  await execAsync("pnpm --filter @lazariways/database exec prisma db seed")
 })

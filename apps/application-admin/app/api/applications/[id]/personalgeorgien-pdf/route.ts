@@ -1,6 +1,6 @@
-import { generatePersonalGeorgienPdf, personalGeorgienProfessionOptions } from "@workspace/application/pdf"
-import { adminEditDataToApplicationFormData, prismaToAdminEditData } from "@workspace/application/prisma"
-import prisma from "@workspace/database/client"
+import { generatePersonalGeorgienPdf, personalGeorgienProfessionOptions } from "@lazariways/application/pdf"
+import { adminEditDataToApplicationFormData, prismaToAdminEditData } from "@lazariways/application/prisma"
+import prisma from "@lazariways/database/client"
 import { z } from "zod"
 
 import { env } from "@/env"

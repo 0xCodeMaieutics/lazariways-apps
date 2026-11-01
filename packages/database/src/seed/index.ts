@@ -2,7 +2,7 @@ import "dotenv/config"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
-import { uploadFilePathToStorage } from "@workspace/file-upload/s3-client"
+import { uploadFilePathToStorage } from "@lazariways/file-upload/s3-client"
 
 import { Gender, GermanLevel, DesiredSalary, type Prisma } from "../../prisma/generated/client"
 import { prisma } from "../client"

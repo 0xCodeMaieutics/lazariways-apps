@@ -1,6 +1,6 @@
 "use client"
 
-import type { Exam, UserExamAggregation, UserExam } from "@workspace/database/browser"
+import type { Exam, UserExamAggregation, UserExam } from "@lazariways/database/browser"
 import type { ClassValue } from "clsx"
 import { ChevronLeft, FlameIcon, HeartCrack, TargetIcon, PartyPopper } from "lucide-react"
 import Link from "next/link"

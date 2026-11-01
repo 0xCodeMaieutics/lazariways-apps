@@ -1,5 +1,5 @@
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@lazariways/ui/components/button"
+import { cn } from "@lazariways/ui/lib/utils"
 
 import { SITE } from "../../lib/site"
 import { WhatsappIcon } from "./whatsapp-icon"

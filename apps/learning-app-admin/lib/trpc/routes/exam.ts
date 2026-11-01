@@ -1,5 +1,5 @@
+import prisma from "@lazariways/database/client"
 import { TRPCError } from "@trpc/server"
-import prisma from "@workspace/database/client"
 import { z } from "zod"
 
 import { tryCatchAsync } from "@/lib/try-catch"

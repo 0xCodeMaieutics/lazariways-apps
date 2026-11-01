@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@lazariways/ui/components/button"
+import { cn } from "@lazariways/ui/lib/utils"
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui"
 import * as React from "react"
 

@@ -1,4 +1,4 @@
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@lazariways/ui/lib/utils"
 import Image from "next/image"
 
 import { instagramProfileUrl } from "@/lib/instagram"

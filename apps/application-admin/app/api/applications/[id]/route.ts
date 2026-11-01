@@ -1,7 +1,7 @@
-import { applicationToPrismaData } from "@workspace/application/prisma"
-import { adminApplicationEditSchema } from "@workspace/application/schema"
-import prisma from "@workspace/database/client"
-import { deleteFileFromStorage } from "@workspace/file-upload/s3-client"
+import { applicationToPrismaData } from "@lazariways/application/prisma"
+import { adminApplicationEditSchema } from "@lazariways/application/schema"
+import prisma from "@lazariways/database/client"
+import { deleteFileFromStorage } from "@lazariways/file-upload/s3-client"
 
 import { env } from "@/env"
 import { requireAdminSessionForApi } from "@/lib/auth"

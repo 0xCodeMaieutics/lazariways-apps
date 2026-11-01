@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/file-upload",
+  "name": "@lazariways/file-upload",
   "type": "module",
   "exports": {
     "./*": "./src/*.ts"

@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@lazariways/ui/components/button"
 import { Copy, Check } from "lucide-react"
 import { useState } from "react"
 

@@ -1,3 +1,3 @@
 {
-  "extends": "@workspace/typescript-config/base.json"
+  "extends": "@lazariways/typescript-config/base.json"
 }

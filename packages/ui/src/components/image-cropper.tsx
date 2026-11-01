@@ -1,13 +1,13 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@lazariways/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
+} from "@lazariways/ui/components/dialog"
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 
 export type ImageCropperProps = {

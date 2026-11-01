@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/learning-app-auth",
+  "name": "@lazariways/learning-app-auth",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,8 +13,8 @@
     "better-auth": "^1.7.0"
   },
   "devDependencies": {
+    "@lazariways/typescript-config": "workspace:*",
     "@types/node": "^20.19.9",
-    "@workspace/typescript-config": "workspace:*",
     "typescript": "5.5.4"
   }
 }

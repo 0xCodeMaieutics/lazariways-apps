@@ -1,7 +1,7 @@
 import crypto from "crypto"
 
-import prisma from "@workspace/database/client"
-import { uploadFileToStorage } from "@workspace/file-upload/s3-client"
+import prisma from "@lazariways/database/client"
+import { uploadFileToStorage } from "@lazariways/file-upload/s3-client"
 import type { NextRequest } from "next/server"
 
 import { env } from "@/env"

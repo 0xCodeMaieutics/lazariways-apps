@@ -1,8 +1,8 @@
 import { readFileSync } from "fs"
 
-import { keyBuilders } from "@workspace/file-upload/key-builder.ts"
-import { getSignedUrlForDownload, uploadToStorage } from "@workspace/file-upload/s3-client.ts"
-import { generateRandomString } from "@workspace/shared/lib/random.ts"
+import { keyBuilders } from "@lazariways/file-upload/key-builder.ts"
+import { getSignedUrlForDownload, uploadToStorage } from "@lazariways/file-upload/s3-client.ts"
+import { generateRandomString } from "@lazariways/shared/lib/random.ts"
 import z from "zod"
 
 void (async function main() {

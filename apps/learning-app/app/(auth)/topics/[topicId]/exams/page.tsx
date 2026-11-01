@@ -1,4 +1,4 @@
-import { prisma } from "@workspace/database/client"
+import { prisma } from "@lazariways/database/client"
 import { headers } from "next/headers"
 import { notFound, redirect } from "next/navigation"
 

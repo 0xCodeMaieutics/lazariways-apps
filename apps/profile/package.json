@@ -1,5 +1,5 @@
 {
-  "name": "profile",
+  "name": "@lazariways/profile-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,10 +9,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
+    "@lazariways/database": "workspace:*",
+    "@lazariways/file-upload": "workspace:*",
+    "@lazariways/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.11",
-    "@workspace/database": "workspace:*",
-    "@workspace/file-upload": "workspace:*",
-    "@workspace/ui": "workspace:*",
     "lucide-react": "^1.17.0",
     "next": "16.2.7",
     "react": "19.2.4",

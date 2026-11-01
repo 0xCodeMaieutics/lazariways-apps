@@ -1,4 +1,4 @@
-import { Gender } from "@workspace/database/browser"
+import { Gender } from "@lazariways/database/browser"
 import { z } from "zod"
 
 export const genderOptions = [Gender.M, Gender.F] as const

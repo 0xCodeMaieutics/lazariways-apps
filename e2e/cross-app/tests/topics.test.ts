@@ -1,5 +1,5 @@
+import { prisma } from "@lazariways/database/client"
 import { test, expect } from "@playwright/test"
-import { prisma } from "@workspace/database/client"
 
 const DEV_EMAIL = "dev@lazaryways.ge"
 const DEV_PASSWORD = "!Dev$LazaryIsAwesome"
