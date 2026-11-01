@@ -37,11 +37,11 @@ export function ExamResult({
         <span>{hasPassed ? "სავარჯიშო წარმატებით ჩააბარეთ!" : "სავარჯიშო სამწუხაროდ ვერ ჩააბარეთ."}</span>
         <span className="ml-3 inline-flex">
           {hasPassed ? (
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-400">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm">
               <PartyPopper className="size-5" />
             </div>
           ) : (
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-700">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-600 text-white shadow-sm">
               <HeartCrack className="size-5 stroke-3" />
             </div>
           )}
@@ -56,23 +56,23 @@ export function ExamResult({
         <ResultContainer
           title="სწორად უპასუხე"
           className={{
-            "bg-emerald-400": hasPassed,
+            "bg-emerald-600": hasPassed,
             "bg-red-600": !hasPassed,
           }}
         >
           <div
             className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", {
-              "bg-emerald-400": hasPassed,
-              "bg-red-700": !hasPassed,
+              "bg-emerald-500 text-white": hasPassed,
+              "bg-red-600 text-white": !hasPassed,
             })}
           >
-            <FlameIcon className={cn("fill-white")} />
+            <FlameIcon className="fill-white" />
           </div>
           <span className="text-xl font-bold">{Math.round((correctCount / exerciseCount) * 100)}%</span>
         </ResultContainer>
         {!hasPassed && (
           <ResultContainer title="ჩაბარების მოთხოვნა" className="bg-primary">
-            <div className="flex size-10 items-center justify-center rounded-full bg-primary">
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
               <TargetIcon className="size-6" />
             </div>
             <span className="text-xl font-bold">
@@ -107,8 +107,8 @@ function ResultContainer({
 }>) {
   return (
     <div className={cn("flex flex-1 flex-col gap-y-2.5 rounded-2xl p-0.5", className)}>
-      <span className="flex-1 text-center text-xs font-semibold text-background">{title}</span>
-      <div className="flex items-center justify-center gap-x-2 rounded-2xl bg-background p-2 py-5">
+      <span className="flex-1 text-center text-xs font-semibold text-white">{title}</span>
+      <div className="flex items-center justify-center gap-x-2 rounded-2xl bg-background p-2 py-5 shadow-sm">
         {children}
       </div>
     </div>
@@ -125,7 +125,7 @@ function ExamResultTimer({
   const { hours, minutes, seconds, isComplete } = useCountdown(showTimer ? countdownTarget : null)
 
   if (showTimer && isComplete && countdownTarget !== null) {
-    return <span className="text-sm text-emerald-400">ჩაბარება შესაძლებელია</span>
+    return <span className="text-sm font-medium text-emerald-700">ჩაბარება შესაძლებელია</span>
   }
   return (
     showTimer &&
@@ -157,7 +157,7 @@ function ContinueButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={cn("group h-12 w-full rounded-2xl bg-gray-600", {
+      className={cn("group h-12 w-full rounded-2xl bg-[color-mix(in_oklch,var(--primary),black_25%)]", {
         "opacity-50": disabled,
       })}
     >

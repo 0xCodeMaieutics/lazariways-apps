@@ -59,20 +59,21 @@ export function ThemeToggle() {
 
 export function Navbar() {
   return (
-    <nav className="fixed top-0 z-50 w-full border-b-2 border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <nav className="fixed top-0 z-50 w-full border-b border-border bg-background/90 shadow-xs backdrop-blur supports-backdrop-filter:bg-background/70">
       <div className="mx-auto flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href={"/topics"} className="relative block size-8 dark:hidden">
-          <Image src={"/lazari-ways-logo.svg"} alt="Lazary Ways Logo" fill />
-        </Link>
-        <Link href={"/topics"} className="relative hidden size-8 dark:block">
+        <Link href={"/topics"} className="relative block size-8">
           <Image src={"/logo.svg"} alt="Lazary Ways Logo" fill />
         </Link>
         {/* <div className="flex items-center gap-2">
                     <ThemeToggle />
                 </div> */}
         <div className="flex">
-          <Link href="/profile">
-            <div className="flex size-8 items-center justify-center rounded-full bg-primary">
+          <Link
+            href="/profile"
+            aria-label="პროფილი"
+            className="flex size-11 items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            <div className="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105">
               <User className="size-4" />
             </div>
           </Link>

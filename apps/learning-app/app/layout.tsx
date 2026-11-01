@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 
 import "@lazariways/ui/globals.css"
 import "./animations.css"
@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   description: "LazariLingo helps you to learn German really easliy and joyful",
 }
 
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  colorScheme: "light",
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -17,9 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={"dark antialiased"}>
+      <body className={"antialiased"}>
         <Providers>
-          <ThemeProvider attribute="class">{children}</ThemeProvider>
+          <ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
+            {children}
+          </ThemeProvider>
         </Providers>
       </body>
     </html>
