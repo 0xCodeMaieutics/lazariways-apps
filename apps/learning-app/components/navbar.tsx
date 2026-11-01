@@ -61,8 +61,15 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-border bg-background/90 shadow-xs backdrop-blur supports-backdrop-filter:bg-background/70">
       <div className="mx-auto flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href={"/topics"} className="relative block size-8">
-          <Image src={"/logo.svg"} alt="Lazary Ways Logo" fill />
+        <Link href={"/topics"} className="block">
+          <Image
+            src="/logo.svg"
+            alt="Lazari Ways"
+            width={254}
+            height={60}
+            className="h-8 w-auto"
+            loading="eager"
+          />
         </Link>
         {/* <div className="flex items-center gap-2">
                     <ThemeToggle />
