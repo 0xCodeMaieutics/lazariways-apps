@@ -6,6 +6,8 @@ import prisma from "@lazariways/database/client"
 import { backfillUnlockedExamsForUnlocker } from "@/lib/backfill-unlocked-exams"
 import { backfillUnlockedTopicsForUnlocker } from "@/lib/backfill-unlocked-topics"
 
+import { ensureAudios } from "./audio"
+import { readImportEnv } from "./env"
 import { readCourse, type CourseTopic } from "./read-course"
 import type { ExerciseFile } from "./schema"
 
@@ -120,9 +122,7 @@ async function main() {
       exam.exercises.flatMap((exercise) => ("audioText" in exercise ? [exercise.audioText] : []))
     )
   )
-  // Loaded only for a real import: the admin env requires every server variable.
-  const { ensureAudios } = await import("./audio")
-  const audioKeyByText = await ensureAudios(audioTexts)
+  const audioKeyByText = await ensureAudios(audioTexts, readImportEnv())
 
   await prisma.$transaction(
     async (tx) => {

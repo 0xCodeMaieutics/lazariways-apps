@@ -10,4 +10,4 @@ The Starter Topic and Job Topic content (Topics, Exams, Exercises) is authored a
 
 ## Consequences
 
-Content fixes go through a PR and a re-run of the import, not the admin app. The admin app remains usable for Topics outside the course.
+Content fixes go through a PR, not the admin app; CI runs the import on every push to `main`, so merging is publishing and the language review must happen on the PR. The admin app remains usable for Topics outside the course.
