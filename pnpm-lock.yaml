@@ -473,6 +473,9 @@ importers:
       react-hook-form:
         specifier: ^7.77.0
         version: 7.77.0(react@19.2.8)
+      resend:
+        specifier: ^6.12.4
+        version: 6.12.4
       sonner:
         specifier: ^2.0.8
         version: 2.0.8(@types/react@19.2.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
