@@ -42,13 +42,10 @@ type TopicFormValues = z.output<typeof topicSchema>
 
 const TYPE_OPTIONS = [
   { value: TopicType.STARTER, label: "Starter" },
-  { value: TopicType.BAECKEREI, label: "Bäckerei" },
-  { value: TopicType.FREIZEIT_PARK, label: "Freizeit Park" },
-  { value: TopicType.HOTEL, label: "Hotel" },
-  {
-    value: TopicType.GARTEN_LANDSCHAFTBAU,
-    label: "Garten- und Landschaftsbau",
-  },
+  { value: TopicType.BAECKER, label: "Bäcker" },
+  { value: TopicType.KOCH, label: "Koch" },
+  { value: TopicType.KELLNER, label: "Kellner" },
+  { value: TopicType.MASSEUR, label: "Masseur(in)" },
 ] as const
 
 export type TopicUnlockOption = { id: string; name: string }

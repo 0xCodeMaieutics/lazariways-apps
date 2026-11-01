@@ -23,7 +23,7 @@ test("Create topic by admin and is displayed in the learning-app", async ({ page
   const TOPIC_NAME = "Test Topic 1"
   await page.getByRole("textbox", { name: "Name" }).click()
   await page.getByRole("textbox", { name: "Name" }).fill(TOPIC_NAME)
-  await page.getByLabel("Type").selectOption("HOTEL")
+  await page.getByLabel("Type").selectOption("KELLNER")
   await page.getByRole("checkbox", { name: "Enable topic" }).click()
   await page.getByLabel("Unlocked by").selectOption("PLf3qkDXC9FYkANh5rkcB")
   await page.getByRole("spinbutton", { name: "Minimum completed exams to" }).fill("6")
