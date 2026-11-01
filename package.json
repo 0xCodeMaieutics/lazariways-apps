@@ -10,7 +10,8 @@
     "typecheck": "turbo typecheck",
     "prisma": "dotenvx run -f packages/database/.env -- pnpm --filter=@lazariways/database exec prisma",
     "lint:fix": "oxlint --fix",
-    "format:check": "oxfmt --check"
+    "format:check": "oxfmt --check",
+    "turbo-env:check": "node scripts/check-turbo-env.mts"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.61.0",
