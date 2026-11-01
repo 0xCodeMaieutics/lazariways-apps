@@ -1,0 +1,77 @@
+{
+  "id": "starter-at-work",
+  "level": "A1",
+  "title": "სამსახურში",
+  "description": "ძირითადი სიტყვები სამსახურისთვის: უფროსი, ცვლა, შესვენება და ავადმყოფობა.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Pause",
+      "options": ["შესვენება", "ცვლა", "შვებულება"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Chef",
+      "options": ["კოლეგა", "უფროსი", "კლიენტი"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "die Schicht",
+      "options": ["die Schicht", "die Sicht", "die Schule"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Feierabend",
+      "options": ["Feiertag", "Feierabend", "Freitag"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "der Kollege", "meaning": "კოლეგა" },
+        { "term": "der Urlaub", "meaning": "შვებულება" },
+        { "term": "krank", "meaning": "ავად" },
+        { "term": "die Arbeit", "meaning": "სამუშაო" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "შესვენება",
+      "correctInputs": ["Pause", "die Pause"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "სამუშაო",
+      "correctInputs": ["Arbeit", "die Arbeit"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Ich bin krank.",
+      "correctInputs": ["Ich bin krank."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "დღეს ავად ვარ.",
+      "correctInputs": ["Ich bin heute krank.", "Heute bin ich krank."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "როდის არის შესვენება?",
+      "correctInputs": ["Wann ist die Pause?", "Wann ist Pause?", "Wann haben wir Pause?"]
+    }
+  ]
+}

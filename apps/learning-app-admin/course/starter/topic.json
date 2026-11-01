@@ -3,7 +3,7 @@
   "name": "სტარტერ (Starter)",
   "type": "STARTER",
   "order": 1,
-  "enabled": false,
+  "enabled": true,
   "isAlwaysUnlocked": true,
   "unlockedByTopicId": null,
   "minimumCompletedExamsToUnlock": 8

@@ -1,0 +1,77 @@
+{
+  "id": "starter-everyday-life",
+  "level": "A1",
+  "title": "ყოველდღიური ცხოვრება",
+  "description": "ბინა, ტრანსპორტი, მაღაზია და მიმართულებები.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Bahnhof",
+      "options": ["სადგური", "აეროპორტი", "გაჩერება"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "links",
+      "options": ["მარცხნივ", "მარჯვნივ", "პირდაპირ"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "geradeaus",
+      "options": ["geradeaus", "rechts", "zurück"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Supermarkt",
+      "options": ["die Bäckerei", "der Supermarkt", "die Apotheke"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Wohnung", "meaning": "ბინა" },
+        { "term": "der Bus", "meaning": "ავტობუსი" },
+        { "term": "rechts", "meaning": "მარჯვნივ" },
+        { "term": "die Straße", "meaning": "ქუჩა" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მარჯვნივ",
+      "correctInputs": ["rechts"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ავტობუსი",
+      "correctInputs": ["Bus", "der Bus"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Wo ist der Bahnhof?",
+      "correctInputs": ["Wo ist der Bahnhof?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "სად არის სუპერმარკეტი?",
+      "correctInputs": ["Wo ist der Supermarkt?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მე ბერლინში ვცხოვრობ.",
+      "correctInputs": ["Ich wohne in Berlin.", "Ich lebe in Berlin."]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "starter-time-and-dates",
+  "level": "A1",
+  "title": "დრო და თარიღები",
+  "description": "საათი, კვირის დღეები და თვეები.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Montag",
+      "options": ["ორშაბათი", "სამშაბათი", "ხუთშაბათი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Wie spät ist es?",
+      "options": ["რომელი საათია?", "რა დღეა დღეს?", "როდის?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "um acht Uhr",
+      "options": ["um acht Uhr", "um elf Uhr", "um sechs Uhr"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Freitag",
+      "options": ["Donnerstag", "Freitag", "Samstag"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "heute", "meaning": "დღეს" },
+        { "term": "morgen", "meaning": "ხვალ" },
+        { "term": "gestern", "meaning": "გუშინ" },
+        { "term": "der Monat", "meaning": "თვე" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "შაბათი",
+      "correctInputs": ["Samstag", "Sonnabend"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "იანვარი",
+      "correctInputs": ["Januar"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Es ist neun Uhr.",
+      "correctInputs": ["Es ist neun Uhr.", "Es ist 9 Uhr."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ორშაბათს ვმუშაობ.",
+      "correctInputs": [
+        "Ich arbeite am Montag.",
+        "Am Montag arbeite ich.",
+        "Ich arbeite montags.",
+        "Montags arbeite ich."
+      ]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "სამუშაო რვა საათზე იწყება.",
+      "correctInputs": [
+        "Die Arbeit beginnt um acht Uhr.",
+        "Die Arbeit beginnt um 8 Uhr.",
+        "Die Arbeit fängt um acht Uhr an.",
+        "Die Arbeit fängt um 8 Uhr an."
+      ]
+    }
+  ]
+}
