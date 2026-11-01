@@ -1,0 +1,89 @@
+{
+  "id": "baecker-work-steps",
+  "level": "A1",
+  "title": "სამუშაო ნაბიჯები",
+  "description": "საცხობის სამუშაო ნაბიჯები: ზელა, ფორმის მიცემა, გამოცხობა, აწონვა და ჭრა.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "kneten",
+      "options": ["ზელა", "ჭრა", "აწონვა"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "wiegen",
+      "options": ["გამოცხობა", "აწონვა", "ფორმის მიცემა"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "backen",
+      "options": ["packen", "bauen", "backen"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Bitte schneiden Sie das Brot.",
+      "options": ["Bitte schneiden Sie das Brot.", "Bitte backen Sie das Brot.", "Bitte holen Sie das Brot."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "formen", "meaning": "ფორმის მიცემა" },
+        { "term": "mischen", "meaning": "შერევა" },
+        { "term": "schneiden", "meaning": "ჭრა" },
+        { "term": "backen", "meaning": "გამოცხობა" },
+        { "term": "warten", "meaning": "ლოდინი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ზელა",
+      "correctInputs": ["kneten"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "აწონვა",
+      "correctInputs": ["wiegen", "abwiegen"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Ich knete den Teig.",
+      "correctInputs": ["Ich knete den Teig."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ჯერ ფქვილი აწონე.",
+      "correctInputs": [
+        "Wieg zuerst das Mehl.",
+        "Wiege zuerst das Mehl.",
+        "Wieg das Mehl zuerst.",
+        "Wiege das Mehl zuerst.",
+        "Zuerst das Mehl wiegen."
+      ]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "პურს 40 წუთი ვაცხობთ.",
+      "correctInputs": [
+        "Wir backen das Brot 40 Minuten.",
+        "Wir backen das Brot vierzig Minuten.",
+        "Wir backen das Brot 40 Minuten lang.",
+        "Wir backen das Brot vierzig Minuten lang."
+      ]
+    }
+  ]
+}

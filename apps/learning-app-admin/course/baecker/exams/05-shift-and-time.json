@@ -1,0 +1,83 @@
+{
+  "id": "baecker-shift-and-time",
+  "level": "A1",
+  "title": "ცვლა და დრო",
+  "description": "ადრეული ცვლა საცხობში: დილის ცვლა, დრო და როდის არის პური მზად.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Frühschicht",
+      "options": ["დილის ცვლა", "ღამის ცვლა", "შესვენება"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Wann ist das Brot fertig?",
+      "options": ["სად არის პური?", "რა ღირს პური?", "როდის იქნება პური მზად?"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "um drei Uhr",
+      "options": ["um zwei Uhr", "um drei Uhr", "um zehn Uhr"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Die Brötchen sind fertig.",
+      "options": ["Die Brötchen sind fertig.", "Die Brötchen sind frisch.", "Die Brötchen sind kalt."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Nachtschicht", "meaning": "ღამის ცვლა" },
+        { "term": "die Pause", "meaning": "შესვენება" },
+        { "term": "früh", "meaning": "ადრე" },
+        { "term": "spät", "meaning": "გვიან" },
+        { "term": "morgen", "meaning": "ხვალ" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მზად",
+      "correctInputs": ["fertig"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "დილის ცვლა",
+      "correctInputs": ["Frühschicht", "die Frühschicht"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Ich fange um drei Uhr an.",
+      "correctInputs": ["Ich fange um drei Uhr an.", "Ich fange um 3 Uhr an."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ხვალ დილის ცვლა მაქვს.",
+      "correctInputs": ["Ich habe morgen Frühschicht.", "Morgen habe ich Frühschicht."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "პური ექვს საათზე იქნება მზად.",
+      "correctInputs": [
+        "Das Brot ist um sechs Uhr fertig.",
+        "Das Brot ist um 6 Uhr fertig.",
+        "Um sechs Uhr ist das Brot fertig.",
+        "Um 6 Uhr ist das Brot fertig."
+      ]
+    }
+  ]
+}

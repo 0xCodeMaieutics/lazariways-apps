@@ -1,0 +1,84 @@
+{
+  "id": "baecker-hygiene-and-safety",
+  "level": "A1",
+  "title": "ჰიგიენა და უსაფრთხოება",
+  "description": "ჰიგიენა და უსაფრთხოება საცხობში: ხელების დაბანა, ცხელი ღუმელი და ფრთხილად!",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Vorsicht, heiß!",
+      "options": ["ფრთხილად, ცივია!", "ფრთხილად, ცხელია!", "ფრთხილად, სველია!"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "die Handschuhe",
+      "options": ["ხელთათმანები", "წინსაფარი", "ქუდი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Hände waschen",
+      "options": ["Hände wärmen", "Hände heben", "Hände waschen"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "das Haarnetz",
+      "options": ["das Haarnetz", "das Handtuch", "die Hose"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "sauber", "meaning": "სუფთა" },
+        { "term": "schmutzig", "meaning": "ჭუჭყიანი" },
+        { "term": "heiß", "meaning": "ცხელი" },
+        { "term": "scharf", "meaning": "ბასრი" },
+        { "term": "die Seife", "meaning": "საპონი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ცხელი",
+      "correctInputs": ["heiß"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ფრთხილად!",
+      "correctInputs": ["Vorsicht!", "Achtung!"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Bitte die Hände waschen.",
+      "correctInputs": ["Bitte die Hände waschen."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ჯერ ხელები დაიბანე.",
+      "correctInputs": [
+        "Wasch zuerst die Hände.",
+        "Wasche zuerst die Hände.",
+        "Wasch dir zuerst die Hände.",
+        "Wasche dir zuerst die Hände.",
+        "Zuerst die Hände waschen."
+      ]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ფრთხილად, ღუმელი ცხელია!",
+      "correctInputs": ["Vorsicht, der Ofen ist heiß!", "Achtung, der Ofen ist heiß!"]
+    }
+  ]
+}
