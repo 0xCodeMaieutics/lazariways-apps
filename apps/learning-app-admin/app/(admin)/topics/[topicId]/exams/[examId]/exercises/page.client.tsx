@@ -42,7 +42,7 @@ import { useMutation } from "@tanstack/react-query"
 import { Loader2, MoreHorizontal, Pencil, Trash2, GripVertical } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useId, useState } from "react"
 
 import { useTRPC } from "@/lib/trpc/react"
 
@@ -134,6 +134,7 @@ export function ExamExercisesTable({
   const router = useRouter()
   const trpc = useTRPC()
   const [items, setItems] = useState(exercises)
+  const dndContextId = useId()
   const [deleteTarget, setDeleteTarget] = useState<{
     id: string
     label: string
@@ -179,7 +180,12 @@ export function ExamExercisesTable({
 
   return (
     <>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        id={dndContextId}
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
         <Table>
           <TableHeader>
             <TableRow>

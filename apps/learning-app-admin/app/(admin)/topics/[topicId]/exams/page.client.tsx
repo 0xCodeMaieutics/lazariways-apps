@@ -32,7 +32,7 @@ import { useMutation } from "@tanstack/react-query"
 import { ArrowLeft, GripVertical, Loader2, Lock, LockOpen, MoreHorizontal, Pencil, Plus } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useId, useState } from "react"
 import { toast } from "sonner"
 
 import { useTRPC } from "@/lib/trpc/react"
@@ -138,6 +138,7 @@ export const AdminExams = ({ exams: examsOuter }: { exams: Exam[] }) => {
   const topicId = params.topicId as string
   const trpc = useTRPC()
   const [exams, setExams] = useState([...examsOuter])
+  const dndContextId = useId()
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -219,6 +220,7 @@ export const AdminExams = ({ exams: examsOuter }: { exams: Exam[] }) => {
       </div>
       <div className="rounded-lg border">
         <DndContext
+          id={dndContextId}
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={(event: DragEndEvent) => {
