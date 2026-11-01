@@ -12,6 +12,7 @@ model User {
   emailVerified Boolean  @default(false)
   role          UserRole @default(USER)
   image         String?
+  disabledAt    DateTime?
 
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
@@ -60,6 +61,18 @@ model Account {
 
   @@unique([issuer, accountId])
   @@index([userId])
+  @@schema("lazari_lingo")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
   @@schema("lazari_lingo")
 }
 

@@ -1,6 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs"
 import { z } from "zod"
 
+const isProduction = process.env.VERCEL_ENV === "production"
+
 export const env = createEnv({
   server: {
     DATABASE_URL: z.url(),
@@ -13,6 +15,9 @@ export const env = createEnv({
     S3_BUCKET_NAME: z.string(),
     BETTER_AUTH_SECRET: z.string(),
     BETTER_AUTH_URL: z.string(),
+    LEARNING_APP_URL: z.url(),
+    RESEND_API_KEY: isProduction ? z.string() : z.string().optional(),
+    RESEND_FROM_EMAIL: isProduction ? z.email() : z.email().optional(),
   },
   client: {},
   runtimeEnv: {
@@ -26,6 +31,9 @@ export const env = createEnv({
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    LEARNING_APP_URL: process.env.LEARNING_APP_URL,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
   },
   emptyStringAsUndefined: true,
   skipValidation: Boolean(process.env.SKIP_ENV_VALIDATION),
