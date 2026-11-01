@@ -1,0 +1,77 @@
+{
+  "id": "starter-introductions",
+  "level": "A1",
+  "title": "თავის წარდგენა",
+  "description": "როგორ წარადგინო თავი: სახელი, ქვეყანა და საცხოვრებელი ადგილი.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Wie heißen Sie?",
+      "options": ["რა გქვიათ?", "საიდან ხართ?", "სად ცხოვრობთ?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Ich komme aus Georgien.",
+      "options": ["მე საქართველოში ვცხოვრობ.", "მე საქართველოდან ვარ.", "მე ქართულად ვლაპარაკობ."],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Woher kommen Sie?",
+      "options": ["Wie heißen Sie?", "Woher kommen Sie?", "Wo wohnen Sie?"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Ich wohne in Deutschland.",
+      "options": ["Ich wohne in Deutschland.", "Ich komme aus Deutschland.", "Ich lerne Deutsch."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "der Name", "meaning": "სახელი" },
+        { "term": "das Land", "meaning": "ქვეყანა" },
+        { "term": "die Stadt", "meaning": "ქალაქი" },
+        { "term": "die Sprache", "meaning": "ენა" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "საქართველო",
+      "correctInputs": ["Georgien"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "გერმანია",
+      "correctInputs": ["Deutschland"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Ich komme aus Georgien.",
+      "correctInputs": ["Ich komme aus Georgien."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მე მქვია ნინო.",
+      "correctInputs": ["Ich heiße Nino.", "Mein Name ist Nino.", "Ich bin Nino."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "მე საქართველოდან ვარ.",
+      "correctInputs": ["Ich komme aus Georgien.", "Ich bin aus Georgien."]
+    }
+  ]
+}

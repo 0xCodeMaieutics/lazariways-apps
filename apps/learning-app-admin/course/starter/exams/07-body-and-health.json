@@ -1,0 +1,77 @@
+{
+  "id": "starter-body-and-health",
+  "level": "A1",
+  "title": "სხეული და ჯანმრთელობა",
+  "description": "სხეულის ნაწილები და როგორ ვთქვათ, რომ რაღაც გვტკივა.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "der Kopf",
+      "options": ["თავი", "ხელი", "ფეხი"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Es tut weh.",
+      "options": ["მტკივა.", "მცივა.", "მშია."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "der Rücken",
+      "options": ["der Rücken", "der Bauch", "der Arm"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "die Apotheke",
+      "options": ["der Arzt", "die Apotheke", "das Krankenhaus"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "die Hand", "meaning": "ხელი" },
+        { "term": "das Bein", "meaning": "ფეხი" },
+        { "term": "der Bauch", "meaning": "მუცელი" },
+        { "term": "das Auge", "meaning": "თვალი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ექიმი",
+      "correctInputs": ["Arzt", "der Arzt", "Ärztin", "die Ärztin"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "თავი",
+      "correctInputs": ["Kopf", "der Kopf"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Mein Kopf tut weh.",
+      "correctInputs": ["Mein Kopf tut weh."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ზურგი მტკივა.",
+      "correctInputs": ["Mein Rücken tut weh.", "Der Rücken tut mir weh.", "Ich habe Rückenschmerzen."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ექიმი მჭირდება.",
+      "correctInputs": ["Ich brauche einen Arzt.", "Ich brauche eine Ärztin."]
+    }
+  ]
+}

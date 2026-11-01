@@ -1,0 +1,77 @@
+{
+  "id": "starter-greetings",
+  "level": "A1",
+  "title": "მისალმება და დამშვიდობება",
+  "description": "ძირითადი მისალმებები და დამშვიდობების ფრაზები გერმანულად.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Guten Morgen",
+      "options": ["დილა მშვიდობისა", "საღამო მშვიდობისა", "ღამე მშვიდობისა"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Tschüss",
+      "options": ["გამარჯობა", "ნახვამდის", "მადლობა"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Guten Abend",
+      "options": ["Guten Morgen", "Guten Tag", "Guten Abend"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Auf Wiedersehen",
+      "options": ["Auf Wiedersehen", "Gute Nacht", "Bis morgen"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "Hallo", "meaning": "გამარჯობა" },
+        { "term": "Guten Tag", "meaning": "დღე მშვიდობისა" },
+        { "term": "Gute Nacht", "meaning": "ღამე მშვიდობისა" },
+        { "term": "Bis morgen", "meaning": "ხვალამდე" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "გამარჯობა",
+      "correctInputs": ["Hallo"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ნახვამდის",
+      "correctInputs": ["Tschüss", "Auf Wiedersehen"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Guten Morgen",
+      "correctInputs": ["Guten Morgen"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "გამარჯობა, როგორ ხარ?",
+      "correctInputs": ["Hallo, wie geht es dir?", "Hallo, wie geht's?", "Hallo, wie geht es Ihnen?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ნახვამდის, ხვალამდე!",
+      "correctInputs": ["Tschüss, bis morgen!", "Auf Wiedersehen, bis morgen!"]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "starter-polite-phrases",
+  "level": "A1",
+  "title": "თავაზიანი ფრაზები",
+  "description": "მადლობა, ბოდიში და როგორ ვთხოვოთ, რომ გაგვიმეორონ.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Danke",
+      "options": ["მადლობა", "გთხოვთ", "ბოდიში"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Ich verstehe nicht.",
+      "options": ["არ მესმის.", "არ ვიცი.", "არ მინდა."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Entschuldigung",
+      "options": ["Entschuldigung", "Bitte", "Danke schön"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Langsamer, bitte.",
+      "options": ["Lauter, bitte.", "Langsamer, bitte.", "Noch einmal, bitte."],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "bitte", "meaning": "გთხოვთ" },
+        { "term": "ja", "meaning": "კი" },
+        { "term": "nein", "meaning": "არა" },
+        { "term": "Danke schön", "meaning": "დიდი მადლობა" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მადლობა",
+      "correctInputs": ["Danke"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ბოდიში",
+      "correctInputs": ["Entschuldigung", "Entschuldigen Sie"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Können Sie das wiederholen?",
+      "correctInputs": ["Können Sie das wiederholen?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "არ მესმის.",
+      "correctInputs": ["Ich verstehe nicht.", "Ich verstehe das nicht."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "უფრო ნელა, გთხოვთ.",
+      "correctInputs": ["Langsamer, bitte.", "Bitte langsamer.", "Etwas langsamer, bitte."]
+    }
+  ]
+}
