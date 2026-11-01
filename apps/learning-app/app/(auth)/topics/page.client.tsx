@@ -94,7 +94,12 @@ export function TopicsHub({
                       <TopicIcon className="size-4" />
                     </div>
                     <div className="min-w-0 pr-6">
-                      <span className={cn("text-sm leading-tight font-semibold", isLocked && "text-muted-foreground")}>
+                      <span
+                        className={cn(
+                          "text-sm leading-tight font-semibold",
+                          isLocked && "text-muted-foreground"
+                        )}
+                      >
                         {topic.name}
                       </span>
                       <p className="text-xxs mt-1 text-muted-foreground">
