@@ -395,7 +395,9 @@ function ExamTraining({
                 }}
                 disabled={isInputCorrect !== null}
                 value={input}
-                placeholder="აკრიფეთ რას გესმით..."
+                placeholder={
+                  type === ExerciseType.INPUT_FROM_AUDIO ? "აკრიფეთ რას გესმით..." : "აკრიფეთ თარგმანი..."
+                }
                 className="h-14"
               />
             )}
