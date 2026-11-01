@@ -502,6 +502,39 @@ export const adminRouter = router({
       }),
   },
   users: {
+    invite: adminProcedure
+      .input(
+        z.object({
+          name: z.string().trim().min(1, "Name is required"),
+          email: z.email("Invalid email address").trim().toLowerCase(),
+          role: z.enum(["USER", "ADMIN"]),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: input.email },
+          select: { id: true },
+        })
+
+        if (existingUser) {
+          throw new TRPCError({ code: "CONFLICT", message: "A user with this email already exists" })
+        }
+
+        const authContext = await auth.$context
+        const user = await authContext.internalAdapter.createUser(
+          {
+            name: input.name,
+            email: input.email,
+            emailVerified: false,
+            role: input.role,
+          },
+          { method: "admin" }
+        )
+
+        await auth.api.requestPasswordReset({ body: { email: user.email } })
+
+        return { id: user.id }
+      }),
     sendPasswordReset: adminProcedure
       .input(z.object({ id: z.string().min(1) }))
       .mutation(async ({ input }) => {
