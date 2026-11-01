@@ -57,7 +57,13 @@ export function ThemeToggle() {
   )
 }
 
-export function Navbar() {
+export function Navbar({
+  profileImageUrl,
+  profileName,
+}: {
+  profileImageUrl: string | null
+  profileName: string
+}) {
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-border bg-background/90 shadow-xs backdrop-blur supports-backdrop-filter:bg-background/70">
       <div className="mx-auto flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -80,8 +86,19 @@ export function Navbar() {
             aria-label="პროფილი"
             className="flex size-11 items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
-            <div className="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105">
-              <User className="size-4" />
+            <div className="relative flex size-8 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105">
+              {profileImageUrl !== null ? (
+                <Image
+                  src={profileImageUrl}
+                  alt={profileName}
+                  sizes="32px"
+                  fill
+                  unoptimized
+                  className="object-cover"
+                />
+              ) : (
+                <User className="size-4" />
+              )}
             </div>
           </Link>
         </div>
