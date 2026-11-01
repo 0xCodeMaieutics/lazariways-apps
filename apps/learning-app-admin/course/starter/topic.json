@@ -1,0 +1,10 @@
+{
+  "id": "starter",
+  "name": "სტარტერ (Starter)",
+  "type": "STARTER",
+  "order": 1,
+  "enabled": false,
+  "isAlwaysUnlocked": true,
+  "unlockedByTopicId": null,
+  "minimumCompletedExamsToUnlock": 8
+}

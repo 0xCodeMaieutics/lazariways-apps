@@ -78,10 +78,16 @@ Starter Topic (always unlocked)
 
 ## Delivery
 
-1. Content is authored as JSON in the repo, in the same shape as the seed `programs/` folders.
-2. An import script, separate from the dev seed, upserts Topics, Exams and Exercises by stable ID and generates missing audio.
-3. First production run clears existing Lazari Lingo content (Exams before Topics, since Topic deletion does not cascade), then imports. There is no learner progress to preserve.
-4. The `TopicType` migration runs after clearing.
+Content lives in `apps/learning-app-admin/course/<topic-id>/`: one `topic.json` and one file per Exam in `exams/`, ordered by file name (`01-greetings.json`, …).
+
+- `pnpm --filter @lazariways/learning-app-admin course:check` validates the content without touching the database or audio.
+- `pnpm --filter @lazariways/learning-app-admin course:import` imports it:
+  - Topics and Exams are upserted by their `id`; never change an `id` once imported, or learner progress on that Exam is lost.
+  - Exams in a Topic are chained by file order: the first is always unlocked, each unlocks the next.
+  - Exercises of each imported Exam are replaced.
+  - Audio is generated from each Exercise's `audioText` and stored under a hash of the text, so unchanged text is never regenerated.
+  - Exams removed from a Topic's folder are disabled, not deleted.
+- Each Topic stays `"enabled": false` until its content PR is merged.
 
 ## Review
 

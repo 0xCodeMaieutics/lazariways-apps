@@ -2,7 +2,13 @@ import * as crypto from "node:crypto"
 import { createReadStream } from "node:fs"
 import { performance } from "node:perf_hooks"
 
-import { DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand,
+  NotFound,
+  S3Client,
+} from "@aws-sdk/client-s3"
 import { Upload } from "@aws-sdk/lib-storage"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { z } from "zod"
@@ -220,6 +226,18 @@ export async function deleteFileFromStorage({ bucket, fileKey }: { bucket: strin
       Key: fileKey,
     })
   )
+}
+
+export async function hasFileInStorage({ bucket, fileKey }: { bucket: string; fileKey: string }) {
+  try {
+    await getS3Client().send(new HeadObjectCommand({ Bucket: bucket, Key: fileKey }))
+    return true
+  } catch (error) {
+    if (error instanceof NotFound) {
+      return false
+    }
+    throw error
+  }
 }
 
 export async function downloadFileFromStorage({ bucket, fileKey }: { bucket: string; fileKey: string }) {

@@ -1,0 +1,10 @@
+{
+  "id": "kellner",
+  "name": "ოფიციანტი (Kellner)",
+  "type": "KELLNER",
+  "order": 4,
+  "enabled": false,
+  "isAlwaysUnlocked": false,
+  "unlockedByTopicId": "starter",
+  "minimumCompletedExamsToUnlock": null
+}
