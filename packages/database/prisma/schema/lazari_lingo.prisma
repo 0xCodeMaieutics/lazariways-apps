@@ -65,10 +65,10 @@ model Account {
 
 enum TopicType {
   STARTER
-  BAECKEREI
-  FREIZEIT_PARK
-  GARTEN_LANDSCHAFTBAU
-  HOTEL
+  BAECKER
+  KOCH
+  KELLNER
+  MASSEUR
 
   @@schema("lazari_lingo")
 }

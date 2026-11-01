@@ -2,10 +2,28 @@
 
 import type { TopicType } from "@lazariways/database/browser"
 import { Card, CardContent } from "@lazariways/ui/components/card"
-import { BookOpen, ChevronRight, Croissant, Lock, Puzzle, Rocket } from "lucide-react"
+import {
+  BookOpen,
+  ChefHat,
+  ChevronRight,
+  ConciergeBell,
+  Croissant,
+  HandHeart,
+  Lock,
+  Rocket,
+  type LucideIcon,
+} from "lucide-react"
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
+
+const TOPIC_ICONS: Record<TopicType, LucideIcon> = {
+  STARTER: Rocket,
+  BAECKER: Croissant,
+  KOCH: ChefHat,
+  KELLNER: ConciergeBell,
+  MASSEUR: HandHeart,
+}
 
 function TopicsEmpty() {
   return (
@@ -40,6 +58,7 @@ export function TopicsHub({
           {topics.map((topic) => {
             const isAllExamsPassed = topic.totalExams > 0 && topic.completedExams >= topic.totalExams
             const isLocked = !topic.isUnlocked
+            const TopicIcon = TOPIC_ICONS[topic.type]
             return (
               <Link
                 key={topic.id}
@@ -65,50 +84,9 @@ export function TopicsHub({
                         isAllExamsPassed && "bg-emerald-100 dark:bg-emerald-900/50"
                       )}
                     >
-                      {
-                        {
-                          STARTER: (
-                            <Rocket
-                              className={cn(
-                                "size-4",
-                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
-                              )}
-                            />
-                          ),
-                          BAECKEREI: (
-                            <Croissant
-                              className={cn(
-                                "size-4",
-                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
-                              )}
-                            />
-                          ),
-                          FREIZEIT_PARK: (
-                            <Puzzle
-                              className={cn(
-                                "size-4",
-                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
-                              )}
-                            />
-                          ),
-                          HOTEL: (
-                            <Puzzle
-                              className={cn(
-                                "size-4",
-                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
-                              )}
-                            />
-                          ),
-                          GARTEN_LANDSCHAFTBAU: (
-                            <Puzzle
-                              className={cn(
-                                "size-4",
-                                isAllExamsPassed && "text-emerald-600 dark:text-emerald-400"
-                              )}
-                            />
-                          ),
-                        }[topic.type]
-                      }
+                      <TopicIcon
+                        className={cn("size-4", isAllExamsPassed && "text-emerald-600 dark:text-emerald-400")}
+                      />
                     </div>
                     <div className="min-w-0 pr-6">
                       <span className="text-sm leading-tight font-semibold">{topic.name}</span>

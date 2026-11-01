@@ -174,10 +174,10 @@ export function Exams({ exams, topic }: { exams: ExamListItem[]; topic: Pick<Top
                   {
                     {
                       STARTER: "სტარტერის",
-                      BAECKEREI: topic.name,
-                      FREIZEIT_PARK: topic.name,
-                      HOTEL: topic.name,
-                      GARTEN_LANDSCHAFTBAU: topic.name,
+                      BAECKER: topic.name,
+                      KOCH: topic.name,
+                      KELLNER: topic.name,
+                      MASSEUR: topic.name,
                     }[topic.type]
                   }{" "}
                   ყველა ვარჯიშები წარმატებით ჩააბარეთ

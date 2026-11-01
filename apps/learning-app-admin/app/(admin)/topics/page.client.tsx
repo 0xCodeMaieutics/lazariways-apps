@@ -36,10 +36,10 @@ import { useTRPC } from "@/lib/trpc/react"
 
 const TOPIC_TYPE_LABELS: Record<Topic["type"], string> = {
   STARTER: "Starter",
-  BAECKEREI: "Backärei",
-  FREIZEIT_PARK: "Freizeitpark",
-  HOTEL: "Hotel",
-  GARTEN_LANDSCHAFTBAU: "Garten und Landschaftbau",
+  BAECKER: "Bäcker",
+  KOCH: "Koch",
+  KELLNER: "Kellner",
+  MASSEUR: "Masseur(in)",
 }
 
 function unlocksWhenLabel(topic: TopicListItem) {
