@@ -555,5 +555,18 @@ export const adminRouter = router({
 
         return { success: true }
       }),
+    delete: adminProcedure.input(z.object({ id: z.string().min(1) })).mutation(async ({ ctx, input }) => {
+      if (input.id === ctx.session.user.id) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "You cannot delete your own account" })
+      }
+
+      const { count } = await prisma.user.deleteMany({ where: { id: input.id } })
+
+      if (count === 0) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "User not found" })
+      }
+
+      return { success: true }
+    }),
   },
 })

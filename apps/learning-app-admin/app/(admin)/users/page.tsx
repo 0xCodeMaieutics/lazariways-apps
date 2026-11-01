@@ -9,13 +9,18 @@ import {
   TableRow,
 } from "@lazariways/ui/components/table"
 import { Users } from "lucide-react"
+import { headers } from "next/headers"
 
+import { auth } from "@/lib/auth.server"
+
+import { DeleteUserButton } from "./delete-user-button"
 import { InviteUserDialog } from "./invite-user-dialog"
 import { ResetPasswordButton } from "./reset-password-button"
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" })
 
 export default async function AdminUsers() {
+  const session = await auth.api.getSession({ headers: await headers() })
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
     select: {
@@ -91,12 +96,19 @@ export default async function AdminUsers() {
                       {dateFormatter.format(user.createdAt)}
                     </TableCell>
                     <TableCell className="text-right">
-                      <ResetPasswordButton
-                        userId={user.id}
-                        email={user.email}
-                        disabled={user.disabledAt !== null}
-                        invited={isInvited}
-                      />
+                      <div className="flex justify-end gap-2">
+                        <ResetPasswordButton
+                          userId={user.id}
+                          email={user.email}
+                          disabled={user.disabledAt !== null}
+                          invited={isInvited}
+                        />
+                        <DeleteUserButton
+                          userId={user.id}
+                          email={user.email}
+                          disabled={user.id === session?.user.id}
+                        />
+                      </div>
                     </TableCell>
                   </TableRow>
                 )
