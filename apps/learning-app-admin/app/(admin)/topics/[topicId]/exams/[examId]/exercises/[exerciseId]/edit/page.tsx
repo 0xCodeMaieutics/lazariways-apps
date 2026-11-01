@@ -25,6 +25,11 @@ export default async function EditExercisePage({
         topicId,
       },
     },
+    include: {
+      matchingPairs: {
+        orderBy: { order: "asc" },
+      },
+    },
   })
 
   if (!exercise) {
@@ -42,6 +47,7 @@ export default async function EditExercisePage({
     correctOptionIndexText: exercise.correctOptionIndex.join(", "),
     allowsMultipleCorrectOptions: exercise.allowsMultipleCorrectOptions ?? false,
     correctInputsText: exercise.correctInputs.join("\n"),
+    matchingPairsText: exercise.matchingPairs.map((pair) => `${pair.term} = ${pair.meaning}`).join("\n"),
   }
 
   return (

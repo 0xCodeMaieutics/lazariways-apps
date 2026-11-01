@@ -45,6 +45,11 @@ export default async function ExamDetailPage({
         orderBy: {
           order: "asc",
         },
+        include: {
+          matchingPairs: {
+            orderBy: { order: "asc" },
+          },
+        },
       },
     },
   })

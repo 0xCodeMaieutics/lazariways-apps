@@ -182,6 +182,7 @@ export const insertLearningData = async ({ prisma, userId }: { prisma: PrismaCli
         correctInputs: string[]
         audioUrl?: string
         slowAudioUrl?: string
+        matchingPairs?: Array<{ term: string; meaning: string }>
       }>
 
       try {
@@ -207,6 +208,9 @@ export const insertLearningData = async ({ prisma, userId }: { prisma: PrismaCli
             slowAudioUrl: exercise.slowAudioUrl ?? null,
             order: currentExerciseIndex,
             examId: createdExam.id,
+            matchingPairs: {
+              create: (exercise.matchingPairs ?? []).map((pair, order) => ({ ...pair, order })),
+            },
           },
         })
         totalExercises++

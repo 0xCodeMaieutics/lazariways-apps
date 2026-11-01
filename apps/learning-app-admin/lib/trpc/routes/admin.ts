@@ -33,13 +33,40 @@ const exerciseBaseSchema = z.object({
   correctOptionIndex: z.array(z.number().int().min(0)),
   allowsMultipleCorrectOptions: z.boolean().optional(),
   correctInputs: z.array(z.string()),
+  matchingPairs: z
+    .array(z.object({ term: z.string().trim().min(1), meaning: z.string().trim().min(1) }))
+    .optional(),
 })
 
+const MINIMUM_MATCHING_PAIR_COUNT = 2
+
+function hasDuplicates(values: string[]) {
+  return new Set(values).size !== values.length
+}
+
 const exerciseCreateSchema = exerciseBaseSchema.superRefine((data, ctx) => {
-  const needsOptions =
-    data.type === "CHOOSE_FROM_AUDIO" ||
-    data.type === "CHOOSE_FROM_TEXT" ||
-    data.type === "CHOOSE_MATCHING_PATTERNS"
+  const needsOptions = data.type === "CHOOSE_FROM_AUDIO" || data.type === "CHOOSE_FROM_TEXT"
+  const needsMatchingPairs = data.type === "CHOOSE_MATCHING_PATTERNS"
+  const matchingPairs = data.matchingPairs ?? []
+
+  if (needsMatchingPairs && matchingPairs.length < MINIMUM_MATCHING_PAIR_COUNT) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `At least ${MINIMUM_MATCHING_PAIR_COUNT} matching pairs are required`,
+      path: ["matchingPairs"],
+    })
+  }
+  if (
+    needsMatchingPairs &&
+    (hasDuplicates(matchingPairs.map((pair) => pair.term)) ||
+      hasDuplicates(matchingPairs.map((pair) => pair.meaning)))
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Each term and each meaning may appear only once",
+      path: ["matchingPairs"],
+    })
+  }
   const needsCorrectInputs =
     data.type === "INPUT_FROM_TEXT" ||
     data.type === "INPUT_FROM_AUDIO" ||
@@ -301,6 +328,9 @@ export const adminRouter = router({
           correctOptionIndex: input.correctOptionIndex,
           allowsMultipleCorrectOptions: input.allowsMultipleCorrectOptions ?? false,
           correctInputs: input.correctInputs.filter((s) => s.trim()),
+          matchingPairs: {
+            create: (input.matchingPairs ?? []).map((pair, order) => ({ ...pair, order })),
+          },
         },
       })
     ),
@@ -342,6 +372,12 @@ export const adminRouter = router({
             }),
             ...(data.correctInputs !== undefined && {
               correctInputs: data.correctInputs.filter((s) => s.trim()),
+            }),
+            ...(data.matchingPairs !== undefined && {
+              matchingPairs: {
+                deleteMany: {},
+                create: data.matchingPairs.map((pair, order) => ({ ...pair, order })),
+              },
             }),
           },
         })

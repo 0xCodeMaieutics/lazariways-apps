@@ -1,7 +1,7 @@
 "use client"
 
-import type { UserExamAggregation } from "@lazariways/database/browser"
-import { type Exercise, ExerciseType } from "@lazariways/database/browser"
+import type { ExerciseMatchingPair, UserExamAggregation } from "@lazariways/database/browser"
+import { type Exercise as ExerciseRow, ExerciseType } from "@lazariways/database/browser"
 import { type Exam } from "@lazariways/database/browser"
 import { Button } from "@lazariways/ui/components/button"
 import { Input } from "@lazariways/ui/components/input"
@@ -10,8 +10,17 @@ import type { inferRouterInputs } from "@trpc/server"
 import { Volume2, ChevronRight, X } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import type { ComponentProps, PropsWithChildren, ReactNode } from "react"
-import { createContext, useCallback, useContext, useEffect, useEffectEvent, useRef, useState } from "react"
+import type { ComponentProps, PropsWithChildren, ReactNode, RefObject } from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { useTRPC } from "@/lib/trpc/react"
@@ -37,6 +46,8 @@ function ExamTimer({ hasPassed, countdownTarget }: { hasPassed: boolean; countdo
     )
   )
 }
+
+type Exercise = ExerciseRow & { matchingPairs: ExerciseMatchingPair[] }
 
 type CompleteExamInput = inferRouterInputs<AppRouter>["exam"]["completeExam"]
 
@@ -262,19 +273,48 @@ function ExamTraining({
   const correctAnswerIndex = currentExercise.correctOptionIndex[0]
   const isOptionCorrect = selectedOptionIndex === correctAnswerIndex
 
+  const exerciseHeader = (
+    <>
+      <div className="flex items-center gap-3">
+        <ProgressBar value={currentExerciseIndex} max={exercises.length - 1} className="flex-1" />
+        <ExamTimer countdownTarget={countdownTarget} hasPassed={hasExamPassed} />
+        <Button asChild variant={"ghost"} size={"icon"}>
+          <Link href={`/topics/${exam.topicId}/exams`}>
+            <X className="size-6" />
+          </Link>
+        </Button>
+      </div>
+      <span className="text-2xl font-medium">{currentExercise.prompt}</span>
+    </>
+  )
+
+  if (type === ExerciseType.CHOOSE_MATCHING_PATTERNS) {
+    return (
+      <MatchingExercise
+        key={currentExercise.id}
+        exerciseId={currentExercise.id}
+        pairs={currentExercise.matchingPairs}
+        header={exerciseHeader}
+        isLastExercise={isLastExercise}
+        continueButtonRef={continueButtonRef}
+        onContinue={(isCorrect) => {
+          if (isLastExercise && examId) {
+            completeExamMutation.mutate({
+              examId,
+              correctCount: correctCount + (isCorrect ? 1 : 0),
+            })
+          }
+          if (isCorrect) increaseCorrectCount()
+          onNextExercise()
+        }}
+      />
+    )
+  }
+
   return (
     <div className="flex h-dvh flex-col">
       <div className="flex flex-1 flex-col gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3">
-          <ProgressBar value={currentExerciseIndex} max={exercises.length - 1} className="flex-1" />
-          <ExamTimer countdownTarget={countdownTarget} hasPassed={hasExamPassed} />
-          <Button asChild variant={"ghost"} size={"icon"}>
-            <Link href={`/topics/${exam.topicId}/exams`}>
-              <X className="size-6" />
-            </Link>
-          </Button>
-        </div>
-        <span className="text-2xl font-medium">{currentExercise.prompt}</span>
+        {exerciseHeader}
         <div className="flex-1 space-y-16">
           {(type === ExerciseType.CHOOSE_FROM_AUDIO || type === ExerciseType.INPUT_FROM_AUDIO) && (
             <>
@@ -425,6 +465,151 @@ function ExamTraining({
           {isInputCorrect !== null ? "გაგრძელება" : "შემოწმება"}
         </ExerciseFeedback>
       )}
+    </div>
+  )
+}
+
+const MISMATCH_FLASH_IN_MS = 600
+
+function hashText(text: string) {
+  let hash = 2166136261
+  for (const character of text) {
+    hash ^= character.codePointAt(0) ?? 0
+    hash = Math.imul(hash, 16777619)
+  }
+  return hash >>> 0
+}
+
+// Seeded instead of random so the server-rendered and hydrated orders match.
+function shuffleBySeed<Item extends { id: string }>(items: Item[], seed: string) {
+  return [...items].sort(
+    (first, second) => hashText(`${seed}:${first.id}`) - hashText(`${seed}:${second.id}`)
+  )
+}
+
+function MatchingExercise({
+  exerciseId,
+  pairs,
+  header,
+  isLastExercise,
+  continueButtonRef,
+  onContinue,
+}: {
+  exerciseId: string
+  pairs: ExerciseMatchingPair[]
+  header: ReactNode
+  isLastExercise: boolean
+  continueButtonRef: RefObject<HTMLButtonElement | null>
+  onContinue: (isCorrect: boolean) => void
+}) {
+  const terms = useMemo(() => shuffleBySeed(pairs, `${exerciseId}:terms`), [pairs, exerciseId])
+  const meanings = useMemo(() => {
+    const shuffledMeanings = shuffleBySeed(pairs, `${exerciseId}:meanings`)
+    const isAlignedWithTerms = shuffledMeanings.every((pair, index) => pair.id === terms[index]?.id)
+    return isAlignedWithTerms ? shuffledMeanings.reverse() : shuffledMeanings
+  }, [pairs, exerciseId, terms])
+
+  const [selectedTermId, setSelectedTermId] = useState<string | null>(null)
+  const [selectedMeaningId, setSelectedMeaningId] = useState<string | null>(null)
+  const [matchedPairIds, setMatchedPairIds] = useState<string[]>([])
+  const [mismatch, setMismatch] = useState<{ termId: string; meaningId: string } | null>(null)
+  const [hasMistake, setHasMistake] = useState(false)
+
+  const isComplete = pairs.length > 0 && matchedPairIds.length === pairs.length
+
+  const tryMatch = (termId: string, meaningId: string) => {
+    setSelectedTermId(null)
+    setSelectedMeaningId(null)
+    if (termId === meaningId) {
+      setMatchedPairIds((pairIds) => [...pairIds, termId])
+      return
+    }
+    setHasMistake(true)
+    setMismatch({ termId, meaningId })
+    setTimeout(() => setMismatch(null), MISMATCH_FLASH_IN_MS)
+  }
+
+  const selectTerm = (termId: string) => {
+    if (selectedMeaningId !== null) {
+      tryMatch(termId, selectedMeaningId)
+      return
+    }
+    setSelectedTermId((currentTermId) => (currentTermId === termId ? null : termId))
+  }
+
+  const selectMeaning = (meaningId: string) => {
+    if (selectedTermId !== null) {
+      tryMatch(selectedTermId, meaningId)
+      return
+    }
+    setSelectedMeaningId((currentMeaningId) => (currentMeaningId === meaningId ? null : meaningId))
+  }
+
+  const pairButtonClassName = ({
+    pairId,
+    isSelected,
+    isMismatched,
+  }: {
+    pairId: string
+    isSelected: boolean
+    isMismatched: boolean
+  }) =>
+    cn("min-h-12 w-full rounded-2xl border-2 bg-card px-2 py-2 text-sm font-medium break-words", {
+      "border-primary bg-primary/10": isSelected,
+      "border-red-300 bg-red-300/20 text-red-300": isMismatched,
+      "border-green-300 bg-green-300/20 text-green-300 opacity-70": matchedPairIds.includes(pairId),
+    })
+
+  return (
+    <div className="flex h-dvh flex-col">
+      <div className="flex flex-1 flex-col gap-4 px-4 sm:px-6 lg:px-8">
+        {header}
+        <div className="grid flex-1 grid-cols-2 content-start gap-3">
+          <div className="flex flex-col gap-3">
+            {terms.map((pair) => (
+              <button
+                key={pair.id}
+                onClick={() => selectTerm(pair.id)}
+                disabled={matchedPairIds.includes(pair.id) || mismatch !== null}
+                className={pairButtonClassName({
+                  pairId: pair.id,
+                  isSelected: selectedTermId === pair.id,
+                  isMismatched: mismatch?.termId === pair.id,
+                })}
+              >
+                {pair.term}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-col gap-3">
+            {meanings.map((pair) => (
+              <button
+                key={pair.id}
+                onClick={() => selectMeaning(pair.id)}
+                disabled={matchedPairIds.includes(pair.id) || mismatch !== null}
+                className={pairButtonClassName({
+                  pairId: pair.id,
+                  isSelected: selectedMeaningId === pair.id,
+                  isMismatched: mismatch?.meaningId === pair.id,
+                })}
+              >
+                {pair.meaning}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <ExerciseFeedback
+        buttonProps={{ ref: continueButtonRef, disabled: !isComplete }}
+        isAnswered={isComplete}
+        isCorrect={!hasMistake}
+        onContinue={() => onContinue(!hasMistake)}
+      >
+        <div className="flex items-center gap-2.5">
+          {isLastExercise ? "ნახე შედეგები" : "გაგრძელება"}
+          {isLastExercise && <ChevronRight className="animate-bounce-left" />}
+        </div>
+      </ExerciseFeedback>
     </div>
   )
 }
