@@ -1,0 +1,83 @@
+{
+  "id": "masseur-pressure-and-pain",
+  "level": "A1",
+  "title": "ზეწოლა და ტკივილი",
+  "description": "როგორ ვკითხოთ კლიენტს ზეწოლასა და ტკივილზე: უფრო ძლიერად, უფრო ნაზად, გტკივათ?",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Tut das weh?",
+      "options": ["ეს გტკივათ?", "ეს მოგწონთ?", "გცივათ?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "fester",
+      "options": ["უფრო ნაზად", "უფრო ძლიერად", "უფრო ნელა"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "sanfter",
+      "options": ["fester", "schneller", "sanfter"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Ist der Druck gut so?",
+      "options": ["Ist der Druck gut so?", "Ist das Öl warm genug?", "Ist die Liege bequem?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "der Schmerz", "meaning": "ტკივილი" },
+        { "term": "der Druck", "meaning": "ზეწოლა" },
+        { "term": "angenehm", "meaning": "სასიამოვნო" },
+        { "term": "verspannt", "meaning": "დაჭიმული" },
+        { "term": "zu stark", "meaning": "ზედმეტად ძლიერი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ტკივილი",
+      "correctInputs": ["Schmerz", "der Schmerz", "Schmerzen", "die Schmerzen"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "უფრო ნაზად",
+      "correctInputs": ["sanfter"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Sagen Sie Bescheid, wenn es wehtut.",
+      "correctInputs": ["Sagen Sie Bescheid, wenn es wehtut.", "Sagen Sie Bescheid, wenn es weh tut."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ცოტა უფრო ძლიერად, გთხოვთ.",
+      "correctInputs": [
+        "Etwas fester, bitte.",
+        "Bitte etwas fester.",
+        "Ein bisschen fester, bitte.",
+        "Bitte ein bisschen fester."
+      ]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ეს ზედმეტად ძლიერია.",
+      "correctInputs": ["Das ist zu stark.", "Das ist zu fest.", "Es ist zu stark.", "Es ist zu fest."]
+    }
+  ]
+}

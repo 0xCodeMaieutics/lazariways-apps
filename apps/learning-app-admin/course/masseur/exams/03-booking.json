@@ -1,0 +1,83 @@
+{
+  "id": "masseur-booking",
+  "level": "A1",
+  "title": "კლიენტის მიღება და ჩაწერა",
+  "description": "როგორ მივესალმოთ კლიენტს და ჩავწეროთ ვიზიტზე.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Haben Sie einen Termin?",
+      "options": ["ჩაწერილი ხართ?", "როგორ ხართ?", "სად ცხოვრობთ?"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Wann haben Sie Zeit?",
+      "options": ["რა გქვიათ?", "როდის გცალიათ?", "რამდენი ღირს?"],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Herzlich willkommen!",
+      "options": ["Herzlich willkommen!", "Wie bitte?", "Vielen Dank!"],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Nehmen Sie bitte Platz.",
+      "options": ["Warten Sie bitte.", "Nehmen Sie bitte Platz.", "Kommen Sie bitte."],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "heute", "meaning": "დღეს" },
+        { "term": "morgen", "meaning": "ხვალ" },
+        { "term": "frei", "meaning": "თავისუფალი" },
+        { "term": "besetzt", "meaning": "დაკავებული" },
+        { "term": "der Name", "meaning": "სახელი" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ხვალ",
+      "correctInputs": ["morgen"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "თავისუფალი",
+      "correctInputs": ["frei"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Haben Sie morgen Zeit?",
+      "correctInputs": ["Haben Sie morgen Zeit?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "რა გქვიათ?",
+      "correctInputs": ["Wie heißen Sie?", "Wie ist Ihr Name?"]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "ხვალ 10 საათზე მცალია.",
+      "correctInputs": [
+        "Ich habe morgen um 10 Uhr Zeit.",
+        "Ich habe morgen um zehn Uhr Zeit.",
+        "Morgen um 10 Uhr habe ich Zeit.",
+        "Morgen um zehn Uhr habe ich Zeit."
+      ]
+    }
+  ]
+}

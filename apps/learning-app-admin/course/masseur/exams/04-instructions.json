@@ -1,0 +1,86 @@
+{
+  "id": "masseur-instructions",
+  "level": "A1",
+  "title": "მითითებები კლიენტისთვის",
+  "description": "თავაზიანი მითითებები კლიენტისთვის: დაწექით, გადაბრუნდით, მოდუნდით.",
+  "estimatedTimeInMinutes": 8,
+  "exercises": [
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Bitte legen Sie sich hin.",
+      "options": ["გთხოვთ, დაწექით.", "გთხოვთ, დაჯექით.", "გთხოვთ, ადექით."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_FROM_TEXT",
+      "prompt": "რას ნიშნავს?",
+      "text": "Drehen Sie sich bitte um.",
+      "options": ["გთხოვთ, მოდუნდით.", "გთხოვთ, გადაბრუნდით.", "გთხოვთ, დაელოდეთ."],
+      "correctOptionIndex": 1
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "auf den Bauch",
+      "options": ["auf den Rücken", "auf die Seite", "auf den Bauch"],
+      "correctOptionIndex": 2
+    },
+    {
+      "type": "CHOOSE_FROM_AUDIO",
+      "prompt": "რა გესმის?",
+      "audioText": "Entspannen Sie sich.",
+      "options": ["Entspannen Sie sich.", "Setzen Sie sich.", "Melden Sie sich."],
+      "correctOptionIndex": 0
+    },
+    {
+      "type": "CHOOSE_MATCHING_PATTERNS",
+      "prompt": "დანიშნე შესატყვისი წყვილები",
+      "matchingPairs": [
+        { "term": "liegen", "meaning": "წოლა" },
+        { "term": "sitzen", "meaning": "ჯდომა" },
+        { "term": "aufstehen", "meaning": "ადგომა" },
+        { "term": "atmen", "meaning": "სუნთქვა" },
+        { "term": "langsam", "meaning": "ნელა" }
+      ]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "მუცელზე",
+      "correctInputs": ["auf den Bauch", "auf dem Bauch"]
+    },
+    {
+      "type": "INPUT_FROM_TEXT",
+      "prompt": "დაწერე გერმანულად",
+      "text": "ზურგზე",
+      "correctInputs": ["auf den Rücken", "auf dem Rücken"]
+    },
+    {
+      "type": "INPUT_FROM_AUDIO",
+      "prompt": "დაწერე, რაც გესმის",
+      "audioText": "Atmen Sie tief ein.",
+      "correctInputs": ["Atmen Sie tief ein."]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "გთხოვთ, მუცელზე დაწექით.",
+      "correctInputs": [
+        "Bitte legen Sie sich auf den Bauch.",
+        "Legen Sie sich bitte auf den Bauch.",
+        "Legen Sie sich auf den Bauch, bitte."
+      ]
+    },
+    {
+      "type": "INPUT_SENTENCE_FROM_TEXT",
+      "prompt": "თარგმნე გერმანულად",
+      "text": "გთხოვთ, ნელა ადექით.",
+      "correctInputs": [
+        "Bitte stehen Sie langsam auf.",
+        "Stehen Sie bitte langsam auf.",
+        "Stehen Sie langsam auf, bitte."
+      ]
+    }
+  ]
+}
